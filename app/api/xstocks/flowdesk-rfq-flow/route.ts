@@ -38,7 +38,8 @@ import {
 } from "@/lib/flowdesk-rfq-flow-snapshot";
 import { getDemoFlowdeskRfqFlow, isDemoRequest } from "@/lib/demo/fixtures";
 
-export const maxDuration = 600;
+// Hobby plan caps serverless maxDuration at 300s.
+export const maxDuration = 300;
 export const revalidate = 1800;
 
 /**

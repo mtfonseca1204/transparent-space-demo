@@ -4,7 +4,11 @@ This is a **portfolio / recruiter** copy of Transparent Space focused on the **D
 
 ## Live
 
-After deploy, open the root URL — it **auto-enters `/demo`** with no email, password, or inbox required.
+**Live:** https://transparent-space-demo.vercel.app
+
+Open that URL — it **auto-enters `/demo`** with no email, password, or inbox required.
+
+**GitHub:** https://github.com/mtfonseca1204/transparent-space-demo
 
 ## Local
 

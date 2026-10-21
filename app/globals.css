@@ -1,0 +1,2541 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Libre+Franklin:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* ============================================================
+     Semantic tokens — exposed as Tailwind utilities.
+     Use these in components instead of arbitrary [hex] values.
+     Examples: bg-bp-surface, text-bp-fg, border-bp, text-bp-ok
+     The non-prefixed shadcn names (bg-primary, bg-card, …) keep
+     working because their CSS vars are rebound to the same layer.
+     ============================================================ */
+  --color-bp-canvas:    var(--bg-canvas);
+  --color-bp-surface:   var(--bg-surface);
+  --color-bp-surface-2: var(--bg-surface-2);
+  --color-bp-elevated:  var(--bg-elevated);
+
+  /* Surface 3 & 4 for emphasis fills and disabled states */
+  --color-bp-surface-3: var(--ts-surface-3);
+  --color-bp-surface-4: var(--ts-surface-4);
+
+  --color-bp-fg:           var(--fg-primary);
+  --color-bp-fg-secondary: var(--fg-secondary);
+  --color-bp-fg-muted:     var(--fg-muted);
+  --color-bp-fg-faint:     var(--fg-faint);
+
+  --color-bp-border:        var(--border-default);
+  --color-bp-border-strong: var(--border-strong);
+  --color-bp-border-subtle: var(--border-subtle);
+
+  --color-bp-accent:      var(--bp-brand);
+  --color-bp-accent-soft: var(--bp-brand-soft);
+
+  --color-bp-ok:   var(--status-ok);
+  --color-bp-warn: var(--status-warn);
+  --color-bp-bad:  var(--status-bad);
+  --color-bp-info: var(--status-info);
+
+  /* State soft/line variants for chips and gauges */
+  --color-bp-ok-soft:   var(--ts-good-soft);
+  --color-bp-ok-line:   var(--ts-good-line);
+  --color-bp-bad-soft:  var(--ts-bad-soft);
+  --color-bp-bad-line:  var(--ts-bad-line);
+  --color-bp-warn-soft: var(--ts-warn-soft);
+  --color-bp-warn-line: var(--ts-warn-line);
+  --color-bp-info-soft: var(--ts-info-soft);
+  --color-bp-info-line: var(--ts-info-line);
+
+  --color-bp-cat-1: var(--cat-1);
+  --color-bp-cat-2: var(--cat-2);
+  --color-bp-cat-3: var(--cat-3);
+  --color-bp-cat-4: var(--cat-4);
+  --color-bp-cat-5: var(--cat-5);
+  --color-bp-cat-6: var(--cat-6);
+  --color-bp-cat-7: var(--cat-7);
+  --color-bp-cat-8: var(--cat-8);
+}
+
+:root {
+  /* ============================================================
+     BLUEPRINT v1 — PRIVATE SCALE (do not reference from components)
+     The full color scale lives here. Components must reference the
+     SEMANTIC layer below, not these raw values.
+     ============================================================ */
+
+  /* Surfaces — warm off-whites evoking drafting paper */
+  --ts-page:       #F2F1EC;
+  --ts-surface:    #FAFAF7;
+  --ts-surface-2:  #F5F4EF;
+  --ts-surface-3:  #ECEBE4;
+  --ts-surface-4:  #E3E1D8;
+  --ts-surface-inv:#0A0906;
+
+  /* Ink — warm carbon ramp, no cool bias */
+  --ts-ink-0:   #0A0906;
+  --ts-ink-1:   #2B2921;
+  --ts-ink-2:   #5E5B50;
+  --ts-ink-3:   #86836F;
+  --ts-ink-4:   #ADAA95;
+  --ts-ink-5:   #C8C6BB;
+  --ts-ink-inv: #F2F1EC;
+
+  /* Lines — three weights for real hierarchy */
+  --ts-line:      #C8C6BB;
+  --ts-line-soft: #DAD8CF;
+  --ts-line-hard: #9E9B8E;
+  --ts-line-grid: rgba(14, 63, 133, 0.06);
+
+  /* State — muted, paper-compatible tones. Never bright. */
+  --ts-good:      #2E6B2E;
+  --ts-good-soft: #DEE6DB;
+  --ts-good-line: #8BA389;
+  --ts-bad:       #8B2828;
+  --ts-bad-soft:  #EEDCDC;
+  --ts-bad-line:  #B88787;
+  --ts-warn:      #8B5A00;
+  --ts-warn-soft: #F0E3CD;
+  --ts-warn-line: #BFA172;
+  --ts-info:      #0E3F85;
+  --ts-info-soft: #DEE6F2;
+  --ts-info-line: #6B8AC4;
+
+  /* Brand asset colors (token chips/swatches only) */
+  --ts-brand-crcl: #1FB368;
+  --ts-brand-usdc: #2B6DB8;
+
+  /* Categorical chart palette — 8 hues tuned for warm paper.
+     Use only for non-status data series. Never for good/bad. */
+  --cat-1: #0E3F85;
+  --cat-2: #2E6B2E;
+  --cat-3: #8B5A00;
+  --cat-4: #6c3fc4;
+  --cat-5: #5E5B50;
+  --cat-6: #8B2828;
+  --cat-7: #5f7d12;
+  --cat-8: #86836F;
+
+  /* ============================================================
+     SEMANTIC LAYER (LIGHT, canonical)
+     Components should consume only these.
+     ============================================================ */
+  --bg-canvas:    var(--ts-page);
+  --bg-surface:   var(--ts-surface);
+  --bg-surface-2: var(--ts-surface-2);
+  --bg-elevated:  var(--ts-surface);
+
+  --fg-primary:   var(--ts-ink-0);
+  --fg-secondary: var(--ts-ink-1);
+  --fg-muted:     var(--ts-ink-2);
+  --fg-faint:     var(--ts-ink-3);
+
+  --border-subtle:  var(--ts-line-soft);
+  --border-default: var(--ts-line);
+  --border-strong:  var(--ts-line-hard);
+
+  /* Brand accent — monochrome product. Accent is ink-0.
+     State colors handle meaning; no decorative brand blue. */
+  --bp-brand:      var(--ts-ink-0);
+  --bp-brand-soft: var(--ts-surface-3);
+
+  --status-ok:   var(--ts-good);
+  --status-warn: var(--ts-warn);
+  --status-bad:  var(--ts-bad);
+  --status-info: var(--ts-info);
+
+  /* ============================================================
+     LEGACY --bp-* tokens — REBOUND to the semantic layer above.
+     Existing classes (.bp-card, .bp-metric-value, .bp-chart-title,
+     .bp-sidebar-item, …) inherit the new design system through
+     these aliases without any component-file changes.
+     ============================================================ */
+  --bp-bg-primary: var(--bg-canvas);
+  --bp-bg-card: var(--bg-surface);
+  --bp-bg-card-alt: var(--bg-surface-2);
+  --bp-bg-elevated: var(--bg-elevated);
+
+  --bp-border-primary: var(--border-strong);
+  --bp-border-secondary: var(--border-strong);
+  --bp-border-subtle: var(--border-default);
+  --bp-border-accent: var(--bp-brand);
+
+  --bp-text-primary: var(--fg-primary);
+  --bp-text-secondary: var(--fg-secondary);
+  --bp-text-muted: var(--fg-muted);
+  --bp-text-accent: var(--bp-brand);
+
+  --bp-font-title: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --bp-font-text: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --bp-font-numeric: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --bp-font-display: 'Libre Franklin', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  --bp-accent-primary: var(--ts-ink-0);
+  --bp-accent-secondary: var(--ts-ink-1);
+  --bp-accent-glow: var(--ts-surface-3);
+
+  --bp-grid-major: var(--ts-line-grid);
+  --bp-grid-minor: rgba(14, 63, 133, 0.03);
+
+  --bp-corner-size: 6px;
+  --bp-corner-thickness: 1px;
+
+  /* Sidebar widths */
+  --ts-sidebar-open-width: 315px;
+  --ts-sidebar-closed-width: 105px;
+  --ts-sidebar-inset: 14px;
+
+  /* Radius — hard edges: 2px default, 4px ceiling */
+  --radius: 2px;
+
+  /* ============================================================
+     SHADCN compatibility layer — rebound to Blueprint semantic.
+     Existing components using bg-primary, text-card-foreground,
+     etc. now consume the Blueprint design system automatically.
+     ============================================================ */
+  --background: var(--bg-canvas);
+  --foreground: var(--fg-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--fg-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--fg-primary);
+  --primary: var(--ts-ink-0);
+  --primary-foreground: var(--ts-ink-inv);
+  --secondary: var(--bg-surface-2);
+  --secondary-foreground: var(--fg-primary);
+  --muted: var(--ts-surface-3);
+  --muted-foreground: var(--ts-ink-2);
+  --accent: var(--ts-surface-3);
+  --accent-foreground: var(--ts-ink-0);
+  --destructive: var(--ts-bad);
+  --border: var(--ts-line);
+  --input: var(--ts-line-hard);
+  --ring: var(--ts-ink-0);
+  --chart-1: #0E3F85;
+  --chart-2: #2E6B2E;
+  --chart-3: #8B5A00;
+  --chart-4: #6c3fc4;
+  --chart-5: #8B2828;
+  --sidebar: var(--ts-surface);
+  --sidebar-foreground: var(--ts-ink-0);
+  --sidebar-primary: var(--ts-ink-0);
+  --sidebar-primary-foreground: var(--ts-ink-inv);
+  --sidebar-accent: var(--ts-surface-2);
+  --sidebar-accent-foreground: var(--ts-ink-0);
+  --sidebar-border: var(--ts-line);
+  --sidebar-ring: var(--ts-ink-3);
+
+  /* Shadows — line-based, not depth-based */
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.5) inset,
+                 0 1px 2px rgba(10, 9, 6, 0.04);
+  --shadow-lifted: 0 1px 0 rgba(255,255,255,0.6) inset,
+                   0 1px 3px rgba(10, 9, 6, 0.06),
+                   0 8px 20px -10px rgba(10, 9, 6, 0.12);
+
+  /* Tabular numerals — non-negotiable for monitoring */
+  --tnum: "tnum" 1, "zero" 1;
+}
+
+.dark {
+  /* ============================================================
+     DARK SEMANTIC LAYER — warm carbon inverted
+     Same semantic names as light, warm dark surfaces.
+     ============================================================ */
+  --bg-canvas:    #0A0906;
+  --bg-surface:   #141210;
+  --bg-surface-2: #1C1A16;
+  --bg-elevated:  #23211C;
+
+  --fg-primary:   #F2F1EC;
+  --fg-secondary: #C8C6BB;
+  --fg-muted:     #86836F;
+  --fg-faint:     #5E5B50;
+
+  --border-subtle:  #1C1A16;
+  --border-default: #2B2921;
+  --border-strong:  #3D3A30;
+
+  --bp-brand:      #F2F1EC;
+  --bp-brand-soft: rgba(242, 241, 236, 0.08);
+
+  --status-ok:   #8BA389;
+  --status-warn: #BFA172;
+  --status-bad:  #B88787;
+  --status-info: #6B8AC4;
+
+  /* Categorical for dark — lighter so they read on near-black */
+  --cat-1: #6B8AC4;
+  --cat-2: #8BA389;
+  --cat-3: #BFA172;
+  --cat-4: #a78bfa;
+  --cat-5: #86836F;
+  --cat-6: #B88787;
+  --cat-7: #a3e635;
+  --cat-8: #ADAA95;
+
+  /* Legacy --bp-* aliases for dark */
+  --bp-bg-primary: var(--bg-canvas);
+  --bp-bg-card: var(--bg-surface);
+  --bp-bg-card-alt: var(--bg-surface-2);
+  --bp-bg-elevated: var(--bg-elevated);
+
+  --bp-border-primary: var(--border-strong);
+  --bp-border-secondary: var(--border-strong);
+  --bp-border-subtle: var(--border-default);
+  --bp-border-accent: var(--bp-brand);
+
+  --bp-text-primary: var(--fg-primary);
+  --bp-text-secondary: var(--fg-secondary);
+  --bp-text-muted: var(--fg-muted);
+  --bp-text-accent: var(--bp-brand);
+
+  --bp-accent-primary: var(--bp-brand);
+  --bp-accent-secondary: #C8C6BB;
+  --bp-accent-glow: var(--bp-brand-soft);
+
+  --bp-grid-major: rgba(200, 198, 187, 0.08);
+  --bp-grid-minor: rgba(200, 198, 187, 0.04);
+
+  /* Shadcn compatibility for dark */
+  --background: var(--bg-canvas);
+  --foreground: var(--fg-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--fg-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--fg-primary);
+  --primary: var(--bp-brand);
+  --primary-foreground: #0A0906;
+  --secondary: var(--bg-surface-2);
+  --secondary-foreground: var(--fg-primary);
+  --muted: var(--bg-surface-2);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--bg-surface-2);
+  --accent-foreground: var(--fg-primary);
+  --destructive: var(--status-bad);
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --ring: var(--bp-brand);
+  --chart-1: #6B8AC4;
+  --chart-2: #8BA389;
+  --chart-3: #BFA172;
+  --chart-4: #a78bfa;
+  --chart-5: #B88787;
+  --sidebar: #0A0906;
+  --sidebar-foreground: #F2F1EC;
+  --sidebar-primary: #F2F1EC;
+  --sidebar-primary-foreground: #0A0906;
+  --sidebar-accent: #1C1A16;
+  --sidebar-accent-foreground: #F2F1EC;
+  --sidebar-border: #2B2921;
+  --sidebar-ring: #5E5B50;
+
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset,
+                 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-lifted: 0 1px 0 rgba(255,255,255,0.04) inset,
+                   0 1px 3px rgba(0, 0, 0, 0.3),
+                   0 8px 20px -10px rgba(0, 0, 0, 0.5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    margin: 0;
+    min-height: 100vh;
+  }
+  
+  body {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bp-bg-primary);
+    color: var(--bp-text-primary);
+    transition: background-color 0.4s ease, color 0.3s ease;
+  }
+}
+
+/* ============================================
+   BLUEPRINT GRID BACKGROUND
+   ============================================ */
+.bp-grid-background {
+  position: relative;
+  background-color: var(--bp-bg-primary);
+  min-height: 100vh;
+}
+
+.bp-grid-background::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(var(--bp-grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-grid-major) 1px, transparent 1px),
+    linear-gradient(var(--bp-grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-grid-minor) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+  background-position: -1px -1px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.18; /* Reduced from 0.5 - subtle, not distracting */
+}
+
+/* ============================================
+   BLUEPRINT CARD - Core Design (Premium)
+   ============================================ */
+.bp-card {
+  position: relative;
+  background: var(--bp-bg-card);
+  border: 1px solid var(--bp-border-subtle);
+  border-radius: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  font-family: var(--bp-font-numeric);
+  box-shadow: none;
+}
+
+/* Subtle inner highlight for premium feel */
+.bp-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Inner dashed border - removed for cleaner look */
+.bp-card-inner {
+  display: none;
+}
+
+/* Hover — border emphasis only, not depth */
+.bp-card:hover {
+  border-color: var(--bp-border-secondary);
+  box-shadow: none;
+}
+
+/* Card header with technical label (Premium) */
+.bp-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--bp-border-subtle);
+}
+
+/* Chart zoom controls — segmented control style.
+   When inside a panel body, position into the head row. */
+.bp-chart-controls {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--ts-line-hard);
+  border-radius: 2px;
+  background: var(--ts-surface);
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+  z-index: 20;
+  gap: 0;
+}
+
+/* Controls embedded in chart components — position top-right of body.
+   ts-panel-body has position:relative so this works. */
+.bp-chart-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* When controls are direct children of panel-head (migrated), reset positioning */
+.ts-panel-head > .bp-chart-controls {
+  position: static;
+}
+
+.bp-chart-controls button {
+  height: auto;
+  min-width: auto;
+  padding: 4px 10px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-right: 1px solid var(--ts-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ts-ink-2);
+  font-size: 9.5px;
+  font-weight: 500;
+  font-family: var(--bp-font-numeric);
+  letter-spacing: 0.02em;
+  transition: all 0.1s;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.bp-chart-controls button:last-child {
+  border-right: none;
+}
+
+.bp-chart-controls button:hover:not(:disabled) {
+  color: var(--ts-ink-0);
+  background: var(--ts-surface-2);
+}
+
+.bp-chart-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.bp-chart-controls button.active,
+.bp-chart-controls button[data-active="true"] {
+  color: var(--ts-ink-0);
+  background: var(--ts-surface-3);
+  font-weight: 600;
+}
+
+.bp-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--bp-text-muted);
+  font-family: var(--bp-font-display);
+}
+
+.bp-card-badge {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  background: var(--bp-bg-card-alt);
+  color: var(--bp-accent-primary);
+  border: 1px solid var(--bp-border-subtle);
+}
+
+/* ============================================
+   METRIC CARD SPECIFIC STYLES (Premium)
+   ============================================ */
+.bp-metric-card {
+  min-height: 120px;
+  background: var(--bp-bg-card); /* Solid background */
+}
+
+.bp-metric-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--bp-text-muted);
+  margin-bottom: 10px;
+  font-family: var(--bp-font-text);
+}
+
+.bp-metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--bp-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-family: var(--bp-font-numeric);
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-metric-unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--bp-text-muted);
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--bp-font-text);
+}
+
+/* ============================================
+   PANEL SYSTEM — three-part card (head / body / foot)
+   ============================================ */
+.ts-panel {
+  background: var(--ts-surface);
+  border: 1px solid var(--ts-line);
+  border-radius: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+/* Registration brackets — only on bracketed panels */
+.ts-panel-bracketed::before,
+.ts-panel-bracketed::after {
+  content: '';
+  position: absolute;
+  width: 6px; height: 6px;
+  border: 1px solid var(--ts-line-hard);
+  pointer-events: none;
+  opacity: 0.55;
+  z-index: 2;
+}
+.ts-panel-bracketed::before {
+  top: 6px; left: 6px;
+  border-right: none; border-bottom: none;
+}
+.ts-panel-bracketed::after {
+  bottom: 6px; right: 6px;
+  border-left: none; border-top: none;
+}
+
+/* Panel head — title, channel index, controls */
+.ts-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ts-line);
+  position: relative;
+  z-index: 1;
+  gap: 12px;
+}
+
+.ts-panel-head-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ts-panel-title {
+  font-family: var(--bp-font-display);
+  font-size: 12px;
+  color: var(--ts-ink-1);
+  letter-spacing: 0;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.ts-panel-meta {
+  font-family: var(--bp-font-numeric);
+  font-size: 9.5px;
+  color: var(--ts-ink-3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Panel body — chart/table surface.
+   Fixed height so TradingView / ResizeObserver charts
+   don't stretch infinitely. */
+.ts-panel-body {
+  padding: 16px;
+  position: relative;
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ts-panel-body > * {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Panel foot — legend + key stat */
+.ts-panel-foot {
+  display: flex;
+  gap: 14px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--ts-line);
+  font-family: var(--bp-font-numeric);
+  font-size: 10px;
+  color: var(--ts-ink-2);
+  letter-spacing: 0.08em;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--ts-surface-2);
+}
+
+/* ============================================
+   LEGACY CHART CARD — redirect to panel system
+   ============================================ */
+.bp-chart-card {
+  min-height: 320px;
+  position: relative;
+}
+
+.bp-chart-title {
+  font-family: var(--bp-font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ts-ink-1);
+}
+
+.bp-chart-content {
+  flex: 1;
+  position: relative;
+  min-height: 240px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grain texture for colored bar elements in div-based charts */
+.chart-bar-grain {
+  position: relative;
+}
+
+.chart-bar-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.06) 2px,
+    rgba(0, 0, 0, 0.06) 2.5px
+  );
+  mix-blend-mode: multiply;
+  border-radius: inherit;
+}
+
+/* Ensure consistent monospace font in all chart elements */
+.bp-chart-content,
+.bp-chart-content * {
+  font-family: var(--bp-font-numeric);
+}
+
+.bp-chart-content .font-mono,
+.bp-chart-card .font-mono {
+  font-family: var(--bp-font-numeric);
+}
+
+/* Chart content children should fill available space */
+.bp-chart-content > * {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ============================================
+   CHART AXIS STYLING (Premium)
+   ============================================ */
+/* Consistent axis tick labels */
+.bp-chart-content text,
+.bp-chart-card text {
+  font-family: var(--bp-font-numeric);
+  font-size: 10px;
+  fill: var(--bp-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Axis lines - subtle but visible */
+.bp-chart-content line[class*="visx-axis"],
+.bp-chart-card line[class*="visx-axis"] {
+  stroke: var(--bp-border-subtle);
+}
+
+/* Grid lines - very subtle */
+.bp-chart-content line[class*="visx-grid"],
+.bp-chart-card line[class*="visx-grid"] {
+  stroke: var(--bp-border-subtle);
+  stroke-opacity: 0.5;
+}
+
+/* ============================================
+   POOL HEADER CARD (Premium)
+   ============================================ */
+.bp-pool-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: auto;
+  padding: 16px 20px;
+  background: var(--bp-bg-card); /* Solid background */
+}
+
+/* Blueprint art background for pool header */
+.bp-pool-blueprint {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.dark .bp-pool-blueprint {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* One continuous, soft blur behind title content */
+.bp-pool-soft-glow {
+  position: relative;
+  z-index: 0;
+}
+
+.bp-pool-soft-glow::before {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
+  border-radius: 20px;
+  background: radial-gradient(
+    120% 135% at 50% 50%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.64) 58%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  filter: blur(4px);
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bp-pool-soft-glow::after {
+  content: "";
+  position: absolute;
+  inset: -7px -10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.dark .bp-pool-soft-glow::before {
+  background: radial-gradient(
+    120% 135% at 50% 50%,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.12) 58%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  opacity: 1;
+}
+
+.dark .bp-pool-soft-glow::after {
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 1;
+}
+
+.bp-pool-name {
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--bp-text-primary);
+  letter-spacing: -0.01em;
+  font-family: var(--bp-font-numeric);
+}
+
+.bp-pool-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bp-pool-badge {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 11px;
+  border: 1px solid var(--bp-border-secondary);
+  background: var(--bp-bg-card-alt);
+  color: var(--bp-text-muted);
+  font-family: var(--bp-font-text);
+  transition: all 0.2s ease;
+}
+
+.bp-pool-badge:hover {
+  border-color: var(--bp-border-primary);
+  color: var(--bp-text-secondary);
+}
+
+.bp-pool-badge-primary {
+  background: var(--bp-accent-primary);
+  border-color: var(--bp-accent-primary);
+  color: white;
+}
+
+.bp-token-icon {
+  /* Default size - can be overridden by Tailwind w-* h-* classes */
+  width: 50px;
+  height: 50px;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--bp-border-subtle);
+  overflow: hidden;
+  background: var(--bp-bg-card-alt);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.bp-token-icon:hover {
+  border-color: var(--bp-border-secondary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Allow Tailwind size overrides */
+.bp-token-icon.w-3 { width: 0.75rem; }
+.bp-token-icon.h-3 { height: 0.75rem; }
+.bp-token-icon.w-4 { width: 1rem; }
+.bp-token-icon.h-4 { height: 1rem; }
+.bp-token-icon.w-5 { width: 1.25rem; }
+.bp-token-icon.h-5 { height: 1.25rem; }
+.bp-token-icon.w-6 { width: 1.5rem; }
+.bp-token-icon.h-6 { height: 1.5rem; }
+.bp-token-icon.w-7 { width: 1.75rem; }
+.bp-token-icon.h-7 { height: 1.75rem; }
+.bp-token-icon.w-8 { width: 2rem; }
+.bp-token-icon.h-8 { height: 2rem; }
+
+/* Smaller icons get thinner borders */
+.bp-token-icon.w-3,
+.bp-token-icon.w-4,
+.bp-token-icon.w-5,
+.bp-token-icon.w-6,
+.bp-token-icon.w-7 {
+  border-width: 1px;
+}
+
+.bp-token-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================
+   SIDEBAR SPECIFIC STYLES
+   ============================================ */
+.bp-sidebar {
+  background: var(--bp-bg-card);
+  border-right: 1px solid var(--bp-border-primary);
+}
+
+.bp-sidebar-item {
+  padding: 12px 16px;
+  border-left: 2px solid transparent;
+  transition: all 0.2s ease;
+  font-family: var(--bp-font-text);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+}
+
+.bp-sidebar-item:hover {
+  background: var(--bp-accent-glow);
+  border-left-color: var(--bp-accent-primary);
+  color: var(--bp-text-primary);
+}
+
+.bp-sidebar-item.active {
+  background: var(--bp-accent-glow);
+  border-left-color: var(--bp-accent-primary);
+  color: var(--bp-accent-primary);
+}
+
+/* ============================================
+   ACCORDION STYLES
+   ============================================ */
+.bp-accordion-trigger {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-text-secondary);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--bp-border-subtle);
+  font-family: var(--bp-font-text);
+  transition: all 0.2s ease;
+}
+
+.bp-accordion-trigger:hover {
+  background: var(--bp-accent-glow);
+  color: var(--bp-text-primary);
+}
+
+.bp-accordion-content {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  line-height: 1.6;
+  font-family: var(--bp-font-text);
+}
+
+/* ============================================
+   CURRENT LPS TABLE
+   ============================================ */
+.bp-table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--bp-border-primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-text-muted);
+  font-family: var(--bp-font-text);
+}
+
+.bp-table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--bp-border-subtle);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  font-family: var(--bp-font-text);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.bp-table-row:hover {
+  background: var(--bp-accent-glow);
+}
+
+.bp-table-row.selected {
+  background: var(--bp-accent-glow);
+  border-left: 2px solid var(--bp-accent-primary);
+}
+
+.bp-address {
+  font-family: var(--bp-font-numeric);
+  font-size: 12px;
+  color: var(--bp-text-secondary);
+}
+
+.bp-size {
+  font-family: var(--bp-font-numeric);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bp-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   LOADING STATES (Premium)
+   ============================================ */
+
+/* Base skeleton - subtle shimmer */
+.bp-skeleton {
+  background: var(--bp-bg-card-alt);
+  position: relative;
+  overflow: hidden;
+}
+
+.bp-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--bp-border-subtle) 50%,
+    transparent 100%
+  );
+  animation: bp-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes bp-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Skeleton with pulse - for smaller elements */
+.bp-skeleton-pulse {
+  background: var(--bp-bg-card-alt);
+  animation: bp-pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes bp-pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Chart skeleton - bar chart style */
+.bp-skeleton-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 16px 8px 8px;
+  height: 100%;
+}
+
+.bp-skeleton-bar {
+  flex: 1;
+  background: var(--bp-bg-card-alt);
+  border-radius: 2px 2px 0 0;
+  animation: bp-bar-load 1.5s ease-in-out infinite;
+}
+
+.bp-skeleton-bar:nth-child(1) { height: 45%; animation-delay: 0s; }
+.bp-skeleton-bar:nth-child(2) { height: 65%; animation-delay: 0.1s; }
+.bp-skeleton-bar:nth-child(3) { height: 35%; animation-delay: 0.2s; }
+.bp-skeleton-bar:nth-child(4) { height: 80%; animation-delay: 0.3s; }
+.bp-skeleton-bar:nth-child(5) { height: 55%; animation-delay: 0.4s; }
+.bp-skeleton-bar:nth-child(6) { height: 70%; animation-delay: 0.5s; }
+.bp-skeleton-bar:nth-child(7) { height: 40%; animation-delay: 0.6s; }
+.bp-skeleton-bar:nth-child(8) { height: 60%; animation-delay: 0.7s; }
+
+@keyframes bp-bar-load {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* Chart skeleton - line chart style */
+.bp-skeleton-line {
+  position: relative;
+  height: 100%;
+  padding: 16px;
+}
+
+.bp-skeleton-line::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 50%;
+  height: 2px;
+  background: var(--bp-bg-card-alt);
+  border-radius: 1px;
+}
+
+.bp-skeleton-line::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 30%;
+  bottom: 30%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--bp-bg-card-alt) 50%,
+    transparent 100%
+  );
+  opacity: 0.5;
+  animation: bp-pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Metric skeleton - number style */
+.bp-skeleton-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bp-skeleton-metric-label {
+  height: 12px;
+  width: 80px;
+  background: var(--bp-bg-card-alt);
+  border-radius: 4px;
+  animation: bp-pulse-subtle 2s ease-in-out infinite;
+}
+
+.bp-skeleton-metric-value {
+  height: 28px;
+  width: 120px;
+  background: var(--bp-bg-card-alt);
+  border-radius: 4px;
+  animation: bp-pulse-subtle 2s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.bp-skeleton-metric-unit {
+  height: 10px;
+  width: 60px;
+  background: var(--bp-bg-card-alt);
+  border-radius: 4px;
+  animation: bp-pulse-subtle 2s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+
+/* Spinner - refined */
+.bp-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--bp-border-subtle);
+  border-top-color: var(--bp-accent-primary);
+  border-radius: 50%;
+  animation: bp-spin 0.7s linear infinite;
+}
+
+.bp-spinner-sm {
+  width: 14px;
+  height: 14px;
+  border-width: 1.5px;
+}
+
+.bp-spinner-lg {
+  width: 28px;
+  height: 28px;
+  border-width: 2.5px;
+}
+
+@keyframes bp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Loading text indicator */
+.bp-loading-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--bp-text-muted);
+  font-size: 12px;
+  font-family: var(--bp-font-numeric);
+}
+
+/* Deprecated - keep for backwards compatibility */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Blueprint scan line animation */
+@keyframes bp-scanline {
+  0% { 
+    transform: translateY(-100%); 
+    opacity: 0; 
+  }
+  10% { 
+    opacity: 0.15; 
+  }
+  50% { 
+    opacity: 0.08; 
+  }
+  90% { 
+    opacity: 0.15; 
+  }
+  100% { 
+    transform: translateY(100%); 
+    opacity: 0; 
+  }
+}
+
+.bp-scanline {
+  position: relative;
+  overflow: hidden;
+}
+
+.bp-scanline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--bp-accent-primary),
+    transparent
+  );
+  animation: bp-scanline 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Blueprint pulse animation for highlights */
+@keyframes bp-pulse {
+  0%, 100% { 
+    opacity: 0.6;
+    box-shadow: 0 0 4px var(--bp-accent-primary);
+  }
+  50% { 
+    opacity: 1;
+    box-shadow: 0 0 12px var(--bp-accent-primary);
+  }
+}
+
+.bp-pulse {
+  animation: bp-pulse 2s ease-in-out infinite;
+}
+
+/* Blueprint glow animation */
+@keyframes bp-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 2px var(--bp-accent-primary));
+  }
+  50% { 
+    filter: drop-shadow(0 0 6px var(--bp-accent-primary));
+  }
+}
+
+.bp-glow {
+  animation: bp-glow 3s ease-in-out infinite;
+}
+
+/* Blueprint data point pop animation */
+@keyframes bp-data-pop {
+  0% { 
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% { 
+    transform: scale(1.5);
+    opacity: 0.8;
+  }
+  100% { 
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+.bp-data-pop {
+  animation: bp-data-pop 2s ease-in-out infinite;
+}
+
+/* ============================================
+   INSTRUMENT PANEL — POOL HEADER (transparent.space v2)
+   ============================================ */
+
+/* Pool title — pair name with styled separator */
+.ts-pool-title {
+  font-family: var(--bp-font-numeric);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.025em;
+  color: var(--ts-ink-0);
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+/* Coin frame — reticle brackets around the coin stack */
+.ts-coin-frame {
+  position: relative;
+  padding: 4px;
+}
+.ts-coin-frame::before, .ts-coin-frame::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  border: 1px solid var(--ts-ink-2);
+  pointer-events: none;
+}
+.ts-coin-frame::before {
+  top: 0; left: 0;
+  border-right: none; border-bottom: none;
+}
+.ts-coin-frame::after {
+  bottom: 0; right: 0;
+  border-left: none; border-top: none;
+}
+
+.ts-coin-stack {
+  position: relative;
+  width: 54px; height: 38px;
+  flex-shrink: 0;
+}
+
+.ts-coin {
+  position: absolute;
+  top: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px var(--ts-surface),
+    0 0 0 3px rgba(10, 9, 6, 0.1),
+    0 2px 4px rgba(10, 9, 6, 0.1);
+  overflow: hidden;
+}
+.ts-coin:first-child { left: 0; z-index: 2; }
+.ts-coin:nth-child(2) { left: 18px; z-index: 1; }
+
+/* Spec chips — venue + fee technical label */
+.ts-spec-chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--ts-line-hard);
+  border-radius: 2px;
+  background: var(--ts-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  align-self: center;
+}
+
+.ts-spec-chip {
+  font-family: var(--bp-font-numeric);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 4px 9px 5px;
+  color: var(--ts-ink-1);
+  text-transform: uppercase;
+  line-height: 1.2;
+  border-right: 1px solid var(--ts-line);
+}
+.ts-spec-chip:last-child { border-right: none; }
+.ts-spec-chip-accent {
+  color: var(--ts-ink-0);
+  background: var(--ts-surface-3);
+  font-weight: 600;
+}
+
+/* Readouts — instrument sub-meta */
+.ts-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--ts-ink-2);
+  font-family: var(--bp-font-numeric);
+  font-feature-settings: var(--tnum);
+  font-size: 11px;
+}
+.ts-readout-label {
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--ts-ink-3);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.ts-readout-value {
+  color: var(--ts-ink-0);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.01em;
+}
+.ts-readout-delta {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ts-good);
+  letter-spacing: 0;
+}
+.ts-readout-delta.down { color: var(--ts-bad); }
+
+.ts-sub-divider-vert {
+  width: 1px;
+  height: 20px;
+  background: var(--ts-line);
+  flex-shrink: 0;
+}
+
+/* Address inline link */
+.ts-addr-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--bp-font-numeric);
+  font-size: 10.5px;
+  color: var(--ts-ink-2);
+  cursor: pointer;
+  border-bottom: 1px dashed var(--ts-line-hard);
+  padding-bottom: 1px;
+  transition: color 0.12s;
+}
+.ts-addr-inline:hover {
+  color: var(--ts-info);
+  border-bottom-color: var(--ts-info-line);
+}
+.ts-net-label {
+  font-size: 9px;
+  color: var(--ts-ink-3);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.ts-addr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+.ts-addr-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  color: var(--ts-ink-3);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 0.12s, background 0.12s;
+}
+.ts-addr-copy:hover {
+  color: var(--ts-ink-0);
+  background: var(--ts-surface-3);
+}
+
+/* ============================================
+   INSTRUMENT PANEL — KPI ROW
+   ============================================ */
+.ts-kpi-row {
+  display: grid;
+  grid-template-columns: 2.1fr 1fr 1fr 1fr;
+  background: var(--ts-surface);
+  border-bottom: 1px solid var(--ts-line);
+  position: relative;
+  z-index: 1;
+}
+
+.ts-kpi {
+  padding: 22px 26px;
+  border-right: 1px solid var(--ts-line);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  background: var(--ts-surface);
+}
+.ts-kpi:last-child { border-right: none; }
+
+.ts-kpi-label {
+  font-family: var(--bp-font-numeric);
+  font-size: 10px;
+  color: var(--ts-ink-2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Defined term — dotted underline carries the tooltip */
+.ts-term {
+  border-bottom: 1px dotted var(--ts-ink-4);
+  cursor: help;
+  text-decoration: none;
+}
+
+.ts-kpi-value {
+  font-family: var(--bp-font-numeric);
+  font-feature-settings: var(--tnum);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--ts-ink-0);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+/* Dollar sign and magnitude suffix — smaller, lighter */
+.ts-kpi-dollar,
+.ts-kpi-mag {
+  font-size: 20px;
+  color: var(--ts-ink-3);
+  font-weight: 400;
+}
+.ts-kpi-dollar {
+  margin-right: 2px;
+}
+.ts-kpi-mag {
+  margin-left: 2px;
+}
+
+.ts-kpi-unit {
+  font-family: var(--bp-font-numeric);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--ts-ink-3);
+  text-transform: uppercase;
+}
+
+/* Empty value — demoted, with one helper sentence */
+.ts-kpi-value-empty {
+  color: var(--ts-ink-3);
+  font-weight: 400;
+}
+
+.ts-kpi-empty-note {
+  font-family: var(--bp-font-text);
+  font-size: 11px;
+  color: var(--ts-ink-3);
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+/* KPI breakdown sub-row */
+.ts-kpi-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid var(--ts-line);
+}
+
+.ts-kpi-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 18px;
+}
+.ts-kpi-sub:last-child {
+  padding-right: 0;
+  padding-left: 18px;
+  border-left: 1px solid var(--ts-line);
+}
+
+.ts-kpi-sub-label {
+  font-family: var(--bp-font-numeric);
+  font-size: 9px;
+  color: var(--ts-ink-3);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Breakdown item with icon to the left of label+value */
+.ts-kpi-sub-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 18px;
+}
+.ts-kpi-sub-with-icon:last-child {
+  padding-right: 0;
+  padding-left: 18px;
+  border-left: 1px solid var(--ts-line);
+}
+
+.ts-kpi-sub-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Token icon sized to match the label + value block.
+   Override ts-coin absolute positioning for standalone use. */
+.ts-kpi-token-icon {
+  position: static !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--ts-line) !important;
+  box-shadow: none !important;
+}
+
+.ts-kpi-sub-val {
+  font-family: var(--bp-font-numeric);
+  font-feature-settings: var(--tnum);
+  font-size: 14px;
+  color: var(--ts-ink-0);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+/* ============================================
+   INSTRUMENT PANEL — TABS
+   ============================================ */
+.ts-tabs {
+  display: flex;
+  padding: 0 24px;
+  background: var(--ts-surface);
+  border-bottom: 1px solid var(--ts-line);
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.ts-tab {
+  padding: 12px 16px 14px;
+  font-family: var(--bp-font-display);
+  font-size: 12.5px;
+  letter-spacing: 0;
+  color: var(--ts-ink-3);
+  cursor: pointer;
+  margin-bottom: -1px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: color 0.12s;
+  position: relative;
+  background: transparent;
+  border: none;
+}
+.ts-tab::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+}
+.ts-tab:hover { color: var(--ts-ink-1); }
+.ts-tab.active {
+  color: var(--ts-ink-0);
+  font-weight: 600;
+}
+.ts-tab.active::after {
+  background: var(--ts-ink-0);
+}
+
+/* Responsive KPI row */
+@media (max-width: 768px) {
+  .ts-kpi-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ts-kpi-row .ts-kpi:nth-child(2) { border-right: none; }
+}
+
+@media (max-width: 480px) {
+  .ts-kpi-row {
+    grid-template-columns: 1fr;
+  }
+  .ts-kpi { border-right: none; border-bottom: 1px solid var(--ts-line); }
+  .ts-kpi:last-child { border-bottom: none; }
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bp-bg-card-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bp-border-secondary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bp-border-primary);
+}
+
+/* Thin scrollbar for sidebar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.4);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.6);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 768px) {
+  .bp-card {
+    padding: 16px;
+  }
+  
+  .bp-metric-value {
+    font-size: 24px;
+  }
+  
+  .bp-chart-card {
+    min-height: 280px;
+  }
+  
+  .bp-chart-content {
+    min-height: 200px;
+  }
+}
+
+/* ============================================
+   LEGACY SUPPORT - Map old classes to new styles
+   ============================================ */
+.dashboard-tile {
+  position: relative;
+  background: var(--bp-bg-card);
+  border: 1px solid var(--bp-border-subtle);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  font-family: var(--bp-font-text);
+}
+
+.dashboard-tile::before,
+.dashboard-tile::after {
+  content: '';
+  position: absolute;
+  width: var(--bp-corner-size);
+  height: var(--bp-corner-size);
+  border-color: var(--bp-border-secondary);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.15;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.dashboard-tile::before {
+  top: 5px;
+  left: 5px;
+  border-top-width: var(--bp-corner-thickness);
+  border-left-width: var(--bp-corner-thickness);
+}
+
+.dashboard-tile::after {
+  bottom: 5px;
+  right: 5px;
+  border-bottom-width: var(--bp-corner-thickness);
+  border-right-width: var(--bp-corner-thickness);
+}
+
+.dashboard-tile:hover {
+  border-color: var(--bp-border-secondary);
+  box-shadow: none;
+}
+
+/* ============================================
+   FLUSH GRID — 1px border lines drawn by the
+   grid background colour showing through a 1px gap.
+   Cards inside lose their own borders.
+   ============================================ */
+.ts-flush-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--ts-line);
+  border: 1px solid var(--ts-line);
+}
+
+.ts-flush-grid > * {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Panels inside flush grids — remove brackets since grid draws the borders */
+.ts-flush-grid > .ts-panel-bracketed::before,
+.ts-flush-grid > .ts-panel-bracketed::after {
+  display: block;
+}
+
+/* Stacked rows — no flex growth, just natural height */
+.ts-flush-stack {
+  display: block;
+}
+
+/* Standalone cards inside a stack: full-width, flush borders */
+.ts-flush-stack > .bp-card,
+.ts-flush-stack > .bp-chart-card {
+  border: 1px solid var(--ts-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Collapse double border between any adjacent children */
+.ts-flush-stack > * + * {
+  margin-top: -1px;
+}
+
+.dashboard-tile:hover::before,
+.dashboard-tile:hover::after {
+  opacity: 0.4;
+}
+
+/* ============================================
+   CHART SPECIFIC FIXES
+   ============================================ */
+/* Lightweight charts container */
+.tv-lightweight-charts {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* LP Concentration chart fixes */
+.bp-chart-content .h-full {
+  height: 100%;
+}
+
+.bp-chart-content .flex-1 {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Ensure chart containers have proper dimensions */
+.bp-chart-card .bp-chart-content {
+  overflow: visible; /* Allow controls to extend into header area */
+}
+
+/* Capital Efficiency chart - ensure it fills its container */
+#capital-efficiency {
+  height: 100%;
+}
+
+#capital-efficiency .bp-chart-content {
+  min-height: 0;
+  height: 100%;
+}
+
+#capital-efficiency .bp-chart-content > div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#capital-efficiency .bp-depth-heatmap {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Current LPs table styling */
+.dashboard-tile .bp-table-header,
+.bp-card .bp-table-header {
+  margin: -20px -20px 0 -20px;
+  padding: 12px 20px;
+  background: var(--bp-bg-card-alt);
+}
+
+.dashboard-tile .bp-table-row:last-child,
+.bp-card .bp-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Fix for recharts and visx containers */
+.recharts-responsive-container,
+.visx-group {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ============================================
+   REACT-GRID-LAYOUT STYLES
+   ============================================ */
+/* Grid layout container */
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+}
+
+/* Grid items */
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top, width, height;
+  z-index: 1;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: transform, width, height;
+}
+
+.react-grid-item.resizing {
+  z-index: 10;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 100;
+  will-change: transform;
+}
+
+.react-grid-item.dropping {
+  visibility: hidden;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: var(--bp-accent-primary);
+  opacity: 0.15;
+  transition-duration: 100ms;
+  z-index: 2;
+  border-radius: 2px;
+  border: 2px dashed var(--bp-accent-primary);
+}
+
+/* Resize handle styling */
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-image: none;
+  cursor: se-resize;
+  z-index: 20;
+}
+
+.react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--bp-border-subtle);
+  border-bottom: 2px solid var(--bp-border-subtle);
+  opacity: 0.5;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.react-grid-item:hover .react-resizable-handle::after {
+  opacity: 1;
+  border-color: var(--bp-accent-primary);
+}
+
+.react-resizable-handle-sw {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+  transform: rotate(90deg);
+}
+
+.react-resizable-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+.react-resizable-handle-nw {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+  transform: rotate(180deg);
+}
+
+.react-resizable-handle-ne {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+  transform: rotate(270deg);
+}
+
+.react-resizable-handle-w,
+.react-resizable-handle-e {
+  top: 50%;
+  margin-top: -10px;
+  cursor: ew-resize;
+}
+
+.react-resizable-handle-w {
+  left: 0;
+  transform: rotate(135deg);
+}
+
+.react-resizable-handle-e {
+  right: 0;
+  transform: rotate(315deg);
+}
+
+.react-resizable-handle-n,
+.react-resizable-handle-s {
+  left: 50%;
+  margin-left: -10px;
+  cursor: ns-resize;
+}
+
+.react-resizable-handle-n {
+  top: 0;
+  transform: rotate(225deg);
+}
+
+.react-resizable-handle-s {
+  bottom: 0;
+  transform: rotate(45deg);
+}
+
+/* Grid item card styling when draggable */
+.react-grid-item > .bp-card,
+.react-grid-item > .bp-chart-card,
+.react-grid-item > .grid-card-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Drag handle cursor */
+.grid-drag-handle {
+  cursor: move;
+  cursor: grab;
+}
+
+.grid-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Layout locked state */
+.layout-locked .react-grid-item {
+  cursor: default;
+}
+
+.layout-locked .react-resizable-handle {
+  display: none;
+}
+
+.layout-locked .grid-drag-handle {
+  cursor: default;
+}
+
+/* Layout controls in sidebar */
+.layout-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  margin: 0 12px 8px;
+  border-radius: 2px;
+  background: var(--bp-bg-card-alt);
+  border: 1px solid var(--bp-border-subtle);
+}
+
+.layout-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  font-size: 11px;
+  font-family: var(--bp-font-numeric);
+  color: var(--bp-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.layout-control-btn:hover {
+  background: var(--bp-bg-card);
+  color: var(--bp-text-primary);
+}
+
+.layout-control-btn.active {
+  background: var(--bp-accent-primary);
+  color: white;
+}
+
+.layout-control-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Grid card wrapper for consistent sizing */
+.grid-card-wrapper {
+  width: 100%;
+}
+
+.grid-card-wrapper > * {
+  overflow: hidden;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .react-grid-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .react-grid-item {
+    position: relative !important;
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 200px;
+  }
+  
+  .react-resizable-handle {
+    display: none;
+  }
+  
+  .layout-controls {
+    display: none;
+  }
+}
+
+/* ============================================
+   BIRDS-EYE FLIP CARDS
+   ============================================ */
+.birds-eye-flip-card-container {
+  perspective: 1000px;
+  height: 300px;
+}
+
+.birds-eye-flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.birds-eye-flip-card-container:hover .birds-eye-flip-card {
+  transform: rotateY(180deg);
+}
+
+.birds-eye-flip-card-front,
+.birds-eye-flip-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Disable bp-card corner markers inside flip cards — pseudo-elements break preserve-3d */
+.birds-eye-flip-card-front.bp-card::before,
+.birds-eye-flip-card-front.bp-card::after,
+.birds-eye-flip-card-back.bp-card::before,
+.birds-eye-flip-card-back.bp-card::after {
+  display: none;
+}
+
+.birds-eye-flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Status dot */
+.birds-eye-status-dot {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.birds-eye-status-dot--healthy {
+  background-color: var(--status-ok);
+  box-shadow: 0 0 0 2.5px rgba(46, 107, 46, 0.14);
+}
+
+.birds-eye-status-dot--watch {
+  background-color: var(--status-warn);
+  box-shadow: 0 0 0 2.5px rgba(139, 90, 0, 0.14);
+}
+
+.birds-eye-status-dot--critical {
+  background-color: var(--status-bad);
+  box-shadow: 0 0 0 2.5px rgba(139, 40, 40, 0.14);
+  animation: birds-eye-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes birds-eye-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Card status borders */
+.birds-eye-card--critical .birds-eye-flip-card-front {
+  border-color: var(--ts-bad-line) !important;
+  background: var(--ts-bad-soft) !important;
+}
+:is(.dark) .birds-eye-card--critical .birds-eye-flip-card-front {
+  background: rgba(139, 40, 40, 0.12) !important;
+  border-color: rgba(139, 40, 40, 0.3) !important;
+}
+
+.birds-eye-card--watch .birds-eye-flip-card-front {
+  border-color: var(--ts-warn-line) !important;
+  background: var(--ts-warn-soft) !important;
+}
+:is(.dark) .birds-eye-card--watch .birds-eye-flip-card-front {
+  background: rgba(139, 90, 0, 0.1) !important;
+  border-color: rgba(139, 90, 0, 0.25) !important;
+}
+
+/* Metric progress bars */
+.birds-eye-metric-bar {
+  height: 3px;
+  border-radius: 1.5px;
+  background: var(--bp-bg-card-alt, #f3f4f6);
+  overflow: hidden;
+}
+
+:is(.dark) .birds-eye-metric-bar {
+  background: rgba(43, 41, 33, 0.6);
+}
+
+.birds-eye-metric-bar-fill {
+  height: 100%;
+  border-radius: 1.5px;
+  transition: width 0.5s ease;
+}
+
+/* ============================================
+   DEMO SHOWCASE — classic Blueprint light theme
+   Scoped to /demo via data-demo-showcase on <html>.
+   ============================================ */
+html[data-demo-showcase],
+html[data-demo-showcase].dark {
+  --ts-page: #f6f8fc;
+  --ts-surface: #ffffff;
+  --ts-surface-2: #eef2f9;
+  --ts-surface-3: #e6ecf5;
+  --ts-surface-4: #dbe2ee;
+  --ts-surface-inv: #0a1224;
+
+  --ts-ink-0: #0a1224;
+  --ts-ink-1: #2f3a51;
+  --ts-ink-2: #64708a;
+  --ts-ink-3: #94a0b8;
+  --ts-ink-4: #c2cbdc;
+  --ts-ink-5: #dbe2ee;
+  --ts-ink-inv: #ffffff;
+
+  --ts-line: #d4e0f5;
+  --ts-line-soft: #e8effd;
+  --ts-line-hard: #b8c9eb;
+  --ts-line-grid: rgba(31, 71, 220, 0.1);
+
+  --ts-good: #058044;
+  --ts-good-soft: #e8f8f0;
+  --ts-good-line: #15a36a;
+  --ts-bad: #b91c1c;
+  --ts-bad-soft: #fdecec;
+  --ts-bad-line: #d83a3a;
+  --ts-warn: #b06808;
+  --ts-warn-soft: #fdf3e0;
+  --ts-warn-line: #d68712;
+  --ts-info: #0e7490;
+  --ts-info-soft: #e0f5fa;
+  --ts-info-line: #0891b2;
+
+  --cat-1: #1f47dc;
+  --cat-2: #0d8a78;
+  --cat-3: #b4600c;
+  --cat-4: #6c3fc4;
+  --cat-5: #0e7490;
+  --cat-6: #b8156a;
+  --cat-7: #5f7d12;
+  --cat-8: #495569;
+
+  --bg-canvas: var(--ts-page);
+  --bg-surface: var(--ts-surface);
+  --bg-surface-2: var(--ts-surface-2);
+  --bg-elevated: var(--ts-surface);
+
+  --fg-primary: var(--ts-ink-0);
+  --fg-secondary: var(--ts-ink-1);
+  --fg-muted: var(--ts-ink-2);
+  --fg-faint: var(--ts-ink-3);
+
+  --border-subtle: var(--ts-line-soft);
+  --border-default: var(--ts-line);
+  --border-strong: var(--ts-line-hard);
+
+  --bp-brand: #1f47dc;
+  --bp-brand-soft: #eff5ff;
+
+  --status-ok: var(--ts-good);
+  --status-warn: var(--ts-warn);
+  --status-bad: var(--ts-bad);
+  --status-info: var(--ts-info);
+
+  --bp-bg-primary: var(--bg-canvas);
+  --bp-bg-card: var(--bg-surface);
+  --bp-bg-card-alt: var(--bg-surface-2);
+  --bp-bg-elevated: var(--bg-elevated);
+
+  --bp-border-primary: #1e3a5f;
+  --bp-border-secondary: var(--border-default);
+  --bp-border-subtle: var(--border-subtle);
+  --bp-border-accent: var(--bp-brand);
+
+  --bp-text-primary: var(--fg-primary);
+  --bp-text-secondary: var(--fg-secondary);
+  --bp-text-muted: var(--fg-muted);
+  --bp-text-accent: var(--bp-brand);
+
+  --bp-accent-primary: #1f47dc;
+  --bp-accent-secondary: #5482f9;
+  --bp-accent-glow: rgba(31, 71, 220, 0.12);
+
+  --bp-grid-major: rgba(30, 58, 95, 0.08);
+  --bp-grid-minor: rgba(30, 58, 95, 0.04);
+
+  --bp-corner-size: 8px;
+  --bp-corner-thickness: 2px;
+
+  --background: var(--bg-canvas);
+  --foreground: var(--fg-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--fg-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--fg-primary);
+  --primary: var(--bp-brand);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-surface-2);
+  --secondary-foreground: var(--fg-primary);
+  --muted: var(--ts-surface-3);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--bp-brand-soft);
+  --accent-foreground: var(--bp-brand);
+  --destructive: var(--status-bad);
+  --border: var(--border-default);
+  --input: var(--border-strong);
+  --ring: var(--bp-brand);
+  --chart-1: var(--cat-1);
+  --chart-2: var(--cat-2);
+  --chart-3: var(--cat-3);
+  --chart-4: var(--cat-4);
+  --chart-5: var(--cat-6);
+  --sidebar: #ffffff;
+  --sidebar-foreground: var(--fg-primary);
+  --sidebar-primary: var(--bp-brand);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--bg-surface-2);
+  --sidebar-accent-foreground: var(--fg-primary);
+  --sidebar-border: var(--border-default);
+  --sidebar-ring: var(--fg-muted);
+}
+
+html[data-demo-showcase] .bp-grid-background::before {
+  opacity: 0.38;
+}
+
+html[data-demo-showcase] .dashboard-canvas {
+  border-left-color: var(--ts-line-soft);
+}
+
+html[data-demo-showcase] .ts-panel {
+  border-color: var(--ts-line);
+  background: #ffffff;
+}
+
+html[data-demo-showcase] .ts-panel-bracketed::before,
+html[data-demo-showcase] .ts-panel-bracketed::after {
+  border-color: var(--bp-accent-primary);
+  opacity: 0.85;
+  width: 8px;
+  height: 8px;
+}
+
+html[data-demo-showcase] .ts-kpi-row,
+html[data-demo-showcase] .ts-kpi,
+html[data-demo-showcase] .ts-tabs {
+  background: #ffffff;
+}
+
+html[data-demo-showcase] .ts-kpi-label {
+  color: var(--bp-accent-secondary);
+}
+
+html[data-demo-showcase] .ts-kpi-value {
+  color: var(--ts-ink-0);
+}
+
+html[data-demo-showcase] .ts-tab:hover {
+  color: var(--bp-accent-primary);
+}
+
+html[data-demo-showcase] .ts-tab.active {
+  color: var(--bp-accent-primary);
+}
+html[data-demo-showcase] .ts-tab.active::after {
+  background: var(--bp-accent-primary);
+}
+
+html[data-demo-showcase] .bp-chart-controls {
+  border-color: var(--ts-line-hard);
+  background: #ffffff;
+}
+
+html[data-demo-showcase] .bp-chart-controls button.active,
+html[data-demo-showcase] .bp-chart-controls button[data-active="true"] {
+  color: var(--bp-accent-primary);
+  background: var(--bp-brand-soft);
+}
+
+html[data-demo-showcase] aside.demo-showcase-sidebar {
+  background: #ffffff;
+  border-color: var(--ts-line-soft);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 1px 2px rgba(31, 71, 220, 0.05);
+}
+
+html[data-demo-showcase] aside.demo-showcase-sidebar header {
+  border-bottom-color: var(--ts-line-soft);
+  background: #ffffff;
+}
+
+html[data-demo-showcase] aside.demo-showcase-sidebar input {
+  background: #ffffff;
+}
+
+html[data-demo-showcase] aside.demo-showcase-sidebar .border-b,
+html[data-demo-showcase] aside.demo-showcase-sidebar .border-t,
+html[data-demo-showcase] aside.demo-showcase-sidebar .border-y {
+  border-color: var(--ts-line-soft);
+}
+
+html[data-demo-showcase] #dashboard-top {
+  background: #ffffff;
+  border-bottom: 1px solid var(--ts-line-soft);
+}
+

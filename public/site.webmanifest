@@ -1,0 +1,12 @@
+{
+  "name": "Transparent Space",
+  "short_name": "Transparent Space",
+  "description": "Real-time Uniswap V3 liquidity, price, and LP activity analytics dashboard.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "categories": ["finance", "business", "utilities"],
+  "lang": "en",
+  "scope": "/"
+}

@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "poolKey": "480-v4-0xe7bba98b4e9c077d0af3b91b4ecfcdc68e3214917ed4e361ed28eb60e87ea6fa",
+    "baseUrl": "https://app.transparent.space",
+    "windowDays": 7,
+    "now": 1775592000,
+    "kind": "worldchain"
+  },
+  "frontend": {
+    "pool": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "protocol": "v4",
+        "analyticsModel": "evm-v4",
+        "capabilities": {
+          "hasCandleHistory": true,
+          "hasSwapHistory": true,
+          "hasWalletFeeSummary": true,
+          "hasOwnerPositionSummary": true,
+          "hasRangeLiquidityShape": true,
+          "hasHistoricalDepthBands": true,
+          "hasCurrentImpactCurve": true,
+          "hasHistoricalSlippage": true,
+          "hasOwnerCompositionHistory": true
+        },
+        "token0Address": "0x23c6b98d9cb631b7d3f07f1f01c6c0af2c93461b",
+        "token1Address": "0x79a02482a880bce3f13e09da970dc34db4cd24d1",
+        "token0Symbol": "wARS",
+        "token1Symbol": "USDC",
+        "token0Decimals": 18,
+        "token1Decimals": 6,
+        "currentPrice": 1.2649063635,
+        "tick": 2348,
+        "liquidity": "432547773596260093",
+        "token0Balance": 164092.49587952995,
+        "token1Balance": 207562.132801,
+        "sqrtPriceX96": "89152326462486342740230145031",
+        "lastTradeAt": 1775592000
+      }
+    },
+    "poolData": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "positionCount": 5,
+        "lpEventCount": 0,
+        "poolHourCount": 169,
+        "tickLiquidityCount": 199,
+        "lpActivitySeriesCount": 0,
+        "ownerCount": 4,
+        "ownerAggregateCount": 4,
+        "ownerAggregatesMissingPositions": 1,
+        "selectedOwner": {
+          "owner": "0x1fe361ecc5f11ceb5f6b8bfd1c32f4baf2f84f84",
+          "positionCount": 2,
+          "liquidity": "370191012111710878"
+        },
+        "positionCoverageRatio": 0.5519,
+        "positionValueCoverageRatio": 0.5519,
+        "positionRawLiquidityCoverageRatio": 0.5539,
+        "authoritativeEmptyWindow": true,
+        "currentStateStatus": "renderable",
+        "decisions": {
+          "distributionSource": "ticks",
+          "ownerSummarySource": "ownerAggregates",
+          "eventTimeSeriesSource": "zero-fill",
+          "selectedOwnerSource": "positions"
+        },
+        "freshness": {
+          "positionUpdatedWithinWindow": false,
+          "ownerAggregateUpdatedWithinWindow": false,
+          "lpEventsPresentInWindow": false,
+          "positionLagSeconds": 9769305,
+          "ownerAggregateLagSeconds": 9769305,
+          "lpEventLagSeconds": null
+        },
+        "latest": {
+          "positionUpdatedAt": 1765822695,
+          "ownerAggregateUpdatedAt": 1765822695,
+          "lpEventTimestamp": null,
+          "poolHourTimestamp": 1775592000,
+          "tickUpdatedAt": 1775533320,
+          "latestTradingSignal": 1775592000
+        }
+      }
+    },
+    "candlesPrimary": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 3600,
+        "count": 169,
+        "firstTimestamp": 1774987200,
+        "latestTimestamp": 1775590800
+      }
+    },
+    "candlesDaily": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 86400,
+        "count": 365,
+        "firstTimestamp": 1744041600,
+        "latestTimestamp": 1775510400
+      }
+    },
+    "tokenPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "token0Usd": 1.26490636,
+        "token1Usd": 1,
+        "hasCompleteUsdContext": true
+      }
+    },
+    "historicalPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "count": 720,
+        "firstTimestamp": 1744041600,
+        "latestTimestamp": 1775510400
+      }
+    },
+    "tradingVolumeBySize": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "dayCount": 7,
+        "firstDateKey": "2026-03-31",
+        "latestDateKey": "2026-04-06"
+      }
+    },
+    "lpSwaps": {
+      "ok": false,
+      "skipped": true,
+      "status": null,
+      "reason": "Swap history is only required for the v3 overlay."
+    }
+  },
+  "upstream": {
+    "kind": "worldchain",
+    "probes": {
+      "pool": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 1,
+          "latestTimestamp": 1775592000
+        }
+      },
+      "tickLiquidity": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 1,
+          "latestTimestamp": 1775533320
+        }
+      },
+      "poolHourData": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 1,
+          "latestTimestamp": 1775592000
+        }
+      },
+      "ownerAggregate": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 1,
+          "latestTimestamp": 1765822695
+        }
+      },
+      "poolDailyVolumeBySize": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 1,
+          "latestTimestamp": 1775510400
+        }
+      }
+    }
+  }
+}

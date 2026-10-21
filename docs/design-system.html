@@ -1,0 +1,2458 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blueprint — Transparent Space Design System v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ================================================================
+   BLUEPRINT v1 — TRANSPARENT SPACE DESIGN SYSTEM
+   Primary mode: LIGHT.   Secondary mode: dark (after-hours).
+   Light is the canonical reference. Dark is a respectful re-binding.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   1. PRIVATE SCALE — never referenced from components.
+   ---------------------------------------------------------------- */
+:root {
+  /* Brand: blueprint blue — slightly deeper than Tailwind blue
+     so it carries authority on near-white backgrounds. */
+  --bp-blue-50:  #eff5ff;
+  --bp-blue-100: #dbe8ff;
+  --bp-blue-200: #b6cffe;
+  --bp-blue-300: #84acfd;
+  --bp-blue-400: #5482f9;
+  --bp-blue-500: #2f5ef0;
+  --bp-blue-600: #1f47dc;     /* hero accent on light */
+  --bp-blue-700: #1c3bb4;
+  --bp-blue-800: #1c348e;
+  --bp-blue-900: #1c2f72;
+  --bp-blue-950: #14204a;
+
+  /* Ink: cool slate, biased very slightly toward blue
+     so headings and grids feel related, not random. */
+  --bp-ink-0:   #ffffff;
+  --bp-ink-50:  #f6f8fc;     /* canvas */
+  --bp-ink-100: #eef2f9;
+  --bp-ink-150: #e6ecf5;
+  --bp-ink-200: #dbe2ee;
+  --bp-ink-300: #c2cbdc;
+  --bp-ink-400: #94a0b8;
+  --bp-ink-500: #64708a;
+  --bp-ink-600: #46526b;
+  --bp-ink-700: #2f3a51;
+  --bp-ink-800: #1b2438;
+  --bp-ink-900: #0a1224;     /* primary text */
+  --bp-ink-950: #060a18;
+
+  /* Status — deeper, AA-safe versions for use on white surfaces */
+  --bp-success-500: #15a36a;
+  --bp-success-600: #058044;
+  --bp-success-700: #04673a;
+  --bp-success-50:  #e8f8f0;
+  --bp-warning-500: #d68712;
+  --bp-warning-600: #b06808;
+  --bp-warning-700: #8d5306;
+  --bp-warning-50:  #fdf3e0;
+  --bp-danger-500:  #d83a3a;
+  --bp-danger-600:  #b91c1c;
+  --bp-danger-700:  #951414;
+  --bp-danger-50:   #fdecec;
+  --bp-info-500:    #0891b2;
+  --bp-info-600:    #0e7490;
+  --bp-info-50:     #e0f5fa;
+
+  /* --- Categorical chart palette (LIGHT primary) ---
+     Each color is hand-tuned to read clearly on a #ffffff card.
+     Use for non-status data series only. Use status colors for status. */
+  --cat-1: #1f47dc;   /* blueprint blue */
+  --cat-2: #0d8a78;   /* deep teal */
+  --cat-3: #b4600c;   /* burnt amber */
+  --cat-4: #6c3fc4;   /* violet */
+  --cat-5: #0e7490;   /* cyan */
+  --cat-6: #b8156a;   /* magenta-rose */
+  --cat-7: #5f7d12;   /* olive */
+  --cat-8: #495569;   /* neutral slate */
+
+  /* --- Type families --- */
+  --bp-font-display: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --bp-font-text:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --bp-font-num:     "IBM Plex Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* --- Type scale, ratio ~1.2, base 14 --- */
+  --bp-text-2xs: 10px;
+  --bp-text-xs:  11px;
+  --bp-text-sm:  12px;
+  --bp-text-base:14px;
+  --bp-text-md:  15px;
+  --bp-text-lg:  17px;
+  --bp-text-xl:  20px;
+  --bp-text-2xl: 24px;
+  --bp-text-3xl: 30px;
+  --bp-text-4xl: 38px;
+  --bp-text-display: 56px;
+
+  --bp-leading-tight:  1.2;
+  --bp-leading-snug:   1.35;
+  --bp-leading-normal: 1.5;
+  --bp-leading-relaxed:1.65;
+
+  --bp-tracking-tight:  -0.01em;
+  --bp-tracking-normal: 0;
+  --bp-tracking-wide:   0.04em;
+  --bp-tracking-wider:  0.08em;
+  --bp-tracking-widest: 0.14em;
+
+  /* --- Spacing scale, 4px base --- */
+  --bp-space-1: 2px;   --bp-space-2: 4px;   --bp-space-3: 6px;
+  --bp-space-4: 8px;   --bp-space-5: 12px;  --bp-space-6: 16px;
+  --bp-space-7: 20px;  --bp-space-8: 24px;  --bp-space-9: 32px;
+  --bp-space-10: 40px; --bp-space-11: 48px; --bp-space-12: 64px;
+  --bp-space-13: 80px; --bp-space-14: 96px;
+
+  /* --- Radii --- */
+  --bp-radius-xs:   2px;
+  --bp-radius-sm:   4px;
+  --bp-radius-md:   6px;
+  --bp-radius-lg:   8px;
+  --bp-radius-xl:   12px;
+  --bp-radius-2xl:  16px;
+  --bp-radius-full: 9999px;
+
+  /* --- Motion --- */
+  --bp-dur-instant: 80ms;
+  --bp-dur-fast:    150ms;
+  --bp-dur-base:    220ms;
+  --bp-dur-slow:    320ms;
+  --bp-dur-slower:  480ms;
+  --bp-ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+  --bp-ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --bp-ease-in:       cubic-bezier(0.7, 0, 0.84, 0);
+  --bp-ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- Layout / corners --- */
+  --bp-canvas-max: 1680px;
+  --bp-corner-size: 8px;
+  --bp-corner-thickness: 1.5px;
+}
+
+/* ----------------------------------------------------------------
+   2. SEMANTIC LAYER — LIGHT MODE (the canonical theme)
+   Components reference ONLY these tokens.
+   ---------------------------------------------------------------- */
+:root[data-theme="light"] {
+  /* Surfaces — a quiet 3-tier hierarchy */
+  --bg-canvas:    var(--bp-ink-50);     /* page bg, slightly cool */
+  --bg-surface:   #ffffff;              /* card bg, true white */
+  --bg-surface-2: var(--bp-ink-100);    /* nested / sunken (input, code) */
+  --bg-elevated:  #ffffff;              /* popovers, modals */
+  --bg-overlay:   rgba(10, 18, 36, 0.55);
+  --bg-glow:      rgba(31, 71, 220, 0.06);
+  --bg-accent-tint: var(--bp-blue-50);
+
+  /* Foreground — every value AA on its expected surface */
+  --fg-primary:   var(--bp-ink-900);
+  --fg-secondary: var(--bp-ink-700);
+  --fg-muted:     var(--bp-ink-500);
+  --fg-faint:     var(--bp-ink-400);
+  --fg-onaccent:  #ffffff;
+  --fg-link:      var(--bp-blue-700);
+
+  /* Borders — three weights, all subtle. Strong is for hover/focus only. */
+  --border-subtle:  var(--bp-ink-150);
+  --border-default: var(--bp-ink-200);
+  --border-strong:  var(--bp-ink-300);
+  --border-accent:  var(--bp-blue-500);
+  --border-focus:   var(--bp-blue-600);
+
+  /* Accent */
+  --accent:        var(--bp-blue-600);
+  --accent-hover:  var(--bp-blue-700);
+  --accent-press:  var(--bp-blue-800);
+  --accent-soft:   var(--bp-blue-50);
+  --accent-onsoft: var(--bp-blue-800);
+
+  /* Status */
+  --status-ok:      var(--bp-success-600);
+  --status-ok-bg:   var(--bp-success-50);
+  --status-warn:    var(--bp-warning-600);
+  --status-warn-bg: var(--bp-warning-50);
+  --status-bad:     var(--bp-danger-600);
+  --status-bad-bg:  var(--bp-danger-50);
+  --status-info:    var(--bp-info-600);
+  --status-info-bg: var(--bp-info-50);
+
+  /* Grids */
+  --grid-major: rgba(28, 47, 114, 0.08);
+  --grid-minor: rgba(28, 47, 114, 0.035);
+
+  /* Shadows — pronounced enough to lift cards off the canvas without feeling heavy.
+     Light mode needs *more* shadow than dark, not less. */
+  --shadow-1: 0 1px 2px rgba(10, 18, 36, 0.05),
+              0 1px 2px rgba(10, 18, 36, 0.04);
+  --shadow-2: 0 1px 3px rgba(10, 18, 36, 0.06),
+              0 6px 16px rgba(10, 18, 36, 0.06);
+  --shadow-3: 0 4px 12px rgba(10, 18, 36, 0.08),
+              0 16px 32px rgba(10, 18, 36, 0.08);
+  --shadow-4: 0 12px 32px rgba(10, 18, 36, 0.14),
+              0 28px 64px rgba(10, 18, 36, 0.12);
+  --shadow-glow: 0 0 0 1px var(--bp-blue-200),
+                 0 8px 24px rgba(31, 71, 220, 0.18);
+}
+
+/* ----------------------------------------------------------------
+   3. DARK MODE — secondary, "after-hours". Same semantic names,
+   different references. Designed to be respectful, not equal weight.
+   ---------------------------------------------------------------- */
+:root[data-theme="dark"] {
+  --bg-canvas:    #060a18;
+  --bg-surface:   #0c1426;
+  --bg-surface-2: #111c33;
+  --bg-elevated:  #14213d;
+  --bg-overlay:   rgba(0, 0, 0, 0.65);
+  --bg-glow:      rgba(96, 165, 250, 0.10);
+  --bg-accent-tint: rgba(31, 71, 220, 0.12);
+
+  --fg-primary:   #f1f5f9;
+  --fg-secondary: #cbd5e1;
+  --fg-muted:     #94a0b8;
+  --fg-faint:     #64708a;
+  --fg-onaccent:  #ffffff;
+  --fg-link:      #93c5fd;
+
+  --border-subtle:  #131c2e;
+  --border-default: #1e293b;
+  --border-strong:  #334155;
+  --border-accent:  #5482f9;
+  --border-focus:   #84acfd;
+
+  --accent:        #5482f9;
+  --accent-hover:  #84acfd;
+  --accent-press:  #b6cffe;
+  --accent-soft:   rgba(84, 130, 249, 0.14);
+  --accent-onsoft: #b6cffe;
+
+  --status-ok:      #34d399;
+  --status-ok-bg:   rgba(16, 185, 129, 0.14);
+  --status-warn:    #fbbf24;
+  --status-warn-bg: rgba(245, 158, 11, 0.14);
+  --status-bad:     #f87171;
+  --status-bad-bg:  rgba(239, 68, 68, 0.14);
+  --status-info:    #22d3ee;
+  --status-info-bg: rgba(6, 182, 212, 0.14);
+
+  --grid-major: rgba(148, 163, 184, 0.10);
+  --grid-minor: rgba(148, 163, 184, 0.05);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.40),
+              0 6px 16px rgba(0, 0, 0, 0.30);
+  --shadow-3: 0 8px 24px rgba(0, 0, 0, 0.50);
+  --shadow-4: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 0 1px rgba(84, 130, 249, 0.4),
+                 0 8px 32px rgba(96, 165, 250, 0.25);
+
+  /* --- Re-bind categorical palette for dark.
+         Lighter, slightly de-saturated so it reads on near-black. --- */
+  --cat-1: #6da6ff;
+  --cat-2: #2dd4bf;
+  --cat-3: #f0a559;
+  --cat-4: #a78bfa;
+  --cat-5: #22d3ee;
+  --cat-6: #f472b6;
+  --cat-7: #a3e635;
+  --cat-8: #94a3b8;
+}
+
+/* ================================================================
+   4. PAGE CHROME — the design system document itself
+   ================================================================ */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-canvas);
+  color: var(--fg-primary);
+  font-family: var(--bp-font-text);
+  font-size: var(--bp-text-base);
+  line-height: var(--bp-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background var(--bp-dur-base) var(--bp-ease-standard),
+              color var(--bp-dur-base) var(--bp-ease-standard);
+}
+body {
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+  background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px 120px 40px;
+}
+@media (max-width: 720px) { .page { padding: 48px 20px 96px 20px; } }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--bp-font-display);
+  font-weight: 700;
+  color: var(--fg-primary);
+  line-height: var(--bp-leading-tight);
+  letter-spacing: var(--bp-tracking-tight);
+}
+h1 { font-size: var(--bp-text-display); margin: 0 0 16px 0; }
+h2 {
+  font-size: var(--bp-text-3xl);
+  margin: 96px 0 8px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+h2 .sec-num {
+  font-size: var(--bp-text-sm);
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: var(--bp-tracking-widest);
+  text-transform: uppercase;
+}
+h3 { font-size: var(--bp-text-xl); margin: 56px 0 4px 0; color: var(--accent); }
+h4 {
+  font-size: var(--bp-text-xs);
+  margin: 32px 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+  font-weight: 600;
+}
+p { margin: 0 0 12px 0; color: var(--fg-secondary); max-width: 72ch; }
+.lede { font-size: var(--bp-text-md); color: var(--fg-secondary); max-width: 68ch; }
+
+code, .mono {
+  font-family: var(--bp-font-display);
+  font-size: 0.92em;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  padding: 1px 6px;
+  border-radius: var(--bp-radius-xs);
+  color: var(--fg-primary);
+}
+pre {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 16px 20px;
+  overflow-x: auto;
+  color: var(--fg-secondary);
+  line-height: var(--bp-leading-relaxed);
+  position: relative;
+  box-shadow: var(--shadow-1);
+}
+pre::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: var(--bp-text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-faint);
+}
+
+/* ================================================================
+   5. THEME TOGGLE — sticky top right
+   ================================================================ */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  padding: 4px;
+  border-radius: var(--bp-radius-full);
+  box-shadow: var(--shadow-2);
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+}
+.theme-toggle .lbl {
+  color: var(--fg-faint);
+  padding: 0 8px 0 12px;
+  border-right: 1px solid var(--border-default);
+}
+.theme-toggle button {
+  background: transparent;
+  border: 0;
+  color: var(--fg-muted);
+  font: inherit;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--bp-radius-full);
+  transition: all var(--bp-dur-fast) var(--bp-ease-standard);
+}
+.theme-toggle button.active {
+  background: var(--accent);
+  color: var(--fg-onaccent);
+}
+
+/* ================================================================
+   6. COVER
+   ================================================================ */
+.cover {
+  position: relative;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  padding: 64px 56px;
+  border-radius: var(--bp-radius-md);
+  margin-bottom: 56px;
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+}
+.cover::before, .cover::after,
+.cover .cnr1, .cover .cnr2 {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: var(--bp-corner-thickness) solid var(--accent);
+}
+.cover::before { top: 12px; left: 12px;  border-right: none; border-bottom: none; }
+.cover::after  { top: 12px; right: 12px; border-left:  none; border-bottom: none; }
+.cover .cnr1   { bottom: 12px; left: 12px;  border-right: none; border-top: none; }
+.cover .cnr2   { bottom: 12px; right: 12px; border-left:  none; border-top: none; }
+
+/* Watermark grid inside the cover */
+.cover .wm {
+  position: absolute;
+  inset: 24px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.6;
+  -webkit-mask-image: radial-gradient(ellipse at top right, black 0%, transparent 70%);
+          mask-image: radial-gradient(ellipse at top right, black 0%, transparent 70%);
+}
+.cover .wm-blob {
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, var(--bg-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cover > * { position: relative; }
+
+.cover .eyebrow {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-widest);
+  color: var(--accent);
+  margin-bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.cover .eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+}
+.cover h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  letter-spacing: -0.02em;
+  margin: 0 0 12px 0;
+}
+.cover .sub {
+  font-size: var(--bp-text-md);
+  color: var(--fg-secondary);
+  max-width: 60ch;
+  line-height: var(--bp-leading-snug);
+}
+.cover .meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px 32px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-default);
+  font-size: var(--bp-text-xs);
+}
+.cover .meta div { color: var(--fg-muted); }
+.cover .meta div strong {
+  display: block;
+  color: var(--fg-primary);
+  font-family: var(--bp-font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  margin-bottom: 4px;
+}
+
+/* ================================================================
+   7. COLOR — swatches
+   ================================================================ */
+.scale {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+@media (max-width: 720px) { .scale { grid-template-columns: repeat(6, 1fr); } }
+.swatch {
+  aspect-ratio: 1 / 1.2;
+  border-radius: var(--bp-radius-sm);
+  border: 1px solid var(--border-default);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6px 8px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.swatch.light-text { color: rgba(10, 18, 36, 0.85); text-shadow: none; }
+.swatch .step { font-weight: 700; letter-spacing: 0.04em; opacity: 0.95; }
+.swatch .hex { opacity: 0.85; font-size: 9px; }
+
+.semantic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.sem {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-1);
+}
+.sem .row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sem .chip {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--bp-radius-sm);
+  border: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+.sem .lbl {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+}
+.sem .nm {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-base);
+  color: var(--fg-primary);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.sem .var {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: var(--fg-faint);
+  margin-top: 2px;
+}
+
+.cat {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+}
+@media (max-width: 720px) { .cat { grid-template-columns: repeat(4, 1fr); } }
+.cat .ch {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--bp-radius-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px 10px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-1);
+}
+
+/* ================================================================
+   8. TYPOGRAPHY samples
+   ================================================================ */
+.type-sample {
+  display: grid;
+  grid-template-columns: 100px 1fr 140px;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.type-sample:last-child { border-bottom: 0; }
+.type-sample .name {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+}
+.type-sample .specs {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: var(--fg-faint);
+  text-align: right;
+}
+.font-display { font-family: var(--bp-font-display); }
+.font-text    { font-family: var(--bp-font-text); }
+.font-num     { font-family: var(--bp-font-num); font-variant-numeric: tabular-nums; }
+
+/* ================================================================
+   9. SPACING / RADII / ELEVATION / MOTION visualizers
+   ================================================================ */
+.space-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding: 16px 0;
+}
+.space-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.space-block {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--bp-radius-xs);
+}
+.space-cell .lbl {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: var(--fg-muted);
+}
+
+.radius-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.radius-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.radius-block {
+  width: 64px;
+  height: 64px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+}
+.elev-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 28px;
+  margin-top: 24px;
+}
+.elev-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.elev-block {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+}
+.elev-cell .lbl {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+}
+
+.motion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.motion-cell {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+}
+.motion-cell .ball {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: var(--bp-radius-full);
+  margin: 8px 0;
+  animation-name: slide;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+@keyframes slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(140px); }
+}
+.motion-cell .name {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+}
+.motion-cell .val {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: var(--fg-faint);
+}
+
+/* ================================================================
+   10. PRIMITIVE COMPONENTS — the actual ship-able classes
+   ================================================================ */
+/* --- Button --- */
+.bp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--bp-font-text);
+  font-size: var(--bp-text-base);
+  font-weight: 500;
+  line-height: 1;
+  padding: 10px 16px;
+  border-radius: var(--bp-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    background var(--bp-dur-fast) var(--bp-ease-standard),
+    border-color var(--bp-dur-fast) var(--bp-ease-standard),
+    color var(--bp-dur-fast) var(--bp-ease-standard),
+    box-shadow var(--bp-dur-fast) var(--bp-ease-standard),
+    transform var(--bp-dur-instant) var(--bp-ease-standard);
+}
+.bp-btn:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 0 4px var(--border-focus);
+}
+.bp-btn:active { transform: translateY(0.5px); }
+.bp-btn[disabled],
+.bp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bp-btn--primary {
+  background: var(--accent);
+  color: var(--fg-onaccent);
+  box-shadow: var(--shadow-1);
+}
+.bp-btn--primary:hover { background: var(--accent-hover); box-shadow: var(--shadow-2); }
+.bp-btn--primary:active { background: var(--accent-press); }
+
+.bp-btn--secondary {
+  background: var(--bg-surface);
+  border-color: var(--border-strong);
+  color: var(--fg-primary);
+  box-shadow: var(--shadow-1);
+}
+.bp-btn--secondary:hover {
+  background: var(--bg-surface-2);
+  border-color: var(--accent);
+}
+
+.bp-btn--ghost {
+  background: transparent;
+  color: var(--fg-secondary);
+}
+.bp-btn--ghost:hover {
+  background: var(--bg-surface-2);
+  color: var(--fg-primary);
+}
+
+.bp-btn--danger {
+  background: var(--status-bad);
+  color: #ffffff;
+  box-shadow: var(--shadow-1);
+}
+.bp-btn--danger:hover { filter: brightness(1.08); }
+
+.bp-btn--sm { padding: 6px 12px; font-size: var(--bp-text-sm); border-radius: var(--bp-radius-sm); }
+.bp-btn--lg { padding: 14px 22px; font-size: var(--bp-text-md); }
+.bp-btn--icon { padding: 10px; width: 36px; height: 36px; }
+
+/* --- Input --- */
+.bp-input {
+  display: block;
+  width: 100%;
+  font-family: var(--bp-font-text);
+  font-size: var(--bp-text-base);
+  color: var(--fg-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 10px 14px;
+  transition: border-color var(--bp-dur-fast), box-shadow var(--bp-dur-fast);
+  box-shadow: inset 0 1px 2px rgba(10, 18, 36, 0.04);
+}
+:root[data-theme="dark"] .bp-input { box-shadow: none; }
+.bp-input::placeholder { color: var(--fg-faint); }
+.bp-input:hover { border-color: var(--border-strong); }
+.bp-input:focus {
+  outline: 0;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.bp-input[aria-invalid="true"] { border-color: var(--status-bad); }
+
+/* --- Pill / chip --- */
+.bp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  padding: 4px 10px;
+  border-radius: var(--bp-radius-full);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  color: var(--fg-secondary);
+}
+.bp-pill--ok    { color: var(--status-ok);   background: var(--status-ok-bg);   border-color: transparent; }
+.bp-pill--warn  { color: var(--status-warn); background: var(--status-warn-bg); border-color: transparent; }
+.bp-pill--bad   { color: var(--status-bad);  background: var(--status-bad-bg);  border-color: transparent; }
+.bp-pill--info  { color: var(--status-info); background: var(--status-info-bg); border-color: transparent; }
+.bp-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--bp-radius-full);
+  background: currentColor;
+}
+
+/* --- Card with corner brackets --- */
+.bp-card {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-2);
+  transition: box-shadow var(--bp-dur-base) var(--bp-ease-standard),
+              border-color var(--bp-dur-base) var(--bp-ease-standard),
+              transform var(--bp-dur-base) var(--bp-ease-standard);
+}
+.bp-card:hover {
+  box-shadow: var(--shadow-3);
+  border-color: var(--border-strong);
+}
+.bp-card::before, .bp-card::after,
+.bp-card .cnr1, .bp-card .cnr2 {
+  content: "";
+  position: absolute;
+  width: var(--bp-corner-size);
+  height: var(--bp-corner-size);
+  border: var(--bp-corner-thickness) solid var(--accent);
+  opacity: 0.7;
+  transition: opacity var(--bp-dur-base) var(--bp-ease-standard);
+}
+.bp-card::before { top: -1px; left: -1px;  border-right: none; border-bottom: none; }
+.bp-card::after  { top: -1px; right: -1px; border-left:  none; border-bottom: none; }
+.bp-card .cnr1   { bottom: -1px; left: -1px;  border-right: none; border-top: none; }
+.bp-card .cnr2   { bottom: -1px; right: -1px; border-left:  none; border-top: none; }
+.bp-card:hover::before, .bp-card:hover::after,
+.bp-card:hover .cnr1, .bp-card:hover .cnr2 { opacity: 1; }
+
+/* --- Metric card --- */
+.bp-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bp-metric .label {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+}
+.bp-metric .value {
+  font-family: var(--bp-font-num);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  font-size: var(--bp-text-3xl);
+  font-weight: 600;
+  color: var(--fg-primary);
+  line-height: 1;
+}
+.bp-metric .delta {
+  font-family: var(--bp-font-num);
+  font-size: var(--bp-text-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--fg-muted);
+}
+.bp-metric .delta--up   { color: var(--status-ok); }
+.bp-metric .delta--down { color: var(--status-bad); }
+.bp-metric .freshness {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  margin-top: 4px;
+}
+
+/* --- Tabs --- */
+.bp-tabs {
+  display: inline-flex;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+.bp-tab {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  padding: 8px 14px;
+  border-radius: var(--bp-radius-sm);
+  border: 0;
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  min-height: 36px;
+  transition: all var(--bp-dur-fast) var(--bp-ease-standard);
+}
+.bp-tab:hover { color: var(--fg-primary); }
+.bp-tab[aria-selected="true"] {
+  background: var(--bg-surface);
+  color: var(--fg-primary);
+  box-shadow: var(--shadow-1);
+}
+
+/* --- Breadcrumb --- */
+.bp-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+}
+.bp-crumb a { color: var(--fg-secondary); text-decoration: none; }
+.bp-crumb a:hover { color: var(--accent); }
+.bp-crumb .sep { color: var(--fg-faint); }
+.bp-crumb .current { color: var(--fg-primary); }
+
+/* --- Tooltip --- */
+.bp-tooltip-bubble {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--bp-radius-sm);
+  padding: 10px 14px;
+  font-family: var(--bp-font-text);
+  font-size: var(--bp-text-sm);
+  color: var(--fg-primary);
+  box-shadow: var(--shadow-3);
+  display: inline-block;
+}
+.bp-tooltip-bubble .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+.bp-tooltip-bubble .row .lbl {
+  color: var(--fg-muted);
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+}
+.bp-tooltip-bubble .row .val {
+  font-family: var(--bp-font-num);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* --- Empty state --- */
+.bp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--bp-radius-md);
+  background: var(--bg-surface);
+}
+.bp-empty .icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--bp-radius-md);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-family: var(--bp-font-display);
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.bp-empty .title {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-md);
+  color: var(--fg-primary);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.bp-empty .body {
+  font-size: var(--bp-text-sm);
+  color: var(--fg-muted);
+  max-width: 38ch;
+  margin: 0 auto 16px auto;
+}
+
+/* --- Skeleton --- */
+.bp-skel {
+  background: linear-gradient(90deg,
+    var(--bg-surface-2) 0%,
+    var(--border-default) 50%,
+    var(--bg-surface-2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--bp-radius-xs);
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* --- Sidebar item --- */
+.bp-side-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--bp-radius-md);
+  font-family: var(--bp-font-text);
+  font-size: var(--bp-text-base);
+  color: var(--fg-secondary);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--bp-dur-fast) var(--bp-ease-standard);
+}
+.bp-side-item:hover {
+  background: var(--bg-surface-2);
+  color: var(--fg-primary);
+}
+.bp-side-item[aria-current="page"] {
+  background: var(--accent-soft);
+  border-color: var(--border-accent);
+  color: var(--accent-onsoft);
+}
+.bp-side-item .icon {
+  width: 28px; height: 28px;
+  border-radius: var(--bp-radius-full);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-family: var(--bp-font-display);
+  color: var(--fg-muted);
+}
+.bp-side-item[aria-current="page"] .icon {
+  background: var(--accent);
+  color: var(--fg-onaccent);
+  border-color: var(--accent);
+}
+
+/* --- Chart card preview --- */
+.chart-card-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chart-card-demo .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.chart-card-demo .title {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-muted);
+}
+.chart-card-demo svg { width: 100%; height: 140px; display: block; }
+
+/* ================================================================
+   11. DEMO GRIDS
+   ================================================================ */
+.demo {
+  background: var(--bg-canvas);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size: 40px 40px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 32px;
+  margin: 16px 0;
+}
+.demo-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (max-width: 720px) { .do-dont { grid-template-columns: 1fr; } }
+.do-dont .card2 {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 16px 18px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-1);
+}
+.do-dont .card2.do   { border-left: 3px solid var(--status-ok); }
+.do-dont .card2.dont { border-left: 3px solid var(--status-bad); }
+.do-dont h5 {
+  margin: 0 0 6px 0;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+}
+.do-dont .do h5   { color: var(--status-ok); }
+.do-dont .dont h5 { color: var(--status-bad); }
+.do-dont p { font-size: var(--bp-text-sm); margin: 0; }
+
+/* ================================================================
+   12. UTILITIES
+   ================================================================ */
+.row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 16px; }
+.gap-sm { gap: 8px; }
+.mt-md { margin-top: 24px; }
+hr.div {
+  border: 0;
+  border-top: 1px dashed var(--border-default);
+  margin: 32px 0;
+}
+.callout {
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent);
+  background: var(--bg-surface);
+  padding: 14px 18px;
+  border-radius: var(--bp-radius-md);
+  font-size: var(--bp-text-sm);
+  color: var(--fg-secondary);
+  box-shadow: var(--shadow-1);
+}
+.callout strong { color: var(--fg-primary); }
+
+/* ================================================================
+   13. DASHBOARD PREVIEW — composed example
+   ================================================================ */
+.preview-frame {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  background: var(--bg-canvas);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  margin: 16px 0;
+}
+.preview-frame .pf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+}
+.preview-frame .pf-header .dots {
+  display: flex; gap: 6px;
+}
+.preview-frame .pf-header .dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+}
+.preview-frame .pf-header .url {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  color: var(--fg-muted);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-full);
+  padding: 4px 12px;
+}
+.preview-frame .pf-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 520px;
+}
+@media (max-width: 720px) {
+  .preview-frame .pf-body { grid-template-columns: 1fr; }
+  .preview-frame .pf-side { display: none; }
+}
+.preview-frame .pf-side {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-default);
+  padding: 18px 14px;
+}
+.preview-frame .pf-side .brand {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-widest);
+  color: var(--accent);
+  margin: 4px 8px 18px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preview-frame .pf-side .brand::before {
+  content: "";
+  width: 18px; height: 18px;
+  background: var(--accent);
+  border-radius: var(--bp-radius-xs);
+  position: relative;
+  box-shadow: 4px -4px 0 -1px var(--accent);
+}
+.preview-frame .pf-side .group-title {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--bp-tracking-wider);
+  color: var(--fg-faint);
+  padding: 14px 14px 6px;
+}
+.preview-frame .pf-main {
+  padding: 22px 26px 28px 26px;
+  background: var(--bg-canvas);
+}
+.preview-frame .pf-main .pf-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  gap: 16px;
+}
+.preview-frame .pf-main .pf-page-header h3 {
+  margin: 0;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-lg);
+  color: var(--fg-primary);
+}
+.preview-frame .pf-main .pf-page-header .sub {
+  font-size: var(--bp-text-xs);
+  color: var(--fg-muted);
+  margin-top: 2px;
+}
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+@media (max-width: 720px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+.kpi-strip .bp-card { padding: 14px 16px; }
+.kpi-strip .bp-card .label { font-size: var(--bp-text-2xs); }
+.kpi-strip .bp-card .value { font-size: var(--bp-text-2xl); }
+.preview-frame .charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px) { .preview-frame .charts-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ============== THEME TOGGLE ============== -->
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <span class="lbl">Theme</span>
+  <button id="t-light" class="active" aria-pressed="true">Light</button>
+  <button id="t-dark"  aria-pressed="false">Dark</button>
+</div>
+
+<div class="page">
+
+<!-- ============== COVER ============== -->
+<div class="cover">
+  <div class="wm"></div>
+  <div class="wm-blob"></div>
+  <span class="cnr1"></span><span class="cnr2"></span>
+
+  <div class="eyebrow">Design System &nbsp;//&nbsp; v1 &nbsp;//&nbsp; 2026-04-07</div>
+  <h1>Blueprint</h1>
+  <div class="sub">
+    A token-driven design system for Transparent Space &mdash;
+    designed <strong>light-first</strong>, with a respectful dark mode for after-hours.
+    Every decision below is tuned for legibility on a near-white canvas: deeper accents,
+    crisp shadows that lift cards off the surface, and a chart palette saturated enough to
+    read without screaming.
+  </div>
+
+  <div class="meta">
+    <div><strong>For</strong>transparent-space frontend</div>
+    <div><strong>Stack</strong>Next.js&nbsp;15 / Tailwind&nbsp;v4 / Visx</div>
+    <div><strong>Primary mode</strong>Light</div>
+    <div><strong>Secondary mode</strong>Dark (after-hours)</div>
+    <div><strong>Theme toggle</strong>top-right of this page</div>
+    <div><strong>Source</strong>docs/design-system.html</div>
+  </div>
+</div>
+
+<p class="lede">
+  This is a <strong>working document</strong>. Every swatch, every component, and every chart on this
+  page is rendered by the same CSS variables you would adopt in the codebase. Use the toggle in the
+  top right to flip between light (canonical) and dark (secondary). Light is the source of truth.
+</p>
+
+<!-- ============== 01 PRINCIPLES ============== -->
+<h2><span class="sec-num">01</span>Principles</h2>
+<p>
+  Six rules. They are short on purpose. When something feels off, it&rsquo;s almost always because one of these is being violated.
+</p>
+
+<div class="demo-grid mt-md">
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="label">01 / Light first</div>
+      <div class="value" style="font-size:var(--bp-text-md);font-family:var(--bp-font-text);font-weight:500;line-height:1.4;">
+        Every component is designed for the white canvas first. Dark is a careful re-binding, not a parallel universe.
+      </div>
+    </div>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="label">02 / Information first</div>
+      <div class="value" style="font-size:var(--bp-text-md);font-family:var(--bp-font-text);font-weight:500;line-height:1.4;">
+        Type, color, and motion exist to make data legible. Decoration is the exception, not the default.
+      </div>
+    </div>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="label">03 / Semantic over scalar</div>
+      <div class="value" style="font-size:var(--bp-text-md);font-family:var(--bp-font-text);font-weight:500;line-height:1.4;">
+        Components reference <span class="mono">--accent</span>, never <span class="mono">--bp-blue-600</span>. The scale is private.
+      </div>
+    </div>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="label">04 / One source of truth</div>
+      <div class="value" style="font-size:var(--bp-text-md);font-family:var(--bp-font-text);font-weight:500;line-height:1.4;">
+        Tokens live in CSS variables. No hex inside <span class="mono">components/</span>. A lint rule enforces it.
+      </div>
+    </div>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="label">05 / Quiet states matter</div>
+      <div class="value" style="font-size:var(--bp-text-md);font-family:var(--bp-font-text);font-weight:500;line-height:1.4;">
+        Loading, empty, error, and stale states are first-class. Designed, not afterthought.
+      </div>
+    </div>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="label">06 / Numbers are tabular</div>
+      <div class="value" style="font-size:var(--bp-text-md);font-family:var(--bp-font-text);font-weight:500;line-height:1.4;">
+        Every numeric value uses tabular nums in IBM Plex Mono. Columns line up. Always.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============== 02 LIGHT MODE THINKING ============== -->
+<h2><span class="sec-num">02</span>Why light mode is hard</h2>
+<p>
+  Light mode is not &ldquo;dark mode with the polarity flipped.&rdquo; The problems are different,
+  and so are the rules. This is the opinionated part &mdash; treat it as the spec for every
+  decision below.
+</p>
+<div class="demo-grid mt-md">
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <h4 style="margin-top:0;">Cards need lift</h4>
+    <p style="font-size:var(--bp-text-sm);">In dark mode the void around a card defines its edge. On white, you have nothing &mdash; so cards need <em>real</em> shadow plus a subtle border to read as &ldquo;a thing on a thing.&rdquo;</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <h4 style="margin-top:0;">Accent has to carry weight</h4>
+    <p style="font-size:var(--bp-text-sm);">A bright Tailwind blue-500 looks toy-ish on white. We use blue-600 / blue-700 for accent so links, primary buttons, and selected states feel intentional.</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <h4 style="margin-top:0;">Status colors get deeper</h4>
+    <p style="font-size:var(--bp-text-sm);">Success / warning / danger all use the 600&ndash;700 step on white. The 500 step you&rsquo;d use on dark is too pastel against #f6f8fc.</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <h4 style="margin-top:0;">The canvas is not pure white</h4>
+    <p style="font-size:var(--bp-text-sm);">Pure white is glare. We use <span class="mono">#f6f8fc</span> for the page canvas and reserve <span class="mono">#ffffff</span> for cards &mdash; that one-step contrast is what makes a dashboard feel layered.</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <h4 style="margin-top:0;">Borders are subtle, never invisible</h4>
+    <p style="font-size:var(--bp-text-sm);">Default borders are <span class="mono">#dbe2ee</span> &mdash; visible enough to define a card edge, quiet enough to disappear when you focus on data.</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <h4 style="margin-top:0;">Chart colors must be saturated</h4>
+    <p style="font-size:var(--bp-text-sm);">A pastel line on white disappears. Categorical colors live in the 600&ndash;700 step (deep blue, deep teal, burnt amber) so a thin line still reads from across the room.</p>
+  </div>
+</div>
+
+<!-- ============== 03 COLOR ============== -->
+<h2><span class="sec-num">03</span>Color</h2>
+<p>
+  Two layers. The <strong>scale</strong> is the raw palette &mdash; private to the design system.
+  The <strong>semantic layer</strong> is what components use. This is the discipline that prevents drift:
+  if accent later wants a slightly different blue, you change it in <em>one</em> place, not in every component file.
+</p>
+
+<h3>Brand scale &mdash; blueprint blue</h3>
+<div class="scale">
+  <div class="swatch light-text" style="background:var(--bp-blue-50);"><span class="step">50</span><span class="hex">#eff5ff</span></div>
+  <div class="swatch light-text" style="background:var(--bp-blue-100);"><span class="step">100</span><span class="hex">#dbe8ff</span></div>
+  <div class="swatch light-text" style="background:var(--bp-blue-200);"><span class="step">200</span><span class="hex">#b6cffe</span></div>
+  <div class="swatch light-text" style="background:var(--bp-blue-300);"><span class="step">300</span><span class="hex">#84acfd</span></div>
+  <div class="swatch" style="background:var(--bp-blue-400);"><span class="step">400</span><span class="hex">#5482f9</span></div>
+  <div class="swatch" style="background:var(--bp-blue-500);"><span class="step">500</span><span class="hex">#2f5ef0</span></div>
+  <div class="swatch" style="background:var(--bp-blue-600);"><span class="step">600</span><span class="hex">#1f47dc</span></div>
+  <div class="swatch" style="background:var(--bp-blue-700);"><span class="step">700</span><span class="hex">#1c3bb4</span></div>
+  <div class="swatch" style="background:var(--bp-blue-800);"><span class="step">800</span><span class="hex">#1c348e</span></div>
+  <div class="swatch" style="background:var(--bp-blue-900);"><span class="step">900</span><span class="hex">#1c2f72</span></div>
+  <div class="swatch" style="background:var(--bp-blue-950);"><span class="step">950</span><span class="hex">#14204a</span></div>
+</div>
+<p style="font-size:var(--bp-text-sm);color:var(--fg-muted);margin-top:8px;">
+  <strong>The hero step is 600.</strong> It carries enough weight on white to be a primary button, a focused border, and a chart line without ever being mistaken for decoration.
+</p>
+
+<h3>Ink scale &mdash; cool slate</h3>
+<div class="scale">
+  <div class="swatch light-text" style="background:var(--bp-ink-0);"><span class="step">0</span><span class="hex">#ffffff</span></div>
+  <div class="swatch light-text" style="background:var(--bp-ink-50);"><span class="step">50</span><span class="hex">#f6f8fc</span></div>
+  <div class="swatch light-text" style="background:var(--bp-ink-100);"><span class="step">100</span><span class="hex">#eef2f9</span></div>
+  <div class="swatch light-text" style="background:var(--bp-ink-200);"><span class="step">200</span><span class="hex">#dbe2ee</span></div>
+  <div class="swatch light-text" style="background:var(--bp-ink-300);"><span class="step">300</span><span class="hex">#c2cbdc</span></div>
+  <div class="swatch" style="background:var(--bp-ink-400);"><span class="step">400</span><span class="hex">#94a0b8</span></div>
+  <div class="swatch" style="background:var(--bp-ink-500);"><span class="step">500</span><span class="hex">#64708a</span></div>
+  <div class="swatch" style="background:var(--bp-ink-600);"><span class="step">600</span><span class="hex">#46526b</span></div>
+  <div class="swatch" style="background:var(--bp-ink-700);"><span class="step">700</span><span class="hex">#2f3a51</span></div>
+  <div class="swatch" style="background:var(--bp-ink-800);"><span class="step">800</span><span class="hex">#1b2438</span></div>
+  <div class="swatch" style="background:var(--bp-ink-900);"><span class="step">900</span><span class="hex">#0a1224</span></div>
+</div>
+<p style="font-size:var(--bp-text-sm);color:var(--fg-muted);margin-top:8px;">
+  Ink-50 is the page canvas. Ink-200 is the default border. Ink-500 is muted text. Ink-900 is body text.
+  Pure black is intentionally not on the scale &mdash; it&rsquo;s too aggressive on white.
+</p>
+
+<h3>Semantic tokens &mdash; surface &amp; foreground</h3>
+<div class="semantic-grid">
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--bg-canvas);"></div>
+    <div><div class="lbl">surface</div><div class="nm">bg-canvas</div><div class="var">page background</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--bg-surface);"></div>
+    <div><div class="lbl">surface</div><div class="nm">bg-surface</div><div class="var">card background</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--bg-surface-2);"></div>
+    <div><div class="lbl">surface</div><div class="nm">bg-surface-2</div><div class="var">nested / sunken</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--bg-elevated);"></div>
+    <div><div class="lbl">surface</div><div class="nm">bg-elevated</div><div class="var">popovers, modals</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--fg-primary);"></div>
+    <div><div class="lbl">foreground</div><div class="nm">fg-primary</div><div class="var">body text, headings</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--fg-secondary);"></div>
+    <div><div class="lbl">foreground</div><div class="nm">fg-secondary</div><div class="var">descriptions, labels</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--fg-muted);"></div>
+    <div><div class="lbl">foreground</div><div class="nm">fg-muted</div><div class="var">captions, axes</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--fg-faint);"></div>
+    <div><div class="lbl">foreground</div><div class="nm">fg-faint</div><div class="var">decoration only</div></div></div>
+  </div>
+</div>
+
+<h3>Accent &amp; status</h3>
+<div class="semantic-grid">
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--accent);"></div>
+    <div><div class="lbl">accent</div><div class="nm">accent</div><div class="var">primary, focus, links</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--accent-soft);border:1px solid var(--border-accent);"></div>
+    <div><div class="lbl">accent</div><div class="nm">accent-soft</div><div class="var">selected, ghosted</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--status-ok);"></div>
+    <div><div class="lbl">status</div><div class="nm">ok</div><div class="var">healthy, success, up</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--status-warn);"></div>
+    <div><div class="lbl">status</div><div class="nm">warn</div><div class="var">stale, near threshold</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--status-bad);"></div>
+    <div><div class="lbl">status</div><div class="nm">bad</div><div class="var">error, breach, down</div></div></div>
+  </div>
+  <div class="sem">
+    <div class="row"><div class="chip" style="background:var(--status-info);"></div>
+    <div><div class="lbl">status</div><div class="nm">info</div><div class="var">neutral notice, beta</div></div></div>
+  </div>
+</div>
+
+<h3>Categorical chart palette</h3>
+<p>
+  Eight hand-tuned hues for non-status data series. Each one is at the 600&ndash;700 step
+  so a 1.5&nbsp;px line still reads cleanly on a white card. The palette intentionally avoids
+  pure red and pure green so it never collides with status colors.
+</p>
+<div class="cat">
+  <div class="ch" style="background:var(--cat-1);">cat-1<br/>blueprint</div>
+  <div class="ch" style="background:var(--cat-2);">cat-2<br/>teal</div>
+  <div class="ch" style="background:var(--cat-3);">cat-3<br/>amber</div>
+  <div class="ch" style="background:var(--cat-4);">cat-4<br/>violet</div>
+  <div class="ch" style="background:var(--cat-5);">cat-5<br/>cyan</div>
+  <div class="ch" style="background:var(--cat-6);">cat-6<br/>magenta</div>
+  <div class="ch" style="background:var(--cat-7);">cat-7<br/>olive</div>
+  <div class="ch" style="background:var(--cat-8);">cat-8<br/>slate</div>
+</div>
+<div class="callout mt-md">
+  <strong>Why these eight, why this saturation.</strong>
+  Each color sits at a similar lightness, so a stack of bars or a multi-line chart reads as one
+  composition rather than &ldquo;one loud color and seven supporting roles.&rdquo;
+  The dark theme rebinds <span class="mono">--cat-1&hellip;8</span> to lighter equivalents so the same chart
+  reads cleanly on near-black after hours &mdash; without the chart code knowing the theme changed.
+</div>
+
+<!-- ============== 04 TYPOGRAPHY ============== -->
+<h2><span class="sec-num">04</span>Typography</h2>
+<p>
+  Three families. Pick by intent, not by taste. The numeric font does the most work in this product.
+</p>
+
+<div class="demo-grid mt-md">
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div style="font-family:var(--bp-font-display);font-size:var(--bp-text-xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);margin-bottom:8px;">Display &mdash; JetBrains Mono</div>
+    <div class="font-display" style="font-size:var(--bp-text-2xl);font-weight:700;line-height:1.2;color:var(--fg-primary);">Section heading</div>
+    <p style="margin-top:8px;color:var(--fg-muted);font-size:var(--bp-text-sm);">For section titles, card labels, eyebrows, tabs, pills. Anything that should feel like &ldquo;structural label.&rdquo;</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div style="font-family:var(--bp-font-display);font-size:var(--bp-text-xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);margin-bottom:8px;">Body &mdash; Inter</div>
+    <div class="font-text" style="font-size:var(--bp-text-md);line-height:1.5;color:var(--fg-primary);">A liquidity provider opens a position to earn fees on every trade that crosses their range.</div>
+    <p style="margin-top:8px;color:var(--fg-muted);font-size:var(--bp-text-sm);">For paragraphs, descriptions, button labels, table cell content, modal copy. Default everywhere unless there&rsquo;s a reason not to.</p>
+  </div>
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div style="font-family:var(--bp-font-display);font-size:var(--bp-text-xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);margin-bottom:8px;">Numeric &mdash; IBM Plex Mono</div>
+    <div class="font-num" style="font-size:var(--bp-text-2xl);font-weight:600;line-height:1.2;color:var(--fg-primary);">$1,284,503.21</div>
+    <p style="margin-top:8px;color:var(--fg-muted);font-size:var(--bp-text-sm);">Every numeric value. Tabular nums are mandatory so KPI strips line up column-to-column.</p>
+  </div>
+</div>
+
+<h3>Type scale</h3>
+<div class="bp-card" style="padding:8px 24px;">
+  <span class="cnr1"></span><span class="cnr2"></span>
+  <div class="type-sample"><div class="name">2xs</div><div class="font-text" style="font-size:var(--bp-text-2xs);">10 &mdash; smallest legend &amp; chip text</div><div class="specs">10 / 14 &middot; +0.04em</div></div>
+  <div class="type-sample"><div class="name">xs</div><div class="font-text" style="font-size:var(--bp-text-xs);">11 &mdash; uppercase labels, axes</div><div class="specs">11 / 16 &middot; +0.08em</div></div>
+  <div class="type-sample"><div class="name">sm</div><div class="font-text" style="font-size:var(--bp-text-sm);">12 &mdash; secondary body</div><div class="specs">12 / 18</div></div>
+  <div class="type-sample"><div class="name">base</div><div class="font-text" style="font-size:var(--bp-text-base);">14 &mdash; default body text</div><div class="specs">14 / 21</div></div>
+  <div class="type-sample"><div class="name">md</div><div class="font-text" style="font-size:var(--bp-text-md);">15 &mdash; lede paragraphs</div><div class="specs">15 / 22</div></div>
+  <div class="type-sample"><div class="name">lg</div><div class="font-text" style="font-size:var(--bp-text-lg);">17 &mdash; subheads</div><div class="specs">17 / 25</div></div>
+  <div class="type-sample"><div class="name">xl</div><div class="font-text" style="font-size:var(--bp-text-xl);">20 &mdash; card headings</div><div class="specs">20 / 28</div></div>
+  <div class="type-sample"><div class="name">2xl</div><div class="font-display" style="font-size:var(--bp-text-2xl);font-weight:700;">24 &mdash; section subheads</div><div class="specs">24 / 30</div></div>
+  <div class="type-sample"><div class="name">3xl</div><div class="font-display" style="font-size:var(--bp-text-3xl);font-weight:700;">30 &mdash; metric values</div><div class="specs">30 / 36</div></div>
+  <div class="type-sample"><div class="name">4xl</div><div class="font-display" style="font-size:var(--bp-text-4xl);font-weight:700;">38 &mdash; page heading</div><div class="specs">38 / 44</div></div>
+  <div class="type-sample"><div class="name">display</div><div class="font-display" style="font-size:48px;font-weight:700;letter-spacing:-0.02em;">56 display</div><div class="specs">56 / 60</div></div>
+</div>
+
+<!-- ============== 05 SPACING / RADII / ELEVATION / MOTION ============== -->
+<h2><span class="sec-num">05</span>Space, radius, elevation, motion</h2>
+<p>
+  A 4&nbsp;px base, a small radius family, four elevation levels, and five motion durations
+  with three easings. Anything that doesn&rsquo;t fit one of these is wrong, not exceptional.
+</p>
+
+<h3>Spacing scale (4&nbsp;px base)</h3>
+<div class="bp-card">
+  <span class="cnr1"></span><span class="cnr2"></span>
+  <div class="space-row">
+    <div class="space-cell"><div class="space-block" style="width:2px;height:24px;"></div><div class="lbl">1 &middot; 2</div></div>
+    <div class="space-cell"><div class="space-block" style="width:4px;height:24px;"></div><div class="lbl">2 &middot; 4</div></div>
+    <div class="space-cell"><div class="space-block" style="width:6px;height:24px;"></div><div class="lbl">3 &middot; 6</div></div>
+    <div class="space-cell"><div class="space-block" style="width:8px;height:24px;"></div><div class="lbl">4 &middot; 8</div></div>
+    <div class="space-cell"><div class="space-block" style="width:12px;height:24px;"></div><div class="lbl">5 &middot; 12</div></div>
+    <div class="space-cell"><div class="space-block" style="width:16px;height:24px;"></div><div class="lbl">6 &middot; 16</div></div>
+    <div class="space-cell"><div class="space-block" style="width:20px;height:24px;"></div><div class="lbl">7 &middot; 20</div></div>
+    <div class="space-cell"><div class="space-block" style="width:24px;height:24px;"></div><div class="lbl">8 &middot; 24</div></div>
+    <div class="space-cell"><div class="space-block" style="width:32px;height:24px;"></div><div class="lbl">9 &middot; 32</div></div>
+    <div class="space-cell"><div class="space-block" style="width:40px;height:24px;"></div><div class="lbl">10 &middot; 40</div></div>
+    <div class="space-cell"><div class="space-block" style="width:48px;height:24px;"></div><div class="lbl">11 &middot; 48</div></div>
+    <div class="space-cell"><div class="space-block" style="width:64px;height:24px;"></div><div class="lbl">12 &middot; 64</div></div>
+    <div class="space-cell"><div class="space-block" style="width:80px;height:24px;"></div><div class="lbl">13 &middot; 80</div></div>
+    <div class="space-cell"><div class="space-block" style="width:96px;height:24px;"></div><div class="lbl">14 &middot; 96</div></div>
+  </div>
+</div>
+
+<h3>Radii</h3>
+<div class="bp-card">
+  <span class="cnr1"></span><span class="cnr2"></span>
+  <div class="radius-row">
+    <div class="radius-cell"><div class="radius-block" style="border-radius:0;"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">none</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-xs);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">xs &middot; 2</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-sm);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">sm &middot; 4</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-md);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">md &middot; 6</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-lg);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">lg &middot; 8</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-xl);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">xl &middot; 12</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-2xl);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">2xl &middot; 16</div></div>
+    <div class="radius-cell"><div class="radius-block" style="border-radius:var(--bp-radius-full);"></div><div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);color:var(--fg-muted);">full</div></div>
+  </div>
+</div>
+<p style="font-size:var(--bp-text-sm);color:var(--fg-muted);margin-top:8px;">
+  Cards use <span class="mono">md</span>. Buttons use <span class="mono">md</span>. Inputs use <span class="mono">md</span>.
+  Tabs and pills use <span class="mono">sm</span> or <span class="mono">full</span>. <span class="mono">2xl</span> is reserved
+  for hero / marketing surfaces.
+</p>
+
+<h3>Elevation</h3>
+<p style="font-size:var(--bp-text-sm);">
+  Light mode shadows are <em>more</em> pronounced than dark, not less &mdash; cards have to lift off the canvas without a void to define them.
+</p>
+<div class="bp-card">
+  <span class="cnr1"></span><span class="cnr2"></span>
+  <div class="elev-row">
+    <div class="elev-cell"><div class="elev-block" style="box-shadow:none;"></div><div class="lbl">0 &middot; flat</div></div>
+    <div class="elev-cell"><div class="elev-block" style="box-shadow:var(--shadow-1);"></div><div class="lbl">1 &middot; subtle</div></div>
+    <div class="elev-cell"><div class="elev-block" style="box-shadow:var(--shadow-2);"></div><div class="lbl">2 &middot; card</div></div>
+    <div class="elev-cell"><div class="elev-block" style="box-shadow:var(--shadow-3);"></div><div class="lbl">3 &middot; popover</div></div>
+    <div class="elev-cell"><div class="elev-block" style="box-shadow:var(--shadow-4);"></div><div class="lbl">4 &middot; modal</div></div>
+  </div>
+</div>
+
+<h3>Motion</h3>
+<p>Hover any cell to retrigger the animation. Five durations, three easings.</p>
+<div class="motion-grid mt-md">
+  <div class="motion-cell" onmouseenter="restart(this)" onmouseleave="restart(this)">
+    <div class="name">instant</div>
+    <div class="ball" style="animation-duration: 80ms; animation-timing-function: var(--bp-ease-standard);"></div>
+    <div class="val">80ms / standard</div>
+  </div>
+  <div class="motion-cell" onmouseenter="restart(this)" onmouseleave="restart(this)">
+    <div class="name">fast</div>
+    <div class="ball" style="animation-duration: 150ms; animation-timing-function: var(--bp-ease-standard);"></div>
+    <div class="val">150ms / standard</div>
+  </div>
+  <div class="motion-cell" onmouseenter="restart(this)" onmouseleave="restart(this)">
+    <div class="name">base</div>
+    <div class="ball" style="animation-duration: 220ms; animation-timing-function: var(--bp-ease-standard);"></div>
+    <div class="val">220ms / standard</div>
+  </div>
+  <div class="motion-cell" onmouseenter="restart(this)" onmouseleave="restart(this)">
+    <div class="name">slow</div>
+    <div class="ball" style="animation-duration: 320ms; animation-timing-function: var(--bp-ease-out);"></div>
+    <div class="val">320ms / ease-out</div>
+  </div>
+  <div class="motion-cell" onmouseenter="restart(this)" onmouseleave="restart(this)">
+    <div class="name">slower</div>
+    <div class="ball" style="animation-duration: 480ms; animation-timing-function: var(--bp-ease-out);"></div>
+    <div class="val">480ms / ease-out</div>
+  </div>
+  <div class="motion-cell" onmouseenter="restart(this)" onmouseleave="restart(this)">
+    <div class="name">spring</div>
+    <div class="ball" style="animation-duration: 480ms; animation-timing-function: var(--bp-ease-spring);"></div>
+    <div class="val">480ms / spring</div>
+  </div>
+</div>
+
+<div class="callout mt-md">
+  <strong>Rules.</strong>
+  Use <span class="mono">fast</span> for hover/focus,
+  <span class="mono">base</span> for state changes (panel open/close),
+  <span class="mono">slow</span> for layout reflow,
+  <span class="mono">slower</span> for hero transitions only.
+  <span class="mono">spring</span> is reserved for moments where the user is supposed to feel that something just happened.
+</div>
+
+<!-- ============== 06 PRIMITIVE COMPONENTS ============== -->
+<h2><span class="sec-num">06</span>Primitive components</h2>
+<p>
+  Eight primitives cover ~90% of the surface area. Each one is a single class with modifier
+  variants. Build composites by composing them &mdash; do not branch them.
+</p>
+
+<h3>Button</h3>
+<div class="demo">
+  <div class="demo-row">
+    <button class="bp-btn bp-btn--primary">Primary action</button>
+    <button class="bp-btn bp-btn--secondary">Secondary</button>
+    <button class="bp-btn bp-btn--ghost">Ghost</button>
+    <button class="bp-btn bp-btn--danger">Danger</button>
+    <button class="bp-btn bp-btn--primary" disabled>Disabled</button>
+  </div>
+  <div class="demo-row mt-md">
+    <button class="bp-btn bp-btn--primary bp-btn--sm">Small</button>
+    <button class="bp-btn bp-btn--primary">Default</button>
+    <button class="bp-btn bp-btn--primary bp-btn--lg">Large</button>
+    <button class="bp-btn bp-btn--secondary bp-btn--icon" aria-label="Settings">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</div>
+
+<h3>Input</h3>
+<div class="demo">
+  <div class="col" style="max-width:360px;">
+    <input class="bp-input" placeholder="Search pools…" />
+    <input class="bp-input" placeholder="USDC amount" value="1,250.00" />
+    <input class="bp-input" placeholder="Email" aria-invalid="true" value="not-an-email" />
+  </div>
+</div>
+
+<h3>Pill / chip</h3>
+<div class="demo">
+  <div class="demo-row">
+    <span class="bp-pill"><span class="dot"></span>Neutral</span>
+    <span class="bp-pill bp-pill--ok"><span class="dot"></span>Healthy</span>
+    <span class="bp-pill bp-pill--warn"><span class="dot"></span>Stale 4h</span>
+    <span class="bp-pill bp-pill--bad"><span class="dot"></span>Spread 3.2%</span>
+    <span class="bp-pill bp-pill--info"><span class="dot"></span>Beta</span>
+  </div>
+</div>
+
+<h3>Card</h3>
+<div class="demo">
+  <div class="demo-grid">
+    <div class="bp-card">
+      <span class="cnr1"></span><span class="cnr2"></span>
+      <div class="bp-metric">
+        <div class="label">TVL</div>
+        <div class="value">$12.4M</div>
+        <div class="delta delta--up">▲ +4.2% &middot; 24h</div>
+        <div class="freshness">Updated 12s ago</div>
+      </div>
+    </div>
+    <div class="bp-card">
+      <span class="cnr1"></span><span class="cnr2"></span>
+      <div class="bp-metric">
+        <div class="label">24h volume</div>
+        <div class="value">$3.81M</div>
+        <div class="delta delta--down">▼ -1.6% &middot; 24h</div>
+        <div class="freshness">Updated 12s ago</div>
+      </div>
+    </div>
+    <div class="bp-card">
+      <span class="cnr1"></span><span class="cnr2"></span>
+      <div class="bp-metric">
+        <div class="label">Active LPs</div>
+        <div class="value">147</div>
+        <div class="delta">— flat</div>
+        <div class="freshness">Updated 12s ago</div>
+      </div>
+    </div>
+    <div class="bp-card">
+      <span class="cnr1"></span><span class="cnr2"></span>
+      <div class="bp-metric">
+        <div class="label">Spread vs CG</div>
+        <div class="value" style="color:var(--status-bad);">+3.21%</div>
+        <div class="delta delta--down">over 2% threshold</div>
+        <div class="freshness">Updated 12s ago</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Tabs</h3>
+<div class="demo">
+  <div class="bp-tabs" role="tablist">
+    <button class="bp-tab" role="tab" aria-selected="false">Pools</button>
+    <button class="bp-tab" role="tab" aria-selected="true">RFQ</button>
+    <button class="bp-tab" role="tab" aria-selected="false">Birds-eye</button>
+    <button class="bp-tab" role="tab" aria-selected="false">Alerts</button>
+  </div>
+</div>
+
+<h3>Breadcrumb</h3>
+<div class="demo">
+  <nav class="bp-crumb" aria-label="breadcrumb">
+    <a href="#">spaces</a>
+    <span class="sep">/</span>
+    <a href="#">solana-mm</a>
+    <span class="sep">/</span>
+    <a href="#">cbBTC&nbsp;/&nbsp;USDC</a>
+    <span class="sep">/</span>
+    <a href="#">RFQ</a>
+    <span class="sep">/</span>
+    <span class="current">Bebop</span>
+  </nav>
+</div>
+
+<h3>Sidebar item</h3>
+<div class="demo" style="max-width:360px;">
+  <div class="col" style="gap:6px;">
+    <div class="bp-side-item"><div class="icon">SOL</div><div>WBTC / SOL</div></div>
+    <div class="bp-side-item" aria-current="page"><div class="icon">SOL</div><div>cbBTC / USDC</div></div>
+    <div class="bp-side-item"><div class="icon">WLD</div><div>WLD / USDC</div></div>
+    <div class="bp-side-item"><div class="icon">ETH</div><div>WETH / USDT</div></div>
+  </div>
+</div>
+
+<h3>Tooltip</h3>
+<div class="demo">
+  <div class="bp-tooltip-bubble" style="max-width:260px;">
+    <div style="font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);margin-bottom:6px;">Apr 7, 14:32 UTC</div>
+    <div class="row"><span class="lbl">Pool</span><span class="val">$67,241.18</span></div>
+    <div class="row"><span class="lbl">CoinGecko</span><span class="val">$67,180.04</span></div>
+    <div class="row"><span class="lbl">Spread</span><span class="val" style="color:var(--status-ok);">+0.09%</span></div>
+  </div>
+</div>
+
+<h3>Empty state</h3>
+<div class="demo">
+  <div class="bp-empty">
+    <div class="icon">+</div>
+    <div class="title">No pools configured</div>
+    <div class="body">An admin will set up the first pool for this space. You&rsquo;ll see live data here once it&rsquo;s connected.</div>
+    <button class="bp-btn bp-btn--primary bp-btn--sm">Invite admin</button>
+  </div>
+</div>
+
+<h3>Skeleton (loading)</h3>
+<div class="demo">
+  <div class="bp-card" style="max-width:280px;">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="bp-metric">
+      <div class="bp-skel" style="width:80px;height:11px;margin-bottom:8px;"></div>
+      <div class="bp-skel" style="width:140px;height:30px;"></div>
+      <div class="bp-skel" style="width:90px;height:11px;margin-top:8px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============== 07 CHART SYSTEM ============== -->
+<h2><span class="sec-num">07</span>Chart system</h2>
+<p>
+  Today the chart layer mixes <span class="mono">lightweight-charts</span>, Visx, and hand-rolled SVG.
+  This system unifies them by giving every chart the same five things: a <strong>palette</strong>, a
+  <strong>tooltip</strong>, an <strong>axis style</strong>, a <strong>legend</strong>, and a
+  <strong>number formatter</strong>. Internals can stay heterogeneous.
+</p>
+
+<h3>Anatomy of a chart card</h3>
+<div class="demo">
+  <div class="bp-card">
+    <span class="cnr1"></span><span class="cnr2"></span>
+    <div class="chart-card-demo">
+      <div class="header">
+        <div>
+          <div class="title">Pool TVL &mdash; 30d</div>
+          <div style="font-family:var(--bp-font-num);font-variant-numeric:tabular-nums;font-size:var(--bp-text-2xl);font-weight:600;color:var(--fg-primary);margin-top:4px;">$12,438,201</div>
+        </div>
+        <div class="row gap-sm">
+          <span class="bp-pill bp-pill--ok"><span class="dot"></span>Healthy</span>
+          <span class="bp-pill"><span class="dot"></span>Updated 12s</span>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 600 140" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%"  stop-color="var(--accent)" stop-opacity="0.18" />
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+          </linearGradient>
+          <pattern id="grid" width="60" height="28" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 28" fill="none" stroke="var(--grid-major)" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="140" fill="url(#grid)"/>
+        <path d="M0,100 C40,90 80,70 120,75 C160,80 200,40 240,55 C280,68 320,30 360,42 C400,55 440,28 480,32 C520,36 560,18 600,22 L600,140 L0,140 Z"
+              fill="url(#g1)" />
+        <path d="M0,100 C40,90 80,70 120,75 C160,80 200,40 240,55 C280,68 320,30 360,42 C400,55 440,28 480,32 C520,36 560,18 600,22"
+              fill="none" stroke="var(--accent)" stroke-width="2" />
+      </svg>
+
+      <div class="row" style="justify-content:space-between;font-family:var(--bp-font-num);font-size:var(--bp-text-2xs);color:var(--fg-faint);">
+        <span>Mar 8</span><span>Mar 15</span><span>Mar 22</span><span>Mar 29</span><span>Apr 5</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Categorical chart &mdash; 4 series</h3>
+<div class="demo">
+  <svg viewBox="0 0 600 140" style="width:100%;height:140px;">
+    <defs>
+      <pattern id="grid2" width="60" height="28" patternUnits="userSpaceOnUse">
+        <path d="M 60 0 L 0 0 0 28" fill="none" stroke="var(--grid-major)" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="600" height="140" fill="url(#grid2)"/>
+    <path d="M0,90 Q60,40 120,50 T240,30 T360,55 T480,20 T600,40" fill="none" stroke="var(--cat-1)" stroke-width="2"/>
+    <path d="M0,70 Q60,80 120,40 T240,60 T360,30 T480,50 T600,20" fill="none" stroke="var(--cat-2)" stroke-width="2"/>
+    <path d="M0,50 Q60,30 120,70 T240,50 T360,80 T480,40 T600,60" fill="none" stroke="var(--cat-3)" stroke-width="2"/>
+    <path d="M0,80 Q60,60 120,30 T240,75 T360,40 T480,70 T600,30" fill="none" stroke="var(--cat-4)" stroke-width="2"/>
+  </svg>
+  <div class="row mt-md" style="justify-content:center;gap:24px;font-family:var(--bp-font-display);font-size:var(--bp-text-xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);">
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--cat-1);border-radius:2px;vertical-align:middle;margin-right:6px;"></span>Pool A</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--cat-2);border-radius:2px;vertical-align:middle;margin-right:6px;"></span>Pool B</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--cat-3);border-radius:2px;vertical-align:middle;margin-right:6px;"></span>Pool C</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--cat-4);border-radius:2px;vertical-align:middle;margin-right:6px;"></span>Pool D</span>
+  </div>
+</div>
+
+<h3>Sequential &mdash; for liquidity heatmaps and depth</h3>
+<div class="demo">
+  <div class="row" style="gap:0;border-radius:var(--bp-radius-sm);overflow:hidden;border:1px solid var(--border-default);">
+    <div style="flex:1;height:32px;background:var(--bp-blue-100);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-200);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-300);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-400);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-500);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-600);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-700);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-800);"></div>
+    <div style="flex:1;height:32px;background:var(--bp-blue-900);"></div>
+  </div>
+</div>
+
+<h3>Diverging &mdash; for spread, deviation, P&amp;L</h3>
+<div class="demo">
+  <div class="row" style="gap:0;border-radius:var(--bp-radius-sm);overflow:hidden;border:1px solid var(--border-default);">
+    <div style="flex:1;height:32px;background:#7f1d1d;"></div>
+    <div style="flex:1;height:32px;background:#b91c1c;"></div>
+    <div style="flex:1;height:32px;background:#ef4444;"></div>
+    <div style="flex:1;height:32px;background:#fca5a5;"></div>
+    <div style="flex:1;height:32px;background:var(--bp-ink-100);"></div>
+    <div style="flex:1;height:32px;background:#86efac;"></div>
+    <div style="flex:1;height:32px;background:#22c55e;"></div>
+    <div style="flex:1;height:32px;background:#15803d;"></div>
+    <div style="flex:1;height:32px;background:#14532d;"></div>
+  </div>
+</div>
+
+<h3>Number formatting contract</h3>
+<div class="bp-card">
+  <span class="cnr1"></span><span class="cnr2"></span>
+  <table style="width:100%;border-collapse:collapse;font-size:var(--bp-text-sm);">
+    <thead>
+      <tr>
+        <th style="text-align:left;padding:8px 12px;border-bottom:1px solid var(--border-default);font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);">Function</th>
+        <th style="text-align:left;padding:8px 12px;border-bottom:1px solid var(--border-default);font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);">Use for</th>
+        <th style="text-align:left;padding:8px 12px;border-bottom:1px solid var(--border-default);font-family:var(--bp-font-display);font-size:var(--bp-text-2xs);text-transform:uppercase;letter-spacing:var(--bp-tracking-wider);color:var(--fg-muted);">Example</th>
+      </tr>
+    </thead>
+    <tbody style="font-family:var(--bp-font-num);font-variant-numeric:tabular-nums;color:var(--fg-primary);">
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);"><span class="mono">formatPrice(n)</span></td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);font-family:var(--bp-font-text);color:var(--fg-secondary);">Token price, axis ticks, tooltips</td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);">$67,241.18 &middot; $1.2345 &middot; $0.000412</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);"><span class="mono">formatUsd(n)</span></td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);font-family:var(--bp-font-text);color:var(--fg-secondary);">TVL, volume, fees, KPIs</td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);">$12.4M &middot; $3.81M &middot; $912K</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);"><span class="mono">formatPct(n)</span></td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);font-family:var(--bp-font-text);color:var(--fg-secondary);">Spreads, deltas, allocations</td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);">+4.21% &middot; -0.08% &middot; 12.4%</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);"><span class="mono">formatCount(n)</span></td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);font-family:var(--bp-font-text);color:var(--fg-secondary);">LPs, swaps, addresses</td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border-subtle);">147 &middot; 1,284 &middot; 12.4K</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 12px;"><span class="mono">formatTime(t)</span></td>
+        <td style="padding:8px 12px;font-family:var(--bp-font-text);color:var(--fg-secondary);">Axis ticks, freshness</td>
+        <td style="padding:8px 12px;">14:32 UTC &middot; Apr 7 &middot; 12s ago</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout mt-md">
+  <strong>Single source.</strong> All five live in <span class="mono">lib/format-utils.ts</span>.
+  Charts call them. Cards call them. Tooltips call them. If a chart wants a special precision,
+  it passes an option, not a different function.
+</div>
+
+<!-- ============== 08 PATTERNS ============== -->
+<h2><span class="sec-num">08</span>Patterns</h2>
+
+<h3>Freshness chip</h3>
+<p>
+  Every card shows when its data was last updated. Highest-impact trust improvement in the audit:
+  it tells the user the dashboard is alive without making them ask.
+</p>
+<div class="demo">
+  <div class="row">
+    <span class="bp-pill bp-pill--ok"><span class="dot"></span>Updated 12s ago</span>
+    <span class="bp-pill"><span class="dot"></span>Updated 2m ago</span>
+    <span class="bp-pill bp-pill--warn"><span class="dot"></span>Stale &middot; 4h ago</span>
+    <span class="bp-pill bp-pill--bad"><span class="dot"></span>No data &middot; 1d</span>
+  </div>
+</div>
+
+<h3>Do / don&rsquo;t</h3>
+<div class="do-dont">
+  <div class="card2 do">
+    <h5>Do &mdash; semantic tokens</h5>
+    <p><span class="mono">background: var(--bg-surface);</span><br/>
+       <span class="mono">color: var(--fg-primary);</span></p>
+  </div>
+  <div class="card2 dont">
+    <h5>Don&rsquo;t &mdash; raw hex</h5>
+    <p><span class="mono">background: #ffffff;</span><br/>
+       <span class="mono">color: #0a1224;</span></p>
+  </div>
+  <div class="card2 do">
+    <h5>Do &mdash; 600-step accent</h5>
+    <p>On a white surface, blue-600 carries weight. Buttons and links feel intentional, not toy.</p>
+  </div>
+  <div class="card2 dont">
+    <h5>Don&rsquo;t &mdash; 400/500 accent</h5>
+    <p>Tailwind&rsquo;s default <span class="mono">blue-500</span> is for dark backgrounds. On white it looks pastel and indecisive.</p>
+  </div>
+  <div class="card2 do">
+    <h5>Do &mdash; tabular nums everywhere</h5>
+    <p>Use <span class="mono">.font-num</span> on every <em>number</em>. KPI columns line up.</p>
+  </div>
+  <div class="card2 dont">
+    <h5>Don&rsquo;t &mdash; mix proportional</h5>
+    <p>Inter on numbers makes a 6-card KPI strip wobble visibly. The user feels it as &ldquo;cheap.&rdquo;</p>
+  </div>
+  <div class="card2 do">
+    <h5>Do &mdash; status colors for status</h5>
+    <p>Use <span class="mono">--status-ok</span> / <span class="mono">--status-bad</span> only when the value <em>means</em> good or bad.</p>
+  </div>
+  <div class="card2 dont">
+    <h5>Don&rsquo;t &mdash; status colors for series</h5>
+    <p>Two unrelated lines should never be red and green. Use <span class="mono">--cat-*</span>.</p>
+  </div>
+  <div class="card2 do">
+    <h5>Do &mdash; min 36 px touch targets</h5>
+    <p>Tabs, FABs, and toggles. Affects touchpads and small windows too, not just mobile.</p>
+  </div>
+  <div class="card2 dont">
+    <h5>Don&rsquo;t &mdash; <span class="mono">py-1.5 text-[11px]</span></h5>
+    <p>Looks fine on a 27&Prime; monitor; impossible to hit on a laptop trackpad in a moving train.</p>
+  </div>
+</div>
+
+<!-- ============== 09 DASHBOARD PREVIEW ============== -->
+<h2><span class="sec-num">09</span>Composed dashboard preview</h2>
+<p>
+  Everything above, assembled into a single dashboard mock. Header + sidebar + KPI strip + chart cards
+  &mdash; all rendered by the same tokens. Toggle the theme in the top right and watch nothing fall apart.
+</p>
+
+<div class="preview-frame">
+  <div class="pf-header">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">app.transparent.space &nbsp;/&nbsp; solana-mm &nbsp;/&nbsp; cbBTC-USDC</div>
+    <div style="width:24px;"></div>
+  </div>
+  <div class="pf-body">
+    <div class="pf-side">
+      <div class="brand">Transparent Space</div>
+      <div class="group-title">Solana</div>
+      <div class="bp-side-item"><div class="icon">SOL</div><div>WBTC / SOL</div></div>
+      <div class="bp-side-item" aria-current="page"><div class="icon">SOL</div><div>cbBTC / USDC</div></div>
+      <div class="bp-side-item"><div class="icon">SOL</div><div>JTO / SOL</div></div>
+      <div class="group-title">Worldchain</div>
+      <div class="bp-side-item"><div class="icon">WLD</div><div>WLD / USDC</div></div>
+      <div class="bp-side-item"><div class="icon">WLD</div><div>WLD / WBTC</div></div>
+    </div>
+
+    <div class="pf-main">
+      <div class="pf-page-header">
+        <div>
+          <h3>cbBTC / USDC &middot; 0.05% (CL)</h3>
+          <div class="sub">Raydium &middot; pool 8j…3kP &middot; live</div>
+        </div>
+        <div class="row gap-sm">
+          <div class="bp-tabs">
+            <button class="bp-tab" aria-selected="true">Pool</button>
+            <button class="bp-tab" aria-selected="false">RFQ</button>
+          </div>
+          <span class="bp-pill bp-pill--ok"><span class="dot"></span>Healthy</span>
+        </div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">TVL</div>
+            <div class="value">$12.4M</div>
+            <div class="delta delta--up">▲ +4.2%</div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">24h volume</div>
+            <div class="value">$3.81M</div>
+            <div class="delta delta--down">▼ -1.6%</div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">Active LPs</div>
+            <div class="value">147</div>
+            <div class="delta">— flat</div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">Spread vs CG</div>
+            <div class="value" style="color:var(--status-ok);">+0.09%</div>
+            <div class="delta">Healthy</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="chart-card-demo">
+            <div class="header">
+              <div>
+                <div class="title">Pool TVL &mdash; 30d</div>
+                <div style="font-family:var(--bp-font-num);font-variant-numeric:tabular-nums;font-size:var(--bp-text-xl);font-weight:600;color:var(--fg-primary);margin-top:4px;">$12,438,201</div>
+              </div>
+              <span class="bp-pill"><span class="dot"></span>30d</span>
+            </div>
+            <svg viewBox="0 0 600 140" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g3" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%"  stop-color="var(--accent)" stop-opacity="0.18" />
+                  <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+                </linearGradient>
+                <pattern id="grid3" width="60" height="28" patternUnits="userSpaceOnUse">
+                  <path d="M 60 0 L 0 0 0 28" fill="none" stroke="var(--grid-major)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="600" height="140" fill="url(#grid3)"/>
+              <path d="M0,100 C40,90 80,70 120,75 C160,80 200,40 240,55 C280,68 320,30 360,42 C400,55 440,28 480,32 C520,36 560,18 600,22 L600,140 L0,140 Z"
+                    fill="url(#g3)" />
+              <path d="M0,100 C40,90 80,70 120,75 C160,80 200,40 240,55 C280,68 320,30 360,42 C400,55 440,28 480,32 C520,36 560,18 600,22"
+                    fill="none" stroke="var(--accent)" stroke-width="2" />
+            </svg>
+            <div class="row" style="justify-content:space-between;font-family:var(--bp-font-num);font-size:var(--bp-text-2xs);color:var(--fg-faint);">
+              <span>Mar 8</span><span>Mar 15</span><span>Mar 22</span><span>Mar 29</span><span>Apr 5</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="chart-card-demo">
+            <div class="header">
+              <div>
+                <div class="title">LP concentration</div>
+                <div style="font-family:var(--bp-font-num);font-variant-numeric:tabular-nums;font-size:var(--bp-text-xl);font-weight:600;color:var(--fg-primary);margin-top:4px;">Top 5 &middot; 64%</div>
+              </div>
+            </div>
+            <svg viewBox="0 0 280 140" preserveAspectRatio="none">
+              <g>
+                <rect x="10"  y="20"  width="40" height="100" fill="var(--cat-1)" rx="2"/>
+                <rect x="60"  y="40"  width="40" height="80"  fill="var(--cat-2)" rx="2"/>
+                <rect x="110" y="55"  width="40" height="65"  fill="var(--cat-3)" rx="2"/>
+                <rect x="160" y="75"  width="40" height="45"  fill="var(--cat-4)" rx="2"/>
+                <rect x="210" y="92"  width="40" height="28"  fill="var(--cat-5)" rx="2"/>
+              </g>
+            </svg>
+            <div class="row" style="justify-content:space-between;font-family:var(--bp-font-num);font-size:var(--bp-text-2xs);color:var(--fg-faint);">
+              <span>LP-1</span><span>LP-2</span><span>LP-3</span><span>LP-4</span><span>LP-5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="callout mt-md">
+  <strong>This is the system working.</strong> Every color, every shadow, every font, every spacing
+  value in the preview above came from a token. Toggling the theme rebinds those tokens; nothing
+  in the markup changes. That&rsquo;s the contract.
+</div>
+
+<!-- ============== 10 ACCESSIBILITY ============== -->
+<h2><span class="sec-num">10</span>Accessibility floor</h2>
+<p>
+  These are the non-negotiables. Hitting them does not make the product accessible &mdash; it makes
+  it <em>not embarrassing</em>. Real accessibility is a separate audit; this is the floor.
+</p>
+<ul>
+  <li>Every interactive element has a visible <strong>focus ring</strong>: <span class="mono">box-shadow: 0 0 0 3px var(--accent-soft), 0 0 0 4px var(--border-focus)</span> on <span class="mono">:focus-visible</span>.</li>
+  <li>Active sidebar item carries <strong><span class="mono">aria-current="page"</span></strong>.</li>
+  <li>Active tab carries <strong><span class="mono">aria-selected="true"</span></strong>.</li>
+  <li>Touch targets are <strong>&ge; 36&nbsp;px</strong> in their smallest dimension.</li>
+  <li>Body text is <strong>&ge; 14&nbsp;px</strong>; never use the type scale below <span class="mono">sm</span> for paragraph copy.</li>
+  <li>Color contrast: every <span class="mono">--fg-*</span> token meets <strong>WCAG AA</strong> against the surface it&rsquo;s rendered on. <span class="mono">--fg-faint</span> is for decoration only, never for content.</li>
+  <li>No information is conveyed by <strong>color alone</strong>. Status colors are paired with an icon, a label, or a shape.</li>
+  <li>Every chart has a <strong>text equivalent</strong> &mdash; either a visible legend or an <span class="mono">aria-label</span> on the SVG describing what it shows.</li>
+</ul>
+
+<!-- ============== 11 TOKEN EXPORT ============== -->
+<h2><span class="sec-num">11</span>Token export</h2>
+<p>The actual block to drop into <span class="mono">app/globals.css</span>. The semantic layer is what matters &mdash; the scale stays private.</p>
+
+<pre data-lang="css">/* ==== Scale (private) ==== */
+:root {
+  --bp-blue-50:#eff5ff; --bp-blue-100:#dbe8ff; --bp-blue-200:#b6cffe;
+  --bp-blue-300:#84acfd; --bp-blue-400:#5482f9; --bp-blue-500:#2f5ef0;
+  --bp-blue-600:#1f47dc; --bp-blue-700:#1c3bb4; --bp-blue-800:#1c348e;
+  --bp-blue-900:#1c2f72; --bp-blue-950:#14204a;
+
+  --bp-ink-50:#f6f8fc;  --bp-ink-100:#eef2f9; --bp-ink-200:#dbe2ee;
+  --bp-ink-300:#c2cbdc; --bp-ink-400:#94a0b8; --bp-ink-500:#64708a;
+  --bp-ink-600:#46526b; --bp-ink-700:#2f3a51; --bp-ink-800:#1b2438;
+  --bp-ink-900:#0a1224; --bp-ink-950:#060a18;
+
+  --cat-1:#1f47dc; --cat-2:#0d8a78; --cat-3:#b4600c; --cat-4:#6c3fc4;
+  --cat-5:#0e7490; --cat-6:#b8156a; --cat-7:#5f7d12; --cat-8:#495569;
+}
+
+/* ==== Semantic — LIGHT (canonical) ==== */
+:root,
+:root[data-theme="light"] {
+  --bg-canvas: var(--bp-ink-50);
+  --bg-surface: #ffffff;
+  --bg-surface-2: var(--bp-ink-100);
+  --bg-elevated: #ffffff;
+
+  --fg-primary: var(--bp-ink-900);
+  --fg-secondary: var(--bp-ink-700);
+  --fg-muted: var(--bp-ink-500);
+  --fg-faint: var(--bp-ink-400);
+
+  --border-subtle: #e6ecf5;
+  --border-default: var(--bp-ink-200);
+  --border-strong: var(--bp-ink-300);
+
+  --accent: var(--bp-blue-600);
+  --accent-hover: var(--bp-blue-700);
+  --accent-soft: var(--bp-blue-50);
+
+  --status-ok:   #058044;  --status-warn: #b06808;
+  --status-bad:  #b91c1c;  --status-info: #0e7490;
+
+  --shadow-1: 0 1px 2px rgba(10,18,36,0.05),
+              0 1px 2px rgba(10,18,36,0.04);
+  --shadow-2: 0 1px 3px rgba(10,18,36,0.06),
+              0 6px 16px rgba(10,18,36,0.06);
+  --shadow-3: 0 4px 12px rgba(10,18,36,0.08),
+              0 16px 32px rgba(10,18,36,0.08);
+  --shadow-4: 0 12px 32px rgba(10,18,36,0.14),
+              0 28px 64px rgba(10,18,36,0.12);
+}
+
+/* ==== Semantic — DARK (after-hours, optional) ==== */
+:root[data-theme="dark"] {
+  --bg-canvas: #060a18;
+  --bg-surface: #0c1426;
+  --bg-surface-2: #111c33;
+  --bg-elevated: #14213d;
+
+  --fg-primary: #f1f5f9;
+  --fg-secondary: #cbd5e1;
+  --fg-muted: #94a0b8;
+  --fg-faint: #64708a;
+
+  --border-default: #1e293b;
+  --border-strong: #334155;
+
+  --accent: #5482f9;
+  --accent-hover: #84acfd;
+  --accent-soft: rgba(84,130,249,0.14);
+
+  --status-ok: #34d399;  --status-warn: #fbbf24;
+  --status-bad: #f87171; --status-info: #22d3ee;
+
+  /* Re-bind categorical for dark */
+  --cat-1:#6da6ff; --cat-2:#2dd4bf; --cat-3:#f0a559; --cat-4:#a78bfa;
+  --cat-5:#22d3ee; --cat-6:#f472b6; --cat-7:#a3e635; --cat-8:#94a3b8;
+}</pre>
+
+<h3>Tailwind v4 hookup</h3>
+<pre data-lang="css">@theme inline {
+  --color-bg-canvas:    var(--bg-canvas);
+  --color-bg-surface:   var(--bg-surface);
+  --color-bg-surface-2: var(--bg-surface-2);
+  --color-fg-primary:   var(--fg-primary);
+  --color-fg-secondary: var(--fg-secondary);
+  --color-fg-muted:     var(--fg-muted);
+  --color-fg-faint:     var(--fg-faint);
+  --color-border:       var(--border-default);
+  --color-accent:       var(--accent);
+  --color-status-ok:    var(--status-ok);
+  --color-status-warn:  var(--status-warn);
+  --color-status-bad:   var(--status-bad);
+
+  --font-display: var(--bp-font-display);
+  --font-sans:    var(--bp-font-text);
+  --font-mono:    var(--bp-font-num);
+
+  --radius-sm: var(--bp-radius-sm);
+  --radius-md: var(--bp-radius-md);
+  --radius-lg: var(--bp-radius-lg);
+}</pre>
+
+<h3>Lint rule</h3>
+<pre data-lang="bash"># Forbid raw hex in component files; allow it only in app/globals.css
+- pattern: "#[0-9a-fA-F]{3,8}"
+  paths:   ["components/**/*.{ts,tsx}"]
+  message: "Use semantic tokens (var(--accent), bg-surface, etc.). Hex stays in globals.css."</pre>
+
+<!-- ============== 12 ADOPTION PLAN ============== -->
+<h2><span class="sec-num">12</span>Adoption plan</h2>
+<p>
+  This system is designed to be adopted <em>incrementally</em>. You should not freeze feature work
+  to migrate. Suggested order:
+</p>
+<ol>
+  <li><strong>Land tokens.</strong> Drop the scale + semantic blocks into <span class="mono">app/globals.css</span>. Nothing breaks &mdash; the new vars are additive.</li>
+  <li><strong>Wire Tailwind <span class="mono">@theme</span></strong> so utilities like <span class="mono">bg-surface</span> are available.</li>
+  <li><strong>Migrate primitives:</strong> <span class="mono">button.tsx</span>, <span class="mono">input.tsx</span>. These are the easiest and the most-used.</li>
+  <li><strong>Create new card primitives</strong> (<span class="mono">Card</span>, <span class="mono">MetricCard</span>, <span class="mono">ChartCard</span>) consuming only semantic tokens; keep the old ones in place until each consumer is moved.</li>
+  <li><strong>Build <span class="mono">lib/format-utils.ts</span></strong> and <span class="mono">lib/chart-theme.ts</span>. Migrate two charts as the proof &mdash; price spread and TVL area.</li>
+  <li><strong>Add the lint rule.</strong> Now drift cannot re-enter even by accident.</li>
+  <li><strong>Migrate remaining charts</strong> one PR at a time. Each PR is small.</li>
+  <li><strong>Delete dead tokens.</strong> Once nothing references the old <span class="mono">--bp-bg-*</span> / <span class="mono">--bp-text-*</span> names, remove them.</li>
+</ol>
+
+<div class="callout">
+  <strong>The goal isn&rsquo;t to make Transparent Space look different.</strong>
+  Users should not notice anything visually changed on day one. They should notice, a month later,
+  that the product feels <em>tighter</em> &mdash; that the dashboard feels solid, that the charts agree
+  with each other, that nothing looks &ldquo;off-brand.&rdquo; That feeling is the design system doing
+  its job.
+</div>
+
+<hr class="div" />
+
+<p style="font-size:var(--bp-text-xs);color:var(--fg-faint);">
+  Blueprint v1 &middot; 2026-04-07 &middot; <span class="mono">docs/design-system.html</span> &middot;
+  Light primary, dark secondary. Toggle in the top right. Open in any browser; no build step.
+</p>
+
+</div>
+
+<script>
+  const root = document.documentElement;
+  const btnLight = document.getElementById('t-light');
+  const btnDark  = document.getElementById('t-dark');
+
+  function setTheme(t) {
+    root.setAttribute('data-theme', t);
+    btnLight.classList.toggle('active', t === 'light');
+    btnDark.classList.toggle('active',  t === 'dark');
+    btnLight.setAttribute('aria-pressed', t === 'light');
+    btnDark.setAttribute('aria-pressed',  t === 'dark');
+    try { localStorage.setItem('bp-theme', t); } catch (_) {}
+  }
+  btnLight.addEventListener('click', () => setTheme('light'));
+  btnDark .addEventListener('click', () => setTheme('dark'));
+
+  // Default light. Only restore explicit dark.
+  try {
+    const saved = localStorage.getItem('bp-theme');
+    if (saved === 'dark') setTheme('dark');
+    else setTheme('light');
+  } catch (_) { setTheme('light'); }
+
+  function restart(el) {
+    const ball = el.querySelector('.ball');
+    if (!ball) return;
+    ball.style.animation = 'none';
+    ball.offsetHeight; // reflow
+    ball.style.animation = '';
+  }
+  window.restart = restart;
+</script>
+</body>
+</html>

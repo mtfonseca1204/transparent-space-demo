@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>0G AI — Campaign TVL Over Time (3 months)</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f7f4;
+    --card: #ffffff;
+    --border: #e6e6e0;
+    --border-subtle: #ececE6;
+    --text: #1a1a1a;
+    --muted: #8a8a82;
+    --campaign: #06b6d4;   /* cyan-500  */
+    --other: #9ca3af;      /* gray-400  */
+    --live: #10b981;       /* emerald-500 */
+    --past: #f59e0b;       /* amber-500 */
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--mono);
+    -webkit-font-smoothing: antialiased;
+    padding: 28px;
+  }
+  .card {
+    max-width: 1040px; margin: 0 auto; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    overflow: hidden;
+  }
+  .head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .title { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; color: #444; margin: 0; }
+  .sub { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
+  .badge { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: #ecfdf5; color: #047857; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--live); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: flex-end; padding: 10px 20px 0; font-size: 11px; }
+  .legend .item { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .chart-wrap { position: relative; padding: 4px 12px 16px; }
+  svg { display: block; width: 100%; height: 360px; }
+  .axis text { fill: var(--muted); font-size: 9px; font-family: var(--mono); }
+  .axis .domain, .axis line { stroke: transparent; }
+  .grid line { stroke: var(--border-subtle); stroke-dasharray: 2 2; stroke-opacity: .6; }
+  .grid .domain { stroke: none; }
+  .tooltip {
+    position: absolute; pointer-events: none; z-index: 10;
+    background: rgba(255,255,255,.95); border: 1px solid var(--border);
+    border-radius: 7px; padding: 8px 10px; box-shadow: 0 6px 18px rgba(0,0,0,.10);
+    font-size: 10px; min-width: 160px; opacity: 0; transition: opacity .08s;
+  }
+  .tooltip .tt-date { font-weight: 700; color: #555; margin-bottom: 6px; }
+  .tooltip .tt-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 2px; }
+  .tooltip .tt-row .lbl { color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .tooltip .tt-row .lbl .sq { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
+  .tooltip .tt-row .val { font-weight: 600; font-variant-numeric: tabular-nums; color: #222; }
+  .tooltip .tt-total { border-top: 1px solid var(--border-subtle); margin-top: 6px; padding-top: 5px; }
+  .foot { padding: 10px 20px 16px; font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .range-sel { display: inline-flex; gap: 2px; background: #f0f0ea; border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+  .range-sel button { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .02em; color: var(--muted); background: transparent; border: 0; border-radius: 6px; padding: 4px 10px; cursor: pointer; transition: background .12s, color .12s, box-shadow .12s; }
+  .range-sel button:hover { color: #333; }
+  .range-sel button.active { background: #fff; color: #111; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">
+      <div>
+        <h1 class="title">Campaign TVL Over Time</h1>
+        <p class="sub" id="subtitle"></p>
+      </div>
+      <div class="head-right">
+        <span class="badge" id="status"><span class="dot"></span><span id="status-text"></span></span>
+        <div class="range-sel" id="range-sel"></div>
+      </div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="chart-wrap">
+      <svg id="chart"></svg>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <div class="foot">
+      <span id="foot-left"></span>
+      <span id="foot-right"></span>
+    </div>
+  </div>
+
+<script>
+const DATA = {"generatedAt":"2026-06-01T19:46:01.000Z","pool":"0xce77377cdfeb967ff2bb6f223ae74e1ae8dcfc71","poolName":"Provide liquidity to Uniswap W0G-USDC.e 1%","rewardSymbol":"0G","recipientCount":23,"days":90,"token0Symbol":"W0G","token1Symbol":"USDC.e","campaigns":[{"campaignId":"0x0174480537b5392611be035bc954e5650bce2c0f55f85039332a220d224f14bf","start":1776688200,"end":1779280200,"isLive":false,"rewardSymbol":"0G"},{"campaignId":"0x806bdeadeddaf0815c3e20dd71c1d68aa22edad77c9f9e5ed41bc36d52613054","start":1779166800,"end":1781845200,"isLive":true,"rewardSymbol":"0G"}],"points":[{"date":1772496000,"dateStr":"Mar 3","campaign":0,"other":0},{"date":1772582400,"dateStr":"Mar 4","campaign":0,"other":0},{"date":1772668800,"dateStr":"Mar 5","campaign":0,"other":0},{"date":1772755200,"dateStr":"Mar 6","campaign":0,"other":0},{"date":1772841600,"dateStr":"Mar 7","campaign":0,"other":0},{"date":1772928000,"dateStr":"Mar 8","campaign":0,"other":0},{"date":1773014400,"dateStr":"Mar 9","campaign":0,"other":0},{"date":1773100800,"dateStr":"Mar 10","campaign":0,"other":0},{"date":1773187200,"dateStr":"Mar 11","campaign":0,"other":0},{"date":1773273600,"dateStr":"Mar 12","campaign":0,"other":0},{"date":1773360000,"dateStr":"Mar 13","campaign":0,"other":0},{"date":1773446400,"dateStr":"Mar 14","campaign":0,"other":0},{"date":1773532800,"dateStr":"Mar 15","campaign":0,"other":0},{"date":1773619200,"dateStr":"Mar 16","campaign":0,"other":0},{"date":1773705600,"dateStr":"Mar 17","campaign":0,"other":0},{"date":1773792000,"dateStr":"Mar 18","campaign":0,"other":0},{"date":1773878400,"dateStr":"Mar 19","campaign":0,"other":0},{"date":1773964800,"dateStr":"Mar 20","campaign":0,"other":0},{"date":1774051200,"dateStr":"Mar 21","campaign":0,"other":0},{"date":1774137600,"dateStr":"Mar 22","campaign":0,"other":0},{"date":1774224000,"dateStr":"Mar 23","campaign":0,"other":0},{"date":1774310400,"dateStr":"Mar 24","campaign":0,"other":0},{"date":1774396800,"dateStr":"Mar 25","campaign":0,"other":0},{"date":1774483200,"dateStr":"Mar 26","campaign":0,"other":0},{"date":1774569600,"dateStr":"Mar 27","campaign":0,"other":0},{"date":1774656000,"dateStr":"Mar 28","campaign":0,"other":0},{"date":1774742400,"dateStr":"Mar 29","campaign":0,"other":0},{"date":1774828800,"dateStr":"Mar 30","campaign":0,"other":0},{"date":1774915200,"dateStr":"Mar 31","campaign":0,"other":0},{"date":1775001600,"dateStr":"Apr 1","campaign":0,"other":0},{"date":1775088000,"dateStr":"Apr 2","campaign":0,"other":0},{"date":1775174400,"dateStr":"Apr 3","campaign":0,"other":0},{"date":1775260800,"dateStr":"Apr 4","campaign":0,"other":0},{"date":1775347200,"dateStr":"Apr 5","campaign":0,"other":0},{"date":1775433600,"dateStr":"Apr 6","campaign":0,"other":0},{"date":1775520000,"dateStr":"Apr 7","campaign":0,"other":0},{"date":1775606400,"dateStr":"Apr 8","campaign":0,"other":0},{"date":1775692800,"dateStr":"Apr 9","campaign":0,"other":0},{"date":1775779200,"dateStr":"Apr 10","campaign":0,"other":0},{"date":1775865600,"dateStr":"Apr 11","campaign":0,"other":0},{"date":1775952000,"dateStr":"Apr 12","campaign":0,"other":0},{"date":1776038400,"dateStr":"Apr 13","campaign":0,"other":0},{"date":1776124800,"dateStr":"Apr 14","campaign":0,"other":0},{"date":1776211200,"dateStr":"Apr 15","campaign":0,"other":0},{"date":1776297600,"dateStr":"Apr 16","campaign":0,"other":0},{"date":1776384000,"dateStr":"Apr 17","campaign":0,"other":0},{"date":1776470400,"dateStr":"Apr 18","campaign":0,"other":0},{"date":1776556800,"dateStr":"Apr 19","campaign":0,"other":0},{"date":1776643200,"dateStr":"Apr 20","campaign":0,"other":0.05836362912515336},{"date":1776729600,"dateStr":"Apr 21","campaign":5977.50922079706,"other":213916.2934101479},{"date":1776816000,"dateStr":"Apr 22","campaign":159026.17317646823,"other":214189.9091842575},{"date":1776902400,"dateStr":"Apr 23","campaign":220597.38412412035,"other":213466.96613753279},{"date":1776988800,"dateStr":"Apr 24","campaign":208419.3670979765,"other":213448.84352406784},{"date":1777075200,"dateStr":"Apr 25","campaign":184463.06210164857,"other":213402.12076887724},{"date":1777161600,"dateStr":"Apr 26","campaign":156922.1613269343,"other":212981.71891514244},{"date":1777248000,"dateStr":"Apr 27","campaign":207911.68342756786,"other":212535.7184465911},{"date":1777334400,"dateStr":"Apr 28","campaign":394982.19400549965,"other":212800.92618660955},{"date":1777420800,"dateStr":"Apr 29","campaign":394327.28181831667,"other":212518.87398549548},{"date":1777507200,"dateStr":"Apr 30","campaign":387459.23753849795,"other":212079.6184675305},{"date":1777593600,"dateStr":"May 1","campaign":313327.2307757248,"other":211907.92449043502},{"date":1777680000,"dateStr":"May 2","campaign":313699.8521408084,"other":212097.4989803721},{"date":1777766400,"dateStr":"May 3","campaign":316246.99819588976,"other":212069.81021660642},{"date":1777852800,"dateStr":"May 4","campaign":316236.4486173895,"other":212064.46600344672},{"date":1777939200,"dateStr":"May 5","campaign":296336.2853966136,"other":212076.26045843514},{"date":1778025600,"dateStr":"May 6","campaign":297260.96245456045,"other":212596.69628056},{"date":1778112000,"dateStr":"May 7","campaign":297359.6562411992,"other":212652.24408667936},{"date":1778198400,"dateStr":"May 8","campaign":333388.20835835347,"other":213108.4375035065},{"date":1778284800,"dateStr":"May 9","campaign":334125.62059755647,"other":213405.3638283611},{"date":1778371200,"dateStr":"May 10","campaign":354666.91808786744,"other":213368.74524646456},{"date":1778457600,"dateStr":"May 11","campaign":364829.0296357941,"other":213274.6108309743},{"date":1778544000,"dateStr":"May 12","campaign":357709.1008764026,"other":212755.83490245184},{"date":1778630400,"dateStr":"May 13","campaign":359653.61659999704,"other":212574.7859811947},{"date":1778716800,"dateStr":"May 14","campaign":410390.4010289206,"other":212746.1371082627},{"date":1778803200,"dateStr":"May 15","campaign":377165.0370186928,"other":211522.41287430841},{"date":1778889600,"dateStr":"May 16","campaign":403015.2121561982,"other":211016.91237857915},{"date":1778976000,"dateStr":"May 17","campaign":395301.0571394708,"other":210882.7308894758},{"date":1779062400,"dateStr":"May 18","campaign":399948.6726011865,"other":210716.67121866543},{"date":1779148800,"dateStr":"May 19","campaign":399921.7702627511,"other":210669.26950678055},{"date":1779235200,"dateStr":"May 20","campaign":382127.05511288764,"other":210734.11331435342},{"date":1779321600,"dateStr":"May 21","campaign":475356.9256448499,"other":210835.8878452037},{"date":1779408000,"dateStr":"May 22","campaign":474543.2926927025,"other":210596.25979873206},{"date":1779494400,"dateStr":"May 23","campaign":471353.4702700554,"other":210595.0968423495},{"date":1779580800,"dateStr":"May 24","campaign":472218.85237635765,"other":210503.30353768833},{"date":1779667200,"dateStr":"May 25","campaign":458728.010986657,"other":210531.06491386294},{"date":1779753600,"dateStr":"May 26","campaign":431442.02689939627,"other":210162.19499729353},{"date":1779840000,"dateStr":"May 27","campaign":429658.9376106058,"other":209984.57503623908},{"date":1779926400,"dateStr":"May 28","campaign":435695.30336057977,"other":209983.05565295962},{"date":1780012800,"dateStr":"May 29","campaign":435295.845083486,"other":209985.8577880537},{"date":1780099200,"dateStr":"May 30","campaign":454559.48039591615,"other":209984.46565422532},{"date":1780185600,"dateStr":"May 31","campaign":455693.1198186256,"other":209994.10628254505},{"date":1780272000,"dateStr":"Jun 1","campaign":455662.9570935794,"other":209984.4921010746}]};
+
+const COLOR = { campaign: "#06b6d4", other: "#9ca3af", live: "#10b981", past: "#f59e0b" };
+
+function fmtUsd(v) {
+  if (!isFinite(v) || v <= 0) return "$0";
+  if (v >= 1e9) return "$" + (v/1e9).toFixed(2) + "B";
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(2) + "M";
+  if (v >= 1e3) return "$" + (v/1e3).toFixed(1).replace(/\.0$/, "") + "K";
+  return "$" + v.toFixed(0);
+}
+function fmtDate(sec) {
+  return new Date(sec*1000).toLocaleDateString("en-US", { month:"short", day:"numeric", timeZone:"UTC" });
+}
+function fmtDateFull(sec) {
+  return new Date(sec*1000).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric", timeZone:"UTC" });
+}
+
+const RANGE_OPTIONS = [30, 45, 60, 90];
+let rangeDays = 90;
+
+function render() {
+  const d = DATA;
+  const nowSec = Math.floor(Date.parse(d.generatedAt) / 1000);
+  // Filter the baked 90-day series down to the selected window.
+  const windowStart = nowSec - rangeDays * 86400;
+  const pts = d.points.filter((p) => p.date >= windowStart);
+  // Campaigns whose window overlaps the visible range.
+  const visibleCampaigns = d.campaigns.filter((c) => c.end >= windowStart);
+
+  // Subtitle / status
+  document.getElementById("subtitle").textContent =
+    `${d.poolName} · last ${rangeDays} days · LPs earning ${d.rewardSymbol} vs the rest of the pool`;
+  const live = d.campaigns.find(c => c.isLive);
+  const statusEl = document.getElementById("status");
+  const statusText = document.getElementById("status-text");
+  if (live) {
+    const daysLeft = Math.max(0, Math.ceil((live.end - nowSec)/86400));
+    statusText.textContent = `Live · ends in ${daysLeft}d`;
+  } else {
+    statusEl.style.background = "#f3f4f6"; statusEl.style.color = "#6b7280";
+    statusEl.querySelector(".dot").style.background = "#9ca3af";
+    statusText.textContent = "No live campaign";
+  }
+
+  // Legend
+  const hasLive = visibleCampaigns.some(c => c.isLive);
+  const hasPast = visibleCampaigns.some(c => !c.isLive);
+  const legend = [
+    { c: COLOR.campaign, t: `Campaign LPs (${d.recipientCount})` },
+    { c: COLOR.other, t: "Other LPs" },
+  ];
+  if (hasLive) legend.push({ c: COLOR.live, t: "Live campaign", bold: true });
+  if (hasPast) legend.push({ c: COLOR.past, t: "Previous", faint: true });
+  document.getElementById("legend").innerHTML = legend.map(l =>
+    `<span class="item"><span class="swatch" style="background:${l.c};${l.faint?'opacity:.55':''}"></span>${l.t}</span>`
+  ).join("");
+
+  // Footer
+  const totalNow = pts.length ? pts[pts.length-1].campaign + pts[pts.length-1].other : 0;
+  document.getElementById("foot-left").textContent =
+    `Current pool TVL ${fmtUsd(totalNow)} · ${d.campaigns.length} campaign(s) · ${d.token0Symbol}/${d.token1Symbol}`;
+  document.getElementById("foot-right").textContent = `Generated ${fmtDateFull(nowSec)} (UTC) · pool ${d.pool.slice(0,6)}…${d.pool.slice(-4)}`;
+
+  // ── Scales ──
+  const svg = d3.select("#chart");
+  const bbox = svg.node().getBoundingClientRect();
+  const W = bbox.width, H = bbox.height;
+  const m = { top: 24, right: 16, bottom: 28, left: 52 };
+  const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
+  svg.selectAll("*").remove();
+  const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
+
+  const lastDate = pts.length ? pts[pts.length-1].date : nowSec;
+  // Anchor the left edge at the exact window start so the range reads cleanly,
+  // and extend the right edge to the furthest visible campaign end (e.g. a live
+  // campaign that ends in the future) so its end marker lands on the axis.
+  const furthestEnd = visibleCampaigns.reduce((mx,c)=>Math.max(mx,c.end), lastDate);
+  const x = d3.scaleTime().domain([new Date(windowStart*1000), new Date(furthestEnd*1000)]).range([0, iw]);
+  const yMax = (d3.max(pts, p => p.campaign + p.other) || 1) * 1.1;
+  const y = d3.scaleLinear().domain([0, yMax]).range([ih, 0]).nice();
+
+  // ── Grid ──
+  g.append("g").attr("class","grid")
+    .call(d3.axisLeft(y).ticks(4).tickSize(-iw).tickFormat(""));
+
+  // ── Campaign bands (past under live) ──
+  const bands = [...visibleCampaigns].sort((a,b)=>Number(a.isLive)-Number(b.isLive));
+  const bandG = g.append("g");
+  bands.forEach(c => {
+    const col = c.isLive ? COLOR.live : COLOR.past;
+    const x1 = x(new Date(c.start*1000)), x2 = x(new Date(c.end*1000));
+    const cx1 = Math.max(0, Math.min(iw, x1)), cx2 = Math.max(0, Math.min(iw, x2));
+    if (cx2 > cx1) {
+      bandG.append("rect").attr("x", cx1).attr("y", 0).attr("width", cx2-cx1).attr("height", ih)
+        .attr("fill", col).attr("fill-opacity", c.isLive ? 0.14 : 0.045);
+    }
+    [["start", x1, c.start], ["end", x2, c.end]].forEach(([which, xx, ts]) => {
+      if (xx < -1 || xx > iw + 1) return;
+      bandG.append("line").attr("x1", xx).attr("x2", xx).attr("y1", -m.top+6).attr("y2", ih)
+        .attr("stroke", col).attr("stroke-width", c.isLive ? 1.75 : 1)
+        .attr("stroke-dasharray", c.isLive ? "5,3" : "2,4")
+        .attr("stroke-opacity", c.isLive ? 1 : 0.45);
+      bandG.append("text").attr("x", which==="start" ? xx+5 : xx-5).attr("y", -10)
+        .attr("text-anchor", which==="start" ? "start" : "end")
+        .attr("fill", col).attr("font-size", c.isLive ? 10 : 9)
+        .attr("font-weight", c.isLive ? 700 : 500).attr("fill-opacity", c.isLive ? 1 : .7)
+        .text(which==="start" ? `${c.isLive ? "LIVE" : "Prev"} · ${fmtDate(ts)}` : fmtDate(ts));
+    });
+  });
+
+  // ── Stacked areas (campaign bottom, other on top) ──
+  const xOf = p => x(new Date(p.date*1000));
+  const campArea = d3.area().curve(d3.curveMonotoneX)
+    .x(xOf).y0(y(0)).y1(p => y(p.campaign));
+  const otherArea = d3.area().curve(d3.curveMonotoneX)
+    .x(xOf).y0(p => y(p.campaign)).y1(p => y(p.campaign + p.other));
+  const campLine = d3.line().curve(d3.curveMonotoneX).x(xOf).y(p => y(p.campaign));
+  const totalLine = d3.line().curve(d3.curveMonotoneX).x(xOf).y(p => y(p.campaign + p.other));
+
+  g.append("path").datum(pts).attr("d", otherArea).attr("fill", COLOR.other).attr("fill-opacity", .3);
+  g.append("path").datum(pts).attr("d", campArea).attr("fill", COLOR.campaign).attr("fill-opacity", .45);
+  g.append("path").datum(pts).attr("d", totalLine).attr("fill","none").attr("stroke", COLOR.other).attr("stroke-width", 1.5);
+  g.append("path").datum(pts).attr("d", campLine).attr("fill","none").attr("stroke", COLOR.campaign).attr("stroke-width", 1.5);
+
+  // ── Today marker (only if a campaign is live) ──
+  if (live) {
+    const tx = xOf(pts[pts.length-1]);
+    g.append("line").attr("x1",tx).attr("x2",tx).attr("y1",0).attr("y2",ih)
+      .attr("stroke","#9ca3af").attr("stroke-opacity",.45).attr("stroke-width",1);
+    g.append("circle").attr("cx",tx).attr("cy",6).attr("r",3).attr("fill",COLOR.live).attr("stroke","#fff").attr("stroke-width",1);
+  }
+
+  // ── Axes ──
+  g.append("g").attr("class","axis").attr("transform",`translate(0,${ih})`)
+    .call(d3.axisBottom(x).ticks(7).tickFormat(d3.timeFormat("%b %d")));
+  g.append("g").attr("class","axis")
+    .call(d3.axisLeft(y).ticks(4).tickFormat(v => fmtUsd(v)));
+
+  // ── Hover ──
+  const tooltip = d3.select("#tooltip");
+  const crosshair = g.append("line").attr("y1",0).attr("y2",ih)
+    .attr("stroke","#9ca3af").attr("stroke-dasharray","3,3").attr("stroke-opacity",.6).style("display","none");
+  const focusCamp = g.append("circle").attr("r",3.5).attr("fill",COLOR.campaign).attr("stroke","#fff").style("display","none");
+  const focusTot = g.append("circle").attr("r",3.5).attr("fill",COLOR.other).attr("stroke","#fff").style("display","none");
+
+  g.append("rect").attr("width",iw).attr("height",ih).attr("fill","transparent")
+    .on("mousemove", (event) => {
+      const [mx] = d3.pointer(event);
+      let best = 0, bestDist = Infinity;
+      for (let i=0;i<pts.length;i++){ const dist=Math.abs(xOf(pts[i])-mx); if(dist<bestDist){bestDist=dist;best=i;} }
+      const p = pts[best];
+      const px = xOf(p);
+      crosshair.attr("x1",px).attr("x2",px).style("display",null);
+      focusCamp.attr("cx",px).attr("cy",y(p.campaign)).style("display",null);
+      focusTot.attr("cx",px).attr("cy",y(p.campaign+p.other)).style("display",null);
+      const total = p.campaign + p.other;
+      const share = total>0 ? (p.campaign/total*100).toFixed(1) : "0.0";
+      tooltip.html(
+        `<div class="tt-date">${p.dateStr}</div>`+
+        `<div class="tt-row"><span class="lbl"><span class="sq" style="background:${COLOR.campaign}"></span>Campaign LPs</span><span class="val">${fmtUsd(p.campaign)}</span></div>`+
+        `<div class="tt-row"><span class="lbl"><span class="sq" style="background:${COLOR.other}"></span>Other LPs</span><span class="val">${fmtUsd(p.other)}</span></div>`+
+        `<div class="tt-row tt-total"><span class="lbl" style="font-weight:700">Total</span><span class="val">${fmtUsd(total)}</span></div>`+
+        `<div class="tt-row"><span class="lbl">${d.rewardSymbol} share</span><span class="val" style="color:${COLOR.campaign}">${share}%</span></div>`
+      );
+      const wrap = document.querySelector(".chart-wrap").getBoundingClientRect();
+      const absX = m.left + px;
+      const left = absX > iw/2 + m.left ? absX - 170 : absX + 14;
+      tooltip.style("opacity",1).style("left", left+"px").style("top", (m.top+4)+"px");
+    })
+    .on("mouseleave", () => {
+      tooltip.style("opacity",0);
+      crosshair.style("display","none"); focusCamp.style("display","none"); focusTot.style("display","none");
+    });
+}
+
+function buildRangeSelector() {
+  const host = document.getElementById("range-sel");
+  // Only offer windows we actually have data for (baked series spans DATA.days).
+  const opts = RANGE_OPTIONS.filter((n) => n <= DATA.days);
+  host.innerHTML = "";
+  for (const n of opts) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = `${n}D`;
+    btn.dataset.range = String(n);
+    if (n === rangeDays) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      if (rangeDays === n) return;
+      rangeDays = n;
+      host.querySelectorAll("button").forEach((b) =>
+        b.classList.toggle("active", Number(b.dataset.range) === n),
+      );
+      render();
+    });
+    host.appendChild(btn);
+  }
+}
+
+buildRangeSelector();
+render();
+window.addEventListener("resize", render);
+</script>
+</body>
+</html>

@@ -1,0 +1,2112 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blueprint — Interactive Components Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ================================================================
+   BLUEPRINT — PRESENTATION SHEET
+   Focus: buttons + interactive states for design-system talks.
+   Tokens mirror docs/design-system.html (Blueprint v1).
+   ================================================================ */
+:root {
+  --bp-blue-50:#eff5ff; --bp-blue-100:#dbe8ff; --bp-blue-200:#b6cffe;
+  --bp-blue-300:#84acfd; --bp-blue-400:#5482f9; --bp-blue-500:#2f5ef0;
+  --bp-blue-600:#1f47dc; --bp-blue-700:#1c3bb4; --bp-blue-800:#1c348e;
+  --bp-blue-900:#1c2f72; --bp-blue-950:#14204a;
+
+  --bp-ink-50:#f6f8fc; --bp-ink-100:#eef2f9; --bp-ink-150:#e6ecf5;
+  --bp-ink-200:#dbe2ee; --bp-ink-300:#c2cbdc; --bp-ink-400:#94a0b8;
+  --bp-ink-500:#64708a; --bp-ink-600:#46526b; --bp-ink-700:#2f3a51;
+  --bp-ink-800:#1b2438; --bp-ink-900:#0a1224;
+
+  --bp-success-50:#e8f8f0; --bp-success-600:#058044;
+  --bp-warning-50:#fdf3e0; --bp-warning-600:#b06808;
+  --bp-danger-50:#fdecec; --bp-danger-600:#b91c1c;
+  --bp-info-50:#e0f5fa; --bp-info-600:#0e7490;
+
+  --bp-font-display: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --bp-font-text: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --bp-font-num: "IBM Plex Mono", "JetBrains Mono", Menlo, monospace;
+
+  --bp-text-2xs:10px; --bp-text-xs:11px; --bp-text-sm:12px;
+  --bp-text-base:14px; --bp-text-md:15px; --bp-text-lg:17px;
+  --bp-text-xl:20px; --bp-text-2xl:24px; --bp-text-3xl:30px; --bp-text-4xl:38px;
+
+  --bp-tracking-wider:0.08em; --bp-tracking-widest:0.14em;
+  --bp-radius-xs:2px; --bp-radius-sm:4px; --bp-radius-md:6px; --bp-radius-lg:8px; --bp-radius-full:9999px;
+  --bp-dur-instant:80ms; --bp-dur-fast:150ms; --bp-dur-base:220ms;
+  --bp-ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root, :root[data-theme="light"] {
+  --bg-canvas: var(--bp-ink-50);
+  --bg-surface: #ffffff;
+  --bg-surface-2: var(--bp-ink-100);
+  --bg-elevated: #ffffff;
+  --fg-primary: var(--bp-ink-900);
+  --fg-secondary: var(--bp-ink-700);
+  --fg-muted: var(--bp-ink-500);
+  --fg-faint: var(--bp-ink-400);
+  --fg-onaccent: #ffffff;
+  --border-subtle: var(--bp-ink-150);
+  --border-default: var(--bp-ink-200);
+  --border-strong: var(--bp-ink-300);
+  --border-accent: var(--bp-blue-500);
+  --border-focus: var(--bp-blue-600);
+  --accent: var(--bp-blue-600);
+  --accent-hover: var(--bp-blue-700);
+  --accent-press: var(--bp-blue-800);
+  --accent-soft: var(--bp-blue-50);
+  --accent-onsoft: var(--bp-blue-800);
+  --status-ok: var(--bp-success-600);
+  --status-ok-bg: var(--bp-success-50);
+  --status-warn: var(--bp-warning-600);
+  --status-warn-bg: var(--bp-warning-50);
+  --status-bad: var(--bp-danger-600);
+  --status-bad-bg: var(--bp-danger-50);
+  --status-info: var(--bp-info-600);
+  --status-info-bg: var(--bp-info-50);
+  --grid-major: rgba(28, 47, 114, 0.08);
+  --shadow-1: 0 1px 2px rgba(10,18,36,0.05), 0 1px 2px rgba(10,18,36,0.04);
+  --shadow-2: 0 1px 3px rgba(10,18,36,0.06), 0 6px 16px rgba(10,18,36,0.06);
+}
+
+:root[data-theme="dark"] {
+  --bg-canvas: #060a18;
+  --bg-surface: #0c1426;
+  --bg-surface-2: #111c33;
+  --bg-elevated: #14213d;
+  --fg-primary: #f1f5f9;
+  --fg-secondary: #cbd5e1;
+  --fg-muted: #94a0b8;
+  --fg-faint: #64708a;
+  --fg-onaccent: #ffffff;
+  --border-subtle: #131c2e;
+  --border-default: #1e293b;
+  --border-strong: #334155;
+  --border-accent: #5482f9;
+  --border-focus: #84acfd;
+  --accent: #5482f9;
+  --accent-hover: #84acfd;
+  --accent-press: #b6cffe;
+  --accent-soft: rgba(84,130,249,0.14);
+  --accent-onsoft: #b6cffe;
+  --status-ok: #34d399;
+  --status-ok-bg: rgba(16,185,129,0.14);
+  --status-warn: #fbbf24;
+  --status-warn-bg: rgba(245,158,11,0.14);
+  --status-bad: #f87171;
+  --status-bad-bg: rgba(239,68,68,0.14);
+  --status-info: #22d3ee;
+  --status-info-bg: rgba(6,182,212,0.14);
+  --grid-major: rgba(148,163,184,0.10);
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-2: 0 2px 6px rgba(0,0,0,0.4), 0 6px 16px rgba(0,0,0,0.3);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg-canvas);
+  color: var(--fg-primary);
+  font-family: var(--bp-font-text);
+  font-size: var(--bp-text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ----- Shell ----- */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 12px 28px;
+  background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-default);
+}
+.brand {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-sm);
+  letter-spacing: var(--bp-tracking-widest);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.brand span { color: var(--fg-muted); font-weight: 400; }
+.theme-toggle {
+  display: inline-flex; border: 1px solid var(--border-strong);
+  border-radius: var(--bp-radius-sm); overflow: hidden; background: var(--bg-surface);
+}
+.theme-toggle button {
+  border: 0; background: transparent; color: var(--fg-muted);
+  font-family: var(--bp-font-display); font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider); text-transform: uppercase;
+  padding: 8px 12px; cursor: pointer;
+}
+.theme-toggle button.active {
+  background: var(--accent); color: var(--fg-onaccent);
+}
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 40px 28px 96px; }
+
+.slide {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-lg);
+  padding: 36px 40px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-1);
+  scroll-margin-top: 72px;
+}
+.slide-kicker {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-widest);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.slide h1, .slide h2 {
+  font-family: var(--bp-font-display);
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.slide h1 { font-size: clamp(28px, 4vw, 42px); }
+.slide h2 { font-size: clamp(22px, 3vw, 28px); }
+.slide .lede {
+  color: var(--fg-secondary);
+  font-size: var(--bp-text-lg);
+  max-width: 62ch;
+  margin: 0 0 24px;
+}
+.slide h3 {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 28px 0 12px;
+}
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.toc a {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--fg-secondary);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-2);
+  padding: 8px 12px;
+  border-radius: var(--bp-radius-sm);
+}
+.toc a:hover { border-color: var(--accent); color: var(--accent); }
+
+.note {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent);
+  background: var(--bg-surface-2);
+  font-size: var(--bp-text-sm);
+  color: var(--fg-secondary);
+}
+.note strong { color: var(--fg-primary); }
+.mono { font-family: var(--bp-font-num); font-size: 0.92em; }
+
+/* ----- Buttons ----- */
+.bp-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--bp-font-text); font-size: var(--bp-text-base); font-weight: 500;
+  line-height: 1; padding: 10px 16px; border-radius: var(--bp-radius-md);
+  border: 1px solid transparent; cursor: pointer; user-select: none; white-space: nowrap;
+  transition:
+    background var(--bp-dur-fast) var(--bp-ease-standard),
+    border-color var(--bp-dur-fast) var(--bp-ease-standard),
+    color var(--bp-dur-fast) var(--bp-ease-standard),
+    box-shadow var(--bp-dur-fast) var(--bp-ease-standard),
+    transform var(--bp-dur-instant) var(--bp-ease-standard);
+}
+.bp-btn:focus-visible,
+.bp-btn.is-focus {
+  outline: 0;
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 0 4px var(--border-focus);
+}
+.bp-btn:active, .bp-btn.is-active { transform: translateY(0.5px); }
+.bp-btn[disabled], .bp-btn:disabled, .bp-btn.is-disabled {
+  opacity: 0.5; cursor: not-allowed; pointer-events: none;
+}
+
+.bp-btn--primary { background: var(--accent); color: var(--fg-onaccent); box-shadow: var(--shadow-1); }
+.bp-btn--primary:hover, .bp-btn--primary.is-hover { background: var(--accent-hover); box-shadow: var(--shadow-2); }
+.bp-btn--primary:active, .bp-btn--primary.is-active { background: var(--accent-press); }
+
+.bp-btn--secondary {
+  background: var(--bg-surface); border-color: var(--border-strong);
+  color: var(--fg-primary); box-shadow: var(--shadow-1);
+}
+.bp-btn--secondary:hover, .bp-btn--secondary.is-hover {
+  background: var(--bg-surface-2); border-color: var(--accent);
+}
+.bp-btn--secondary:active, .bp-btn--secondary.is-active {
+  background: var(--bg-surface-2); border-color: var(--accent-press);
+}
+
+.bp-btn--ghost { background: transparent; color: var(--fg-secondary); }
+.bp-btn--ghost:hover, .bp-btn--ghost.is-hover {
+  background: var(--bg-surface-2); color: var(--fg-primary);
+}
+.bp-btn--ghost:active, .bp-btn--ghost.is-active { background: var(--border-subtle); }
+
+.bp-btn--danger { background: var(--status-bad); color: #fff; box-shadow: var(--shadow-1); }
+.bp-btn--danger:hover, .bp-btn--danger.is-hover { filter: brightness(1.08); }
+.bp-btn--danger:active, .bp-btn--danger.is-active { filter: brightness(0.95); }
+
+.bp-btn--sm { padding: 6px 12px; font-size: var(--bp-text-sm); border-radius: var(--bp-radius-sm); }
+.bp-btn--lg { padding: 14px 22px; font-size: var(--bp-text-md); }
+.bp-btn--icon { padding: 10px; width: 36px; height: 36px; }
+
+/* State matrix */
+.matrix {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+}
+.matrix th, .matrix td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  text-align: center;
+  vertical-align: middle;
+  background: var(--bg-canvas);
+}
+.matrix th:last-child, .matrix td:last-child { border-right: 0; }
+.matrix tr:last-child td { border-bottom: 0; }
+.matrix thead th {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  background: var(--bg-surface-2);
+}
+.matrix tbody th {
+  text-align: left;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  background: var(--bg-surface);
+  width: 120px;
+}
+.state-label {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--bp-font-num);
+  font-size: 9px;
+  color: var(--fg-faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.size-row, .row {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+}
+
+/* ----- Other primitives ----- */
+.bp-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--bp-font-display); font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider); text-transform: uppercase;
+  padding: 4px 10px; border-radius: var(--bp-radius-full);
+  border: 1px solid var(--border-default); color: var(--fg-secondary);
+  background: var(--bg-surface);
+}
+.bp-pill .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+}
+.bp-pill--ok { color: var(--status-ok); background: var(--status-ok-bg); border-color: transparent; }
+.bp-pill--warn { color: var(--status-warn); background: var(--status-warn-bg); border-color: transparent; }
+.bp-pill--bad { color: var(--status-bad); background: var(--status-bad-bg); border-color: transparent; }
+.bp-pill--info { color: var(--status-info); background: var(--status-info-bg); border-color: transparent; }
+
+.bp-tabs {
+  display: inline-flex; gap: 0; border-bottom: 1px solid var(--border-default);
+}
+.bp-tab {
+  font-family: var(--bp-font-display); font-size: var(--bp-text-sm);
+  color: var(--fg-muted); background: transparent; border: 0;
+  padding: 12px 16px; cursor: pointer; position: relative;
+}
+.bp-tab:hover { color: var(--fg-primary); }
+.bp-tab[aria-selected="true"] {
+  color: var(--accent); font-weight: 600;
+}
+.bp-tab[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: var(--accent);
+}
+.bp-tab:disabled, .bp-tab.is-disabled {
+  opacity: 0.45; cursor: not-allowed;
+}
+
+.bp-input {
+  display: block; width: 100%; max-width: 360px;
+  font-family: var(--bp-font-text); font-size: var(--bp-text-base);
+  color: var(--fg-primary); background: var(--bg-surface);
+  border: 1px solid var(--border-default); border-radius: var(--bp-radius-md);
+  padding: 10px 14px;
+  box-shadow: inset 0 1px 2px rgba(10,18,36,0.04);
+}
+.bp-input::placeholder { color: var(--fg-faint); }
+.bp-input:hover, .bp-input.is-hover { border-color: var(--border-strong); }
+.bp-input:focus, .bp-input.is-focus {
+  outline: 0; border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.bp-input[aria-invalid="true"], .bp-input.is-invalid {
+  border-color: var(--status-bad);
+}
+.bp-input:disabled, .bp-input.is-disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--bg-surface-2);
+}
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.field label {
+  display: block;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 8px;
+}
+
+.bp-side-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: var(--bp-radius-md);
+  font-size: var(--bp-text-base); color: var(--fg-secondary);
+  border: 1px solid transparent; cursor: pointer;
+  transition: all var(--bp-dur-fast) var(--bp-ease-standard);
+}
+.bp-side-item:hover, .bp-side-item.is-hover {
+  background: var(--bg-surface-2); color: var(--fg-primary);
+}
+.bp-side-item[aria-current="page"], .bp-side-item.is-active {
+  background: var(--accent-soft); border-color: var(--border-accent); color: var(--accent-onsoft);
+}
+.bp-side-item .icon {
+  width: 28px; height: 28px; border-radius: var(--bp-radius-full);
+  background: var(--bg-surface-2); border: 1px solid var(--border-default);
+  display: grid; place-items: center;
+  font-size: 11px; font-family: var(--bp-font-display); color: var(--fg-muted);
+}
+.bp-side-item[aria-current="page"] .icon, .bp-side-item.is-active .icon {
+  background: var(--accent); color: var(--fg-onaccent); border-color: var(--accent);
+}
+
+.bp-chart-controls {
+  display: inline-flex; border: 1px solid var(--border-strong);
+  border-radius: var(--bp-radius-xs); overflow: hidden; background: var(--bg-surface);
+}
+.bp-chart-controls button {
+  border: 0; border-right: 1px solid var(--border-default);
+  background: transparent; color: var(--fg-muted);
+  font-family: var(--bp-font-num); font-size: var(--bp-text-xs);
+  padding: 6px 12px; cursor: pointer;
+}
+.bp-chart-controls button:last-child { border-right: 0; }
+.bp-chart-controls button:hover { color: var(--fg-primary); background: var(--bg-surface-2); }
+.bp-chart-controls button.active {
+  color: var(--accent); background: var(--accent-soft); font-weight: 600;
+}
+.bp-chart-controls button:disabled {
+  opacity: 0.4; cursor: not-allowed;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.swatch {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+.swatch .chip { height: 56px; }
+.swatch .meta { padding: 10px 12px; }
+.swatch .name {
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.swatch .val {
+  font-family: var(--bp-font-num);
+  font-size: var(--bp-text-sm);
+  color: var(--fg-primary);
+  margin-top: 2px;
+}
+
+.rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 720px) {
+  .rules { grid-template-columns: 1fr; }
+  .slide { padding: 24px 18px; }
+  .matrix th, .matrix td { padding: 10px 8px; }
+}
+.rule {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 14px 16px;
+  background: var(--bg-canvas);
+}
+.rule.do { border-left: 3px solid var(--status-ok); }
+.rule.dont { border-left: 3px solid var(--status-bad); }
+.rule h4 {
+  margin: 0 0 6px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+}
+.rule.do h4 { color: var(--status-ok); }
+.rule.dont h4 { color: var(--status-bad); }
+.rule p { margin: 0; font-size: var(--bp-text-sm); color: var(--fg-secondary); }
+
+.nav-footer {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-top: 8px; color: var(--fg-muted); font-size: var(--bp-text-sm);
+}
+.nav-footer a { color: var(--accent); }
+
+/* ----- Cards ----- */
+.bp-card {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-1);
+  transition: box-shadow var(--bp-dur-base) var(--bp-ease-standard),
+              border-color var(--bp-dur-base) var(--bp-ease-standard);
+}
+.bp-card:hover, .bp-card.is-hover {
+  box-shadow: var(--shadow-2);
+  border-color: var(--border-strong);
+}
+.bp-card::before, .bp-card::after,
+.bp-card .cnr1, .bp-card .cnr2 {
+  content: "";
+  position: absolute;
+  width: 8px; height: 8px;
+  border: 1.5px solid var(--accent);
+  opacity: 0.7;
+}
+.bp-card::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.bp-card::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.bp-card .cnr1   { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+.bp-card .cnr2   { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+.bp-card:hover::before, .bp-card:hover::after,
+.bp-card:hover .cnr1, .bp-card:hover .cnr2,
+.bp-card.is-hover::before, .bp-card.is-hover::after,
+.bp-card.is-hover .cnr1, .bp-card.is-hover .cnr2 { opacity: 1; }
+
+.bp-card--flat { box-shadow: none; }
+.bp-card--ok { border-color: color-mix(in srgb, var(--status-ok) 35%, var(--border-default)); background: color-mix(in srgb, var(--status-ok-bg) 55%, var(--bg-surface)); }
+.bp-card--warn { border-color: color-mix(in srgb, var(--status-warn) 35%, var(--border-default)); background: color-mix(in srgb, var(--status-warn-bg) 55%, var(--bg-surface)); }
+.bp-card--bad { border-color: color-mix(in srgb, var(--status-bad) 35%, var(--border-default)); background: color-mix(in srgb, var(--status-bad-bg) 55%, var(--bg-surface)); }
+
+.bp-metric { display: flex; flex-direction: column; gap: 6px; }
+.bp-metric .label {
+  font-family: var(--bp-font-display); font-size: var(--bp-text-xs);
+  text-transform: uppercase; letter-spacing: var(--bp-tracking-wider); color: var(--fg-muted);
+}
+.bp-metric .value {
+  font-family: var(--bp-font-num); font-variant-numeric: tabular-nums;
+  font-size: var(--bp-text-3xl); font-weight: 600; color: var(--fg-primary); line-height: 1;
+}
+.bp-metric .delta {
+  font-family: var(--bp-font-num); font-size: var(--bp-text-sm); color: var(--fg-muted);
+}
+.bp-metric .delta--up { color: var(--status-ok); }
+.bp-metric .delta--down { color: var(--status-bad); }
+.bp-metric .freshness {
+  font-family: var(--bp-font-display); font-size: var(--bp-text-2xs);
+  color: var(--fg-faint); text-transform: uppercase; letter-spacing: var(--bp-tracking-wider);
+}
+
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+
+.ts-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.ts-panel-bracketed { position: relative; }
+.ts-panel-bracketed::before, .ts-panel-bracketed::after {
+  content: ""; position: absolute; width: 8px; height: 8px;
+  border: 1px solid var(--accent); opacity: 0.75; z-index: 2; pointer-events: none;
+}
+.ts-panel-bracketed::before { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.ts-panel-bracketed::after { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+.ts-panel-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid var(--border-default); gap: 12px;
+}
+.ts-panel-title {
+  margin: 0; font-family: var(--bp-font-display); font-size: 12px;
+  font-weight: 600; color: var(--fg-secondary);
+}
+.ts-panel-meta {
+  font-family: var(--bp-font-num); font-size: 9.5px; color: var(--fg-faint);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.ts-panel-body { padding: 16px; min-height: 140px; }
+.ts-panel-foot {
+  display: flex; gap: 14px; padding: 10px 16px; flex-wrap: wrap; align-items: center;
+  border-top: 1px solid var(--border-default); background: var(--bg-surface-2);
+  font-family: var(--bp-font-num); font-size: 10px; color: var(--fg-muted); letter-spacing: 0.08em;
+}
+
+.bp-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 40px 24px;
+  border: 1px dashed var(--border-strong); border-radius: var(--bp-radius-md);
+  background: var(--bg-surface);
+}
+.bp-empty .icon {
+  width: 44px; height: 44px; border-radius: var(--bp-radius-md);
+  background: var(--accent-soft); border: 1px solid var(--accent);
+  display: grid; place-items: center; color: var(--accent);
+  font-family: var(--bp-font-display); font-size: 22px; margin-bottom: 14px;
+}
+.bp-empty .title { font-family: var(--bp-font-display); font-size: var(--bp-text-md); font-weight: 600; margin-bottom: 6px; }
+.bp-empty .body { font-size: var(--bp-text-sm); color: var(--fg-muted); max-width: 38ch; margin: 0 auto 14px; }
+
+.bp-skel {
+  background: linear-gradient(90deg, var(--bg-surface-2) 0%, var(--border-default) 50%, var(--bg-surface-2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--bp-radius-xs);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 800px) { .panel-grid { grid-template-columns: 1fr; } }
+
+/* ----- Tables ----- */
+.bp-table-wrap {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+.bp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--bp-text-sm);
+}
+.bp-table th {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  background: var(--bg-surface-2);
+  white-space: nowrap;
+}
+.bp-table th.num, .bp-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.bp-table th.sortable { cursor: pointer; user-select: none; }
+.bp-table th.sortable:hover { color: var(--fg-primary); }
+.bp-table th.sorted { color: var(--accent); }
+.bp-table th .sort {
+  display: inline-block; margin-left: 4px; opacity: 0.55; font-family: var(--bp-font-num);
+}
+.bp-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--fg-secondary);
+  vertical-align: middle;
+}
+.bp-table tbody tr:last-child td { border-bottom: 0; }
+.bp-table tbody tr:hover, .bp-table tbody tr.is-hover {
+  background: var(--accent-soft);
+}
+.bp-table tbody tr.is-selected {
+  background: color-mix(in srgb, var(--accent-soft) 80%, var(--bg-surface));
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.bp-table tbody tr.is-disabled {
+  opacity: 0.45;
+}
+.bp-table--compact th, .bp-table--compact td { padding: 6px 10px; font-size: var(--bp-text-xs); }
+.bp-table--dense th, .bp-table--dense td { padding: 4px 8px; font-size: 10.5px; }
+.bp-table .mono-cell { font-family: var(--bp-font-num); color: var(--fg-primary); }
+.bp-table .muted { color: var(--fg-faint); }
+.bp-table .good { color: var(--status-ok); font-family: var(--bp-font-num); }
+.bp-table .bad { color: var(--status-bad); font-family: var(--bp-font-num); }
+.bp-table .warn { color: var(--status-warn); font-family: var(--bp-font-num); }
+.bp-table-caption {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  background: var(--bg-surface);
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.bp-table-empty {
+  padding: 36px 16px;
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: var(--bp-text-sm);
+}
+.bp-table-foot {
+  padding: 8px 14px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-surface-2);
+  font-family: var(--bp-font-num);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+
+/* Flexible list-table (Current LPs style) */
+.bp-list-table .bp-table-header,
+.bp-list-table .bp-table-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.8fr 0.7fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+}
+.bp-list-table .bp-table-header {
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  background: var(--bg-surface-2);
+}
+.bp-list-table .bp-table-row {
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: background var(--bp-dur-fast);
+}
+.bp-list-table .bp-table-row:last-child { border-bottom: 0; }
+.bp-list-table .bp-table-row:hover, .bp-list-table .bp-table-row.is-hover {
+  background: var(--accent-soft);
+}
+.bp-list-table .bp-table-row.selected {
+  background: var(--accent-soft);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.bp-address { font-family: var(--bp-font-num); font-size: 12px; color: var(--fg-secondary); }
+.bp-size { font-family: var(--bp-font-num); font-size: 13px; font-weight: 600; color: var(--fg-primary); font-variant-numeric: tabular-nums; }
+
+/* Scalability layers */
+.scale-layers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 18px 0 8px;
+}
+@media (max-width: 900px) { .scale-layers { grid-template-columns: 1fr 1fr; } }
+.scale-layer {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 14px;
+  background: var(--bg-canvas);
+  position: relative;
+}
+.scale-layer .n {
+  font-family: var(--bp-font-display);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.scale-layer h4 {
+  margin: 0 0 6px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-sm);
+}
+.scale-layer p {
+  margin: 0;
+  font-size: var(--bp-text-xs);
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+.scale-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-family: var(--bp-font-num); font-size: 18px;
+  margin: 4px 0 16px;
+  letter-spacing: 0.4em;
+}
+.growth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 720px) { .growth-grid { grid-template-columns: 1fr; } }
+.growth-card {
+  border: 1px solid var(--border-default);
+  border-radius: var(--bp-radius-md);
+  padding: 16px;
+  background: var(--bg-canvas);
+}
+.growth-card h4 {
+  margin: 0 0 8px;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-xs);
+  letter-spacing: var(--bp-tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.growth-card ul {
+  margin: 0; padding-left: 18px;
+  font-size: var(--bp-text-sm);
+  color: var(--fg-secondary);
+}
+.growth-card li { margin: 4px 0; }
+.stack-demo {
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--border-default);
+  overflow: hidden;
+  border-radius: var(--bp-radius-md);
+}
+.stack-demo > * + * { border-top: 1px solid var(--border-default); }
+
+/* ----- Product chart gallery ----- */
+.chart-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 860px) { .chart-gallery { grid-template-columns: 1fr; } }
+.chart-tile {
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  border-radius: var(--bp-radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.chart-tile-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.chart-tile-head h4 {
+  margin: 0;
+  font-family: var(--bp-font-display);
+  font-size: var(--bp-text-sm);
+  font-weight: 600;
+  color: var(--fg-primary);
+}
+.chart-tile-head .why {
+  margin: 4px 0 0;
+  font-size: var(--bp-text-xs);
+  color: var(--fg-muted);
+  line-height: 1.4;
+}
+.chart-tile-body {
+  padding: 12px 14px 14px;
+  flex: 1;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+}
+.chart-tile-body svg { width: 100%; height: auto; display: block; flex: 1; }
+.chart-tile-foot {
+  padding: 8px 14px 12px;
+  font-family: var(--bp-font-num);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.chart-tile--wide { grid-column: 1 / -1; }
+.chart-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 14px;
+  margin-top: 8px;
+  font-family: var(--bp-font-num);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.chart-legend i {
+  display: inline-block; width: 10px; height: 10px;
+  border-radius: 2px; margin-right: 6px; vertical-align: -1px;
+}
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Transparent Space <span>/ Blueprint presentation</span></div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button type="button" id="t-light" class="active" aria-pressed="true">Light</button>
+      <button type="button" id="t-dark" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- 01 Cover -->
+    <section class="slide" id="cover">
+      <div class="slide-kicker">01 · Cover</div>
+      <h1>Blueprint Design System</h1>
+      <p class="lede">
+        Presentation sheet for interactive components — buttons, tabs, inputs, pills,
+        sidebar rows, and chart controls — with every visual state labeled for demos.
+      </p>
+      <div class="row">
+        <span class="bp-pill bp-pill--info"><span class="dot"></span>Light canonical</span>
+        <span class="bp-pill"><span class="dot"></span>Dark secondary</span>
+        <span class="bp-pill bp-pill--ok"><span class="dot"></span>AA contrast</span>
+      </div>
+      <nav class="toc" aria-label="Sections">
+        <a href="#colors">Colors</a>
+        <a href="#buttons">Buttons</a>
+        <a href="#sizes">Sizes</a>
+        <a href="#cards">Cards</a>
+        <a href="#panels">Panels</a>
+        <a href="#tables">Tables</a>
+        <a href="#tabs">Tabs</a>
+        <a href="#inputs">Inputs</a>
+        <a href="#pills">Pills</a>
+        <a href="#sidebar">Sidebar</a>
+        <a href="#charts">Chart controls</a>
+        <a href="#product-charts">Product charts</a>
+        <a href="#scale">How it scales</a>
+        <a href="#rules">Rules</a>
+      </nav>
+      <div class="note">
+        <strong>Tip for presenting:</strong> states below are forced with
+        <span class="mono">.is-hover</span> / <span class="mono">.is-active</span> /
+        <span class="mono">.is-focus</span> / <span class="mono">.is-disabled</span>
+        so you don’t need to hover during the talk. Toggle Light / Dark in the top bar.
+      </div>
+    </section>
+
+    <!-- 02 Colors -->
+    <section class="slide" id="colors">
+      <div class="slide-kicker">02 · Color</div>
+      <h2>Semantic tokens</h2>
+      <p class="lede">Components consume semantic names only — never raw blues or ink steps.</p>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:var(--bg-canvas)"></div><div class="meta"><div class="name">Canvas</div><div class="val">--bg-canvas</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--bg-surface);border-bottom:1px solid var(--border-default)"></div><div class="meta"><div class="name">Surface</div><div class="val">--bg-surface</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--accent)"></div><div class="meta"><div class="name">Accent</div><div class="val">--accent · #1f47dc</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--fg-primary)"></div><div class="meta"><div class="name">Ink</div><div class="val">--fg-primary</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--status-ok)"></div><div class="meta"><div class="name">OK</div><div class="val">--status-ok</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--status-warn)"></div><div class="meta"><div class="name">Warn</div><div class="val">--status-warn</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--status-bad)"></div><div class="meta"><div class="name">Bad</div><div class="val">--status-bad</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--status-info)"></div><div class="meta"><div class="name">Info</div><div class="val">--status-info</div></div></div>
+      </div>
+    </section>
+
+    <!-- 03 Buttons matrix -->
+    <section class="slide" id="buttons">
+      <div class="slide-kicker">03 · Buttons</div>
+      <h2>Variants × states</h2>
+      <p class="lede">
+        Four variants. Five states. This is the core interactive contract —
+        primary for the one next step, secondary for alternatives, ghost for chrome, danger for irreversible actions.
+      </p>
+
+      <div style="overflow-x:auto;">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th scope="col">Variant</th>
+              <th scope="col">Default</th>
+              <th scope="col">Hover</th>
+              <th scope="col">Active</th>
+              <th scope="col">Focus</th>
+              <th scope="col">Disabled</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Primary</th>
+              <td>
+                <button type="button" class="bp-btn bp-btn--primary">Continue</button>
+                <span class="state-label">default</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--primary is-hover">Continue</button>
+                <span class="state-label">.is-hover</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--primary is-active">Continue</button>
+                <span class="state-label">.is-active</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--primary is-focus">Continue</button>
+                <span class="state-label">.is-focus</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--primary" disabled>Continue</button>
+                <span class="state-label">disabled</span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Secondary</th>
+              <td>
+                <button type="button" class="bp-btn bp-btn--secondary">Cancel</button>
+                <span class="state-label">default</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--secondary is-hover">Cancel</button>
+                <span class="state-label">.is-hover</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--secondary is-active">Cancel</button>
+                <span class="state-label">.is-active</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--secondary is-focus">Cancel</button>
+                <span class="state-label">.is-focus</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--secondary" disabled>Cancel</button>
+                <span class="state-label">disabled</span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Ghost</th>
+              <td>
+                <button type="button" class="bp-btn bp-btn--ghost">More</button>
+                <span class="state-label">default</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--ghost is-hover">More</button>
+                <span class="state-label">.is-hover</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--ghost is-active">More</button>
+                <span class="state-label">.is-active</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--ghost is-focus">More</button>
+                <span class="state-label">.is-focus</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--ghost" disabled>More</button>
+                <span class="state-label">disabled</span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Danger</th>
+              <td>
+                <button type="button" class="bp-btn bp-btn--danger">Delete</button>
+                <span class="state-label">default</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--danger is-hover">Delete</button>
+                <span class="state-label">.is-hover</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--danger is-active">Delete</button>
+                <span class="state-label">.is-active</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--danger is-focus">Delete</button>
+                <span class="state-label">.is-focus</span>
+              </td>
+              <td>
+                <button type="button" class="bp-btn bp-btn--danger" disabled>Delete</button>
+                <span class="state-label">disabled</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Focus ring:</strong> <span class="mono">0 0 0 3px accent-soft + 0 0 0 4px border-focus</span>.
+        Never remove focus styles — keyboard users rely on them.
+      </div>
+    </section>
+
+    <!-- 04 Sizes -->
+    <section class="slide" id="sizes">
+      <div class="slide-kicker">04 · Button sizes</div>
+      <h2>Small · Default · Large · Icon</h2>
+      <p class="lede">Touch targets stay ≥ 36px on icon buttons. Prefer default in dense dashboards.</p>
+
+      <h3>Primary scale</h3>
+      <div class="size-row">
+        <div>
+          <button type="button" class="bp-btn bp-btn--primary bp-btn--sm">Small</button>
+          <span class="state-label">sm · 6×12</span>
+        </div>
+        <div>
+          <button type="button" class="bp-btn bp-btn--primary">Default</button>
+          <span class="state-label">default · 10×16</span>
+        </div>
+        <div>
+          <button type="button" class="bp-btn bp-btn--primary bp-btn--lg">Large</button>
+          <span class="state-label">lg · 14×22</span>
+        </div>
+        <div>
+          <button type="button" class="bp-btn bp-btn--secondary bp-btn--icon" aria-label="Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+          <span class="state-label">icon · 36²</span>
+        </div>
+      </div>
+
+      <h3>With leading icon</h3>
+      <div class="size-row">
+        <button type="button" class="bp-btn bp-btn--primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Add pool
+        </button>
+        <button type="button" class="bp-btn bp-btn--secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export
+        </button>
+        <button type="button" class="bp-btn bp-btn--ghost">
+          Refresh
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="slide" id="cards">
+      <div class="slide-kicker">05 · Cards</div>
+      <h2>Card family</h2>
+      <p class="lede">
+        Cards are the primary surface for metrics and content blocks. Same token base —
+        corner brackets mark “instrument” panels; status borders carry meaning.
+      </p>
+
+      <h3>KPI metric cards</h3>
+      <div class="kpi-strip">
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">TVL</div>
+            <div class="value">$12.4M</div>
+            <div class="delta delta--up">▲ +4.2% · 24h</div>
+            <div class="freshness">Updated 12s ago</div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">24h volume</div>
+            <div class="value">$3.81M</div>
+            <div class="delta delta--down">▼ -1.6% · 24h</div>
+            <div class="freshness">Updated 12s ago</div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">Active LPs</div>
+            <div class="value">147</div>
+            <div class="delta">— flat</div>
+            <div class="freshness">Updated 12s ago</div>
+          </div>
+        </div>
+        <div class="bp-card is-hover">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="label">Spread vs CG</div>
+            <div class="value" style="color:var(--status-ok);">+0.09%</div>
+            <div class="delta delta--up">Healthy</div>
+            <div class="freshness">Hover state</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Status surfaces</h3>
+      <div class="card-grid">
+        <div class="bp-card bp-card--ok">
+          <div class="bp-metric">
+            <div class="label">Healthy</div>
+            <div class="value" style="font-size:var(--bp-text-xl);">Within band</div>
+            <div class="delta">status-ok soft fill</div>
+          </div>
+        </div>
+        <div class="bp-card bp-card--warn">
+          <div class="bp-metric">
+            <div class="label">Watch</div>
+            <div class="value" style="font-size:var(--bp-text-xl);">Stale 4h</div>
+            <div class="delta">status-warn soft fill</div>
+          </div>
+        </div>
+        <div class="bp-card bp-card--bad">
+          <div class="bp-metric">
+            <div class="label">Critical</div>
+            <div class="value" style="font-size:var(--bp-text-xl);color:var(--status-bad);">+3.21%</div>
+            <div class="delta">status-bad soft fill</div>
+          </div>
+        </div>
+        <div class="bp-card bp-card--flat">
+          <div class="bp-metric">
+            <div class="label">Flat / nested</div>
+            <div class="value" style="font-size:var(--bp-text-xl);">No shadow</div>
+            <div class="delta">inside stacks / drawers</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Empty + loading</h3>
+      <div class="panel-grid">
+        <div class="bp-empty">
+          <div class="icon">+</div>
+          <div class="title">No pools configured</div>
+          <div class="body">An admin will set up the first pool. Live data appears once connected.</div>
+          <button type="button" class="bp-btn bp-btn--primary bp-btn--sm">Invite admin</button>
+        </div>
+        <div class="bp-card">
+          <span class="cnr1"></span><span class="cnr2"></span>
+          <div class="bp-metric">
+            <div class="bp-skel" style="width:80px;height:11px;margin-bottom:10px;"></div>
+            <div class="bp-skel" style="width:140px;height:30px;"></div>
+            <div class="bp-skel" style="width:90px;height:11px;margin-top:10px;"></div>
+          </div>
+          <span class="state-label" style="margin-top:12px;">skeleton / loading</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panels -->
+    <section class="slide" id="panels">
+      <div class="slide-kicker">06 · Chart panels</div>
+      <h2>Three-part panel (head / body / foot)</h2>
+      <p class="lede">
+        Product charts use <span class="mono">ts-panel</span>: head for title + controls,
+        body for the plot, foot for legend / key stat. Brackets signal primary instruments.
+      </p>
+      <div class="panel-grid">
+        <div class="ts-panel ts-panel-bracketed">
+          <div class="ts-panel-head">
+            <h3 class="ts-panel-title">Pool TVL — 30d</h3>
+            <span class="ts-panel-meta">CH · 01</span>
+          </div>
+          <div class="ts-panel-body">
+            <svg viewBox="0 0 480 120" width="100%" height="120" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,90 C40,80 80,60 120,65 C160,70 200,35 240,48 C280,60 320,28 360,36 C400,44 440,22 480,26 L480,120 L0,120 Z" fill="url(#areaFill)"/>
+              <path d="M0,90 C40,80 80,60 120,65 C160,70 200,35 240,48 C280,60 320,28 360,36 C400,44 440,22 480,26" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="ts-panel-foot">
+            <span>Last · $12.4M</span>
+            <span>Δ 30d · +4.2%</span>
+            <span class="bp-pill bp-pill--ok" style="margin-left:auto;"><span class="dot"></span>Healthy</span>
+          </div>
+        </div>
+        <div class="ts-panel">
+          <div class="ts-panel-head">
+            <h3 class="ts-panel-title">LP concentration</h3>
+            <div class="bp-chart-controls" role="group" aria-label="Zoom">
+              <button type="button">+</button>
+              <button type="button">−</button>
+              <button type="button" class="active">Fit</button>
+            </div>
+          </div>
+          <div class="ts-panel-body" style="display:flex;align-items:flex-end;gap:10px;padding-top:24px;">
+            <div style="flex:1;height:78%;background:var(--accent);border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;height:62%;background:color-mix(in srgb, var(--accent) 70%, #0d8a78);border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;height:48%;background:color-mix(in srgb, var(--accent) 45%, #b4600c);border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;height:34%;background:var(--border-strong);border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;height:22%;background:var(--border-default);border-radius:2px 2px 0 0;"></div>
+          </div>
+          <div class="ts-panel-foot">
+            <span>Top 5 · 64%</span>
+            <span>Unbracketed secondary panel</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tables -->
+    <section class="slide" id="tables">
+      <div class="slide-kicker">07 · Tables</div>
+      <h2>Every table pattern</h2>
+      <p class="lede">
+        One table system: header tokens, tabular nums, hover / selected / disabled rows,
+        compact densities, status cells, empty + loading. Scale by composition — not new table components.
+      </p>
+
+      <h3>1 · Data table (sortable + numeric)</h3>
+      <div class="bp-table-wrap">
+        <div class="bp-table-caption">
+          <span>Pool overview</span>
+          <span class="bp-pill bp-pill--info"><span class="dot"></span>10 rows</span>
+        </div>
+        <table class="bp-table">
+          <thead>
+            <tr>
+              <th class="sortable">Pool</th>
+              <th class="sortable sorted num">TVL <span class="sort">↓</span></th>
+              <th class="num">24h vol</th>
+              <th class="num">Spread</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono-cell">HEL / USDT</td>
+              <td class="num mono-cell">$4.82M</td>
+              <td class="num mono-cell">$912K</td>
+              <td class="num good">+0.08%</td>
+              <td><span class="bp-pill bp-pill--ok"><span class="dot"></span>Healthy</span></td>
+            </tr>
+            <tr class="is-hover">
+              <td class="mono-cell">AZR / USDC</td>
+              <td class="num mono-cell">$3.10M</td>
+              <td class="num mono-cell">$640K</td>
+              <td class="num warn">+0.41%</td>
+              <td><span class="bp-pill bp-pill--warn"><span class="dot"></span>Watch</span></td>
+            </tr>
+            <tr class="is-selected">
+              <td class="mono-cell">CYR / USDT</td>
+              <td class="num mono-cell">$2.44M</td>
+              <td class="num mono-cell">$401K</td>
+              <td class="num good">+0.12%</td>
+              <td><span class="bp-pill bp-pill--ok"><span class="dot"></span>Selected</span></td>
+            </tr>
+            <tr>
+              <td class="mono-cell">FAR / USDC</td>
+              <td class="num mono-cell">$1.09M</td>
+              <td class="num mono-cell">$188K</td>
+              <td class="num bad">+2.14%</td>
+              <td><span class="bp-pill bp-pill--bad"><span class="dot"></span>Breach</span></td>
+            </tr>
+            <tr class="is-disabled">
+              <td class="mono-cell">IVR / USDT</td>
+              <td class="num mono-cell">—</td>
+              <td class="num mono-cell">—</td>
+              <td class="num muted">n/a</td>
+              <td><span class="bp-pill"><span class="dot"></span>Disabled</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="bp-table-foot">
+          <span>Hover · Selected · Disabled rows</span>
+          <span>Page 1 / 3 · 10 of 28</span>
+        </div>
+      </div>
+
+      <h3>2 · Compact density</h3>
+      <div class="bp-table-wrap">
+        <table class="bp-table bp-table--compact">
+          <thead>
+            <tr>
+              <th>Venue</th>
+              <th class="num">Quotes</th>
+              <th class="num">Fill %</th>
+              <th class="num">P90 bps</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Jupiter</td><td class="num mono-cell">1,284</td><td class="num good">98.2%</td><td class="num mono-cell">4.1</td></tr>
+            <tr><td>CowSwap</td><td class="num mono-cell">842</td><td class="num good">97.1%</td><td class="num mono-cell">5.0</td></tr>
+            <tr><td>0x</td><td class="num mono-cell">611</td><td class="num warn">94.4%</td><td class="num mono-cell">6.8</td></tr>
+            <tr><td>1inch</td><td class="num mono-cell">390</td><td class="num good">96.0%</td><td class="num mono-cell">5.6</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3 · Dense / instrument density</h3>
+      <div class="bp-table-wrap">
+        <table class="bp-table bp-table--dense">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Side</th>
+              <th class="num">Size</th>
+              <th class="num">Price</th>
+              <th class="num">Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono-cell">14:32:01</td><td>Buy</td><td class="num mono-cell">25,000</td><td class="num mono-cell">1.0421</td><td class="num good">2.1 bps</td></tr>
+            <tr><td class="mono-cell">14:31:48</td><td>Sell</td><td class="num mono-cell">12,500</td><td class="num mono-cell">1.0418</td><td class="num good">1.4 bps</td></tr>
+            <tr><td class="mono-cell">14:31:12</td><td>Buy</td><td class="num mono-cell">50,000</td><td class="num mono-cell">1.0430</td><td class="num warn">8.6 bps</td></tr>
+            <tr><td class="mono-cell">14:30:55</td><td>Sell</td><td class="num mono-cell">8,200</td><td class="num mono-cell">1.0411</td><td class="num good">0.9 bps</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4 · List table (flex / address rows)</h3>
+      <div class="bp-table-wrap bp-list-table">
+        <div class="bp-table-header">
+          <span>LP</span><span>Range</span><span class="num" style="text-align:right;">TVL</span><span>Share</span>
+        </div>
+        <div class="bp-table-row selected">
+          <span class="bp-address">8xQh…zM2</span>
+          <span class="muted">±1.2%</span>
+          <span class="bp-size" style="text-align:right;">$842K</span>
+          <span class="mono-cell">34%</span>
+        </div>
+        <div class="bp-table-row is-hover">
+          <span class="bp-address">5mN8…qR3</span>
+          <span class="muted">±2.8%</span>
+          <span class="bp-size" style="text-align:right;">$510K</span>
+          <span class="mono-cell">21%</span>
+        </div>
+        <div class="bp-table-row">
+          <span class="bp-address">2rT5…nN6</span>
+          <span class="muted">full</span>
+          <span class="bp-size" style="text-align:right;">$290K</span>
+          <span class="mono-cell">12%</span>
+        </div>
+      </div>
+
+      <h3>5 · Comparison / matrix table</h3>
+      <div class="bp-table-wrap">
+        <table class="bp-table bp-table--compact">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th class="num">MM A</th>
+              <th class="num">MM B</th>
+              <th class="num">Pool</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Uptime 7d</td><td class="num good">99.1%</td><td class="num good">98.4%</td><td class="num mono-cell">—</td></tr>
+            <tr><td>Median spread</td><td class="num mono-cell">4.2 bps</td><td class="num mono-cell">5.1 bps</td><td class="num mono-cell">3.8 bps</td></tr>
+            <tr><td>Breaches</td><td class="num warn">2</td><td class="num good">0</td><td class="num mono-cell">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6 · Empty + skeleton table</h3>
+      <div class="panel-grid">
+        <div class="bp-table-wrap">
+          <div class="bp-table-caption"><span>Quote activity</span></div>
+          <div class="bp-table-empty">No quotes in this window.<br/><span class="muted">Try expanding to 7D.</span></div>
+        </div>
+        <div class="bp-table-wrap">
+          <table class="bp-table bp-table--compact">
+            <thead>
+              <tr><th>Asset</th><th class="num">TVL</th><th class="num">Vol</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><div class="bp-skel" style="height:10px;width:72px;"></div></td><td class="num"><div class="bp-skel" style="height:10px;width:48px;margin-left:auto;"></div></td><td class="num"><div class="bp-skel" style="height:10px;width:40px;margin-left:auto;"></div></td></tr>
+              <tr><td><div class="bp-skel" style="height:10px;width:64px;"></div></td><td class="num"><div class="bp-skel" style="height:10px;width:52px;margin-left:auto;"></div></td><td class="num"><div class="bp-skel" style="height:10px;width:36px;margin-left:auto;"></div></td></tr>
+              <tr><td><div class="bp-skel" style="height:10px;width:80px;"></div></td><td class="num"><div class="bp-skel" style="height:10px;width:44px;margin-left:auto;"></div></td><td class="num"><div class="bp-skel" style="height:10px;width:42px;margin-left:auto;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>States covered:</strong> default · hover · selected · disabled · sorted header ·
+        compact · dense · status cells · caption · footer / pagination · empty · skeleton.
+        New product tables should reuse these states — don’t invent a new table skin per feature.
+      </div>
+    </section>
+
+    <!-- 05 Tabs -->
+    <section class="slide" id="tabs">
+      <div class="slide-kicker">08 · Tabs</div>
+      <h2>Navigation tabs</h2>
+      <p class="lede">Selected tab uses accent ink + 2px underline. One selected tab at a time.</p>
+
+      <h3>States</h3>
+      <div class="bp-tabs" role="tablist" aria-label="Dashboard sections">
+        <button type="button" class="bp-tab" role="tab" aria-selected="false">Overview</button>
+        <button type="button" class="bp-tab" role="tab" aria-selected="true">LP Analysis</button>
+        <button type="button" class="bp-tab" role="tab" aria-selected="false">Trading</button>
+        <button type="button" class="bp-tab" role="tab" aria-selected="false" disabled>Performance</button>
+      </div>
+      <div class="row" style="margin-top:16px; gap:20px;">
+        <span class="state-label" style="margin:0;">default · hover · selected · disabled</span>
+      </div>
+    </section>
+
+    <!-- 06 Inputs -->
+    <section class="slide" id="inputs">
+      <div class="slide-kicker">09 · Inputs</div>
+      <h2>Text field states</h2>
+      <p class="lede">Default → hover → focus → invalid → disabled. Invalid uses status-bad border, not red text fill.</p>
+      <div class="input-grid">
+        <div class="field">
+          <label>Default</label>
+          <input class="bp-input" placeholder="Search pools…" />
+        </div>
+        <div class="field">
+          <label>Hover</label>
+          <input class="bp-input is-hover" placeholder="Search pools…" value="HEL" />
+        </div>
+        <div class="field">
+          <label>Focus</label>
+          <input class="bp-input is-focus" placeholder="Search pools…" value="AZR / USDC" />
+        </div>
+        <div class="field">
+          <label>Invalid</label>
+          <input class="bp-input is-invalid" aria-invalid="true" value="not-an-email" />
+        </div>
+        <div class="field">
+          <label>Disabled</label>
+          <input class="bp-input" disabled value="Read only" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 Pills -->
+    <section class="slide" id="pills">
+      <div class="slide-kicker">10 · Status pills</div>
+      <h2>Chips for status, not for actions</h2>
+      <p class="lede">Pills communicate meaning. Buttons trigger change. Don’t turn pills into click targets unless they are filters.</p>
+      <div class="row">
+        <span class="bp-pill"><span class="dot"></span>Neutral</span>
+        <span class="bp-pill bp-pill--ok"><span class="dot"></span>Healthy</span>
+        <span class="bp-pill bp-pill--warn"><span class="dot"></span>Stale 4h</span>
+        <span class="bp-pill bp-pill--bad"><span class="dot"></span>Spread 3.2%</span>
+        <span class="bp-pill bp-pill--info"><span class="dot"></span>Beta</span>
+      </div>
+    </section>
+
+    <!-- 08 Sidebar -->
+    <section class="slide" id="sidebar">
+      <div class="slide-kicker">11 · Sidebar rows</div>
+      <h2>Nav item states</h2>
+      <p class="lede">Default, hover, and current page. Active item carries <span class="mono">aria-current="page"</span>.</p>
+      <div style="max-width:320px; display:flex; flex-direction:column; gap:6px;">
+        <div class="bp-side-item"><div class="icon">SOL</div><div>WBTC / SOL</div></div>
+        <div class="bp-side-item is-hover"><div class="icon">SOL</div><div>JTO / SOL · hover</div></div>
+        <div class="bp-side-item" aria-current="page"><div class="icon">SOL</div><div>cbBTC / USDC · current</div></div>
+        <div class="bp-side-item"><div class="icon">WLD</div><div>WLD / USDC</div></div>
+      </div>
+    </section>
+
+    <!-- 09 Chart controls -->
+    <section class="slide" id="charts">
+      <div class="slide-kicker">12 · Chart controls</div>
+      <h2>Segmented zoom / range</h2>
+      <p class="lede">Used in panel heads for +, −, Reset. Active segment gets soft accent fill.</p>
+      <div class="row" style="gap:24px; align-items:flex-start;">
+        <div>
+          <div class="bp-chart-controls" role="group" aria-label="Zoom">
+            <button type="button">+</button>
+            <button type="button">−</button>
+            <button type="button" class="active">Reset</button>
+          </div>
+          <span class="state-label">with active</span>
+        </div>
+        <div>
+          <div class="bp-chart-controls" role="group" aria-label="Range">
+            <button type="button" class="active">1D</button>
+            <button type="button">7D</button>
+            <button type="button">30D</button>
+            <button type="button" disabled>1Y</button>
+          </div>
+          <span class="state-label">range · one disabled</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product charts -->
+    <section class="slide" id="product-charts">
+      <div class="slide-kicker">13 · Product charts</div>
+      <h2>Charts we actually ship</h2>
+      <p class="lede">
+        Not stock library demos — these are the distinctive shapes from Transparent Space:
+        liquidity geometry, impact curves, concentration, flows, depth heatmaps, and RFQ depth.
+        Same tokens, different visual jobs.
+      </p>
+
+      <div class="chart-gallery">
+
+        <!-- 1 Candles + volume -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Price · candles + volume</h4>
+              <p class="why">Pool price OHLC with volume histogram strip — primary pool dashboard chart.</p>
+            </div>
+            <span class="bp-pill"><span class="dot"></span>lightweight-charts</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Candlestick chart with volume">
+              <line x1="24" y1="12" x2="24" y2="118" stroke="var(--border-subtle)"/>
+              <line x1="24" y1="118" x2="348" y2="118" stroke="var(--border-subtle)"/>
+              <!-- candles -->
+              <g stroke-width="1.5">
+                <line x1="48" y1="40" x2="48" y2="95" stroke="var(--status-ok)"/><rect x="42" y="52" width="12" height="28" fill="var(--status-ok)"/>
+                <line x1="78" y1="35" x2="78" y2="88" stroke="var(--status-bad)"/><rect x="72" y="35" width="12" height="32" fill="var(--status-bad)"/>
+                <line x1="108" y1="48" x2="108" y2="100" stroke="var(--status-ok)"/><rect x="102" y="58" width="12" height="30" fill="var(--status-ok)"/>
+                <line x1="138" y1="30" x2="138" y2="78" stroke="var(--status-ok)"/><rect x="132" y="38" width="12" height="26" fill="var(--status-ok)"/>
+                <line x1="168" y1="28" x2="168" y2="70" stroke="var(--status-bad)"/><rect x="162" y="28" width="12" height="24" fill="var(--status-bad)"/>
+                <line x1="198" y1="42" x2="198" y2="92" stroke="var(--status-ok)"/><rect x="192" y="50" width="12" height="28" fill="var(--status-ok)"/>
+                <line x1="228" y1="36" x2="228" y2="86" stroke="var(--status-ok)"/><rect x="222" y="44" width="12" height="30" fill="var(--status-ok)"/>
+                <line x1="258" y1="32" x2="258" y2="74" stroke="var(--status-bad)"/><rect x="252" y="32" width="12" height="22" fill="var(--status-bad)"/>
+                <line x1="288" y1="40" x2="288" y2="90" stroke="var(--status-ok)"/><rect x="282" y="48" width="12" height="28" fill="var(--status-ok)"/>
+                <line x1="318" y1="34" x2="318" y2="80" stroke="var(--status-ok)"/><rect x="312" y="40" width="12" height="26" fill="var(--status-ok)"/>
+              </g>
+              <!-- volume -->
+              <g fill="var(--accent)" opacity="0.35">
+                <rect x="42" y="128" width="12" height="24"/><rect x="72" y="136" width="12" height="16"/>
+                <rect x="102" y="132" width="12" height="20"/><rect x="132" y="124" width="12" height="28"/>
+                <rect x="162" y="138" width="12" height="14"/><rect x="192" y="130" width="12" height="22"/>
+                <rect x="222" y="126" width="12" height="26"/><rect x="252" y="140" width="12" height="12"/>
+                <rect x="282" y="132" width="12" height="20"/><rect x="312" y="128" width="12" height="24"/>
+              </g>
+            </svg>
+          </div>
+          <div class="chart-tile-foot">LightweightPriceChart · green/red OHLC + accent volume</div>
+        </article>
+
+        <!-- 2 Liquidity distribution -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Liquidity distribution</h4>
+              <p class="why">Active range bars around current price — CLMM geometry, not a generic bar chart.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>Pool</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Liquidity distribution around spot">
+              <line x1="180" y1="10" x2="180" y2="140" stroke="var(--accent)" stroke-dasharray="3 3" opacity="0.7"/>
+              <text x="184" y="20" fill="var(--accent)" font-family="var(--bp-font-num)" font-size="9">spot</text>
+              <g fill="var(--accent)">
+                <rect x="28" y="118" width="10" height="18" opacity="0.25"/>
+                <rect x="42" y="108" width="10" height="28" opacity="0.3"/>
+                <rect x="56" y="96" width="10" height="40" opacity="0.35"/>
+                <rect x="70" y="84" width="10" height="52" opacity="0.4"/>
+                <rect x="84" y="70" width="10" height="66" opacity="0.5"/>
+                <rect x="98" y="52" width="10" height="84" opacity="0.65"/>
+                <rect x="112" y="38" width="10" height="98" opacity="0.8"/>
+                <rect x="126" y="28" width="10" height="108" opacity="0.9"/>
+                <rect x="140" y="22" width="10" height="114"/>
+                <rect x="154" y="18" width="10" height="118"/>
+                <rect x="168" y="16" width="10" height="120"/>
+                <rect x="182" y="18" width="10" height="118"/>
+                <rect x="196" y="24" width="10" height="112"/>
+                <rect x="210" y="34" width="10" height="102" opacity="0.9"/>
+                <rect x="224" y="48" width="10" height="88" opacity="0.75"/>
+                <rect x="238" y="62" width="10" height="74" opacity="0.6"/>
+                <rect x="252" y="78" width="10" height="58" opacity="0.45"/>
+                <rect x="266" y="92" width="10" height="44" opacity="0.35"/>
+                <rect x="280" y="104" width="10" height="32" opacity="0.3"/>
+                <rect x="294" y="114" width="10" height="22" opacity="0.25"/>
+                <rect x="308" y="122" width="10" height="14" opacity="0.2"/>
+              </g>
+              <line x1="24" y1="140" x2="336" y2="140" stroke="var(--border-default)"/>
+            </svg>
+            <div class="chart-legend"><span><i style="background:var(--accent)"></i>In-range liquidity</span><span>Dashed · current price</span></div>
+          </div>
+          <div class="chart-tile-foot">LiquidityDistributionChart · tick bins around spot</div>
+        </article>
+
+        <!-- 3 Price impact -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Price impact curve</h4>
+              <p class="why">Buy vs sell impact over USD order size — dual paths, shared X (notional).</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>Trading</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Buy and sell price impact curves">
+              <line x1="36" y1="20" x2="36" y2="130" stroke="var(--border-subtle)"/>
+              <line x1="36" y1="130" x2="340" y2="130" stroke="var(--border-subtle)"/>
+              <path d="M36,118 C90,112 140,96 190,78 C240,58 290,36 340,22" fill="none" stroke="var(--status-ok)" stroke-width="2.2"/>
+              <path d="M36,118 C90,114 150,108 210,98 C270,86 310,72 340,62" fill="none" stroke="var(--status-bad)" stroke-width="2.2"/>
+              <circle cx="210" cy="78" r="3.5" fill="var(--status-ok)"/>
+              <circle cx="210" cy="98" r="3.5" fill="var(--status-bad)"/>
+              <text x="40" y="18" fill="var(--fg-faint)" font-family="var(--bp-font-num)" font-size="9">bps</text>
+              <text x="300" y="148" fill="var(--fg-faint)" font-family="var(--bp-font-num)" font-size="9">order size $</text>
+            </svg>
+            <div class="chart-legend">
+              <span><i style="background:var(--status-ok)"></i>Buy impact</span>
+              <span><i style="background:var(--status-bad)"></i>Sell impact</span>
+            </div>
+          </div>
+          <div class="chart-tile-foot">PriceImpactChart · custom SVG dual curves</div>
+        </article>
+
+        <!-- 4 Treemap concentration -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>LP concentration</h4>
+              <p class="why">Treemap of TVL / volume share — top LPs vs Others, not an XY plot.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>LP Analysis</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="LP concentration treemap">
+              <rect x="8" y="8" width="170" height="144" fill="var(--accent)"/>
+              <text x="18" y="28" fill="#fff" font-family="var(--bp-font-display)" font-size="11">LP-1 · 38%</text>
+              <rect x="186" y="8" width="100" height="88" fill="#0d8a78"/>
+              <text x="196" y="28" fill="#fff" font-family="var(--bp-font-display)" font-size="10">LP-2 · 22%</text>
+              <rect x="294" y="8" width="58" height="88" fill="#b4600c"/>
+              <text x="302" y="28" fill="#fff" font-family="var(--bp-font-display)" font-size="9">LP-3</text>
+              <rect x="186" y="104" width="74" height="48" fill="#6c3fc4"/>
+              <text x="194" y="124" fill="#fff" font-family="var(--bp-font-display)" font-size="9">LP-4</text>
+              <rect x="268" y="104" width="84" height="48" fill="var(--fg-muted)"/>
+              <text x="278" y="124" fill="#fff" font-family="var(--bp-font-display)" font-size="9">Others</text>
+            </svg>
+          </div>
+          <div class="chart-tile-foot">LPConcentrationChart · top 4 + Others grouping</div>
+        </article>
+
+        <!-- 5 Diverging flows -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Token flow to users</h4>
+              <p class="why">Diverging stacked bars — positive = users acquire, negative = users return/sell.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>Flows</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Diverging flow bars">
+              <line x1="20" y1="80" x2="340" y2="80" stroke="var(--border-strong)"/>
+              <!-- positive up -->
+              <g>
+                <rect x="36" y="28" width="14" height="52" fill="#1f47dc"/><rect x="36" y="48" width="14" height="32" fill="#0d8a78" opacity="0.9"/>
+                <rect x="64" y="40" width="14" height="40" fill="#1f47dc"/><rect x="64" y="55" width="14" height="25" fill="#b4600c"/>
+                <rect x="92" y="20" width="14" height="60" fill="#1f47dc"/><rect x="92" y="45" width="14" height="35" fill="#0d8a78"/>
+                <rect x="120" y="50" width="14" height="30" fill="#1f47dc"/>
+                <rect x="148" y="34" width="14" height="46" fill="#1f47dc"/><rect x="148" y="52" width="14" height="28" fill="#6c3fc4"/>
+                <rect x="176" y="42" width="14" height="38" fill="#0d8a78"/>
+                <rect x="204" y="30" width="14" height="50" fill="#1f47dc"/><rect x="204" y="48" width="14" height="32" fill="#0d8a78"/>
+                <rect x="232" y="55" width="14" height="25" fill="#1f47dc"/>
+                <rect x="260" y="38" width="14" height="42" fill="#1f47dc"/><rect x="260" y="58" width="14" height="22" fill="#b4600c"/>
+                <rect x="288" y="46" width="14" height="34" fill="#0d8a78"/>
+                <rect x="316" y="36" width="14" height="44" fill="#1f47dc"/>
+              </g>
+              <!-- negative down -->
+              <g opacity="0.9">
+                <rect x="36" y="80" width="14" height="22" fill="#b91c1c"/>
+                <rect x="64" y="80" width="14" height="34" fill="#b91c1c"/><rect x="64" y="80" width="14" height="18" fill="#b4600c"/>
+                <rect x="92" y="80" width="14" height="14" fill="#b91c1c"/>
+                <rect x="120" y="80" width="14" height="40" fill="#b91c1c"/><rect x="120" y="80" width="14" height="20" fill="#6c3fc4"/>
+                <rect x="148" y="80" width="14" height="18" fill="#b91c1c"/>
+                <rect x="176" y="80" width="14" height="28" fill="#b91c1c"/>
+                <rect x="204" y="80" width="14" height="16" fill="#b91c1c"/>
+                <rect x="232" y="80" width="14" height="36" fill="#b91c1c"/><rect x="232" y="80" width="14" height="16" fill="#0d8a78"/>
+                <rect x="260" y="80" width="14" height="20" fill="#b91c1c"/>
+                <rect x="288" y="80" width="14" height="30" fill="#b91c1c"/>
+                <rect x="316" y="80" width="14" height="24" fill="#b91c1c"/>
+              </g>
+            </svg>
+            <div class="chart-legend">
+              <span><i style="background:#1f47dc"></i>Acquire</span>
+              <span><i style="background:#b91c1c"></i>Return / sell</span>
+              <span>Zero line · net zero day</span>
+            </div>
+          </div>
+          <div class="chart-tile-foot">BirdsEyeFlowsChart · diverging stacked series</div>
+        </article>
+
+        <!-- 6 Depth heatmap -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Liquidity depth heatmap</h4>
+              <p class="why">Bookmap-style: X=time, Y=price, color=depth — with price line overlay.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>Depth</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Liquidity depth heatmap">
+              <defs>
+                <linearGradient id="hm" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#eff5ff"/>
+                  <stop offset="40%" stop-color="#5482f9"/>
+                  <stop offset="100%" stop-color="#14204a"/>
+                </linearGradient>
+              </defs>
+              <!-- fake heatmap cells -->
+              <g>
+                <rect x="20" y="16" width="28" height="18" fill="#dbe8ff"/><rect x="48" y="16" width="28" height="18" fill="#b6cffe"/><rect x="76" y="16" width="28" height="18" fill="#84acfd"/><rect x="104" y="16" width="28" height="18" fill="#5482f9"/><rect x="132" y="16" width="28" height="18" fill="#2f5ef0"/><rect x="160" y="16" width="28" height="18" fill="#1f47dc"/><rect x="188" y="16" width="28" height="18" fill="#5482f9"/><rect x="216" y="16" width="28" height="18" fill="#84acfd"/><rect x="244" y="16" width="28" height="18" fill="#b6cffe"/><rect x="272" y="16" width="28" height="18" fill="#dbe8ff"/><rect x="300" y="16" width="28" height="18" fill="#eff5ff"/>
+                <rect x="20" y="34" width="28" height="18" fill="#b6cffe"/><rect x="48" y="34" width="28" height="18" fill="#84acfd"/><rect x="76" y="34" width="28" height="18" fill="#2f5ef0"/><rect x="104" y="34" width="28" height="18" fill="#1c3bb4"/><rect x="132" y="34" width="28" height="18" fill="#1f47dc"/><rect x="160" y="34" width="28" height="18" fill="#14204a"/><rect x="188" y="34" width="28" height="18" fill="#1c3bb4"/><rect x="216" y="34" width="28" height="18" fill="#2f5ef0"/><rect x="244" y="34" width="28" height="18" fill="#5482f9"/><rect x="272" y="34" width="28" height="18" fill="#84acfd"/><rect x="300" y="34" width="28" height="18" fill="#b6cffe"/>
+                <rect x="20" y="52" width="28" height="18" fill="#84acfd"/><rect x="48" y="52" width="28" height="18" fill="#2f5ef0"/><rect x="76" y="52" width="28" height="18" fill="#1f47dc"/><rect x="104" y="52" width="28" height="18" fill="#14204a"/><rect x="132" y="52" width="28" height="18" fill="#0a1224"/><rect x="160" y="52" width="28" height="18" fill="#14204a"/><rect x="188" y="52" width="28" height="18" fill="#1c348e"/><rect x="216" y="52" width="28" height="18" fill="#1f47dc"/><rect x="244" y="52" width="28" height="18" fill="#2f5ef0"/><rect x="272" y="52" width="28" height="18" fill="#5482f9"/><rect x="300" y="52" width="28" height="18" fill="#84acfd"/>
+                <rect x="20" y="70" width="28" height="18" fill="#5482f9"/><rect x="48" y="70" width="28" height="18" fill="#1f47dc"/><rect x="76" y="70" width="28" height="18" fill="#14204a"/><rect x="104" y="70" width="28" height="18" fill="#0a1224"/><rect x="132" y="70" width="28" height="18" fill="#14204a"/><rect x="160" y="70" width="28" height="18" fill="#1c3bb4"/><rect x="188" y="70" width="28" height="18" fill="#1f47dc"/><rect x="216" y="70" width="28" height="18" fill="#2f5ef0"/><rect x="244" y="70" width="28" height="18" fill="#5482f9"/><rect x="272" y="70" width="28" height="18" fill="#84acfd"/><rect x="300" y="70" width="28" height="18" fill="#b6cffe"/>
+                <rect x="20" y="88" width="28" height="18" fill="#84acfd"/><rect x="48" y="88" width="28" height="18" fill="#5482f9"/><rect x="76" y="88" width="28" height="18" fill="#2f5ef0"/><rect x="104" y="88" width="28" height="18" fill="#1f47dc"/><rect x="132" y="88" width="28" height="18" fill="#1c3bb4"/><rect x="160" y="88" width="28" height="18" fill="#1f47dc"/><rect x="188" y="88" width="28" height="18" fill="#5482f9"/><rect x="216" y="88" width="28" height="18" fill="#84acfd"/><rect x="244" y="88" width="28" height="18" fill="#b6cffe"/><rect x="272" y="88" width="28" height="18" fill="#dbe8ff"/><rect x="300" y="88" width="28" height="18" fill="#eff5ff"/>
+                <rect x="20" y="106" width="28" height="18" fill="#b6cffe"/><rect x="48" y="106" width="28" height="18" fill="#84acfd"/><rect x="76" y="106" width="28" height="18" fill="#5482f9"/><rect x="104" y="106" width="28" height="18" fill="#84acfd"/><rect x="132" y="106" width="28" height="18" fill="#b6cffe"/><rect x="160" y="106" width="28" height="18" fill="#dbe8ff"/><rect x="188" y="106" width="28" height="18" fill="#eff5ff"/><rect x="216" y="106" width="28" height="18" fill="#dbe8ff"/><rect x="244" y="106" width="28" height="18" fill="#b6cffe"/><rect x="272" y="106" width="28" height="18" fill="#84acfd"/><rect x="300" y="106" width="28" height="18" fill="#b6cffe"/>
+              </g>
+              <path d="M20,96 C60,88 100,70 140,62 C180,54 220,58 260,72 C300,86 320,90 328,92" fill="none" stroke="#fbbf24" stroke-width="2"/>
+              <rect x="336" y="16" width="10" height="108" fill="url(#hm)"/>
+            </svg>
+            <div class="chart-legend">
+              <span>Sequential blue · depth</span>
+              <span style="color:#b06808">— price line</span>
+            </div>
+          </div>
+          <div class="chart-tile-foot">HistoricalLiquidityDepthHeatmap · Canvas 2D in product</div>
+        </article>
+
+        <!-- 7 Volume by time -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Volume by time</h4>
+              <p class="why">Split layout: 24 hourly bars + 7 day-of-week bars in one card.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>Trading</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Hourly and weekday volume bars">
+              <text x="8" y="14" fill="var(--fg-faint)" font-family="var(--bp-font-display)" font-size="9">24H</text>
+              <g fill="var(--accent)">
+                <rect x="8" y="100" width="6" height="30" opacity="0.35"/><rect x="16" y="90" width="6" height="40" opacity="0.4"/>
+                <rect x="24" y="80" width="6" height="50" opacity="0.45"/><rect x="32" y="70" width="6" height="60" opacity="0.55"/>
+                <rect x="40" y="50" width="6" height="80" opacity="0.7"/><rect x="48" y="40" width="6" height="90"/>
+                <rect x="56" y="48" width="6" height="82" opacity="0.85"/><rect x="64" y="58" width="6" height="72" opacity="0.75"/>
+                <rect x="72" y="66" width="6" height="64" opacity="0.65"/><rect x="80" y="74" width="6" height="56" opacity="0.55"/>
+                <rect x="88" y="82" width="6" height="48" opacity="0.45"/><rect x="96" y="88" width="6" height="42" opacity="0.4"/>
+                <rect x="104" y="70" width="6" height="60" opacity="0.6"/><rect x="112" y="55" width="6" height="75" opacity="0.8"/>
+                <rect x="120" y="45" width="6" height="85"/><rect x="128" y="52" width="6" height="78" opacity="0.9"/>
+                <rect x="136" y="62" width="6" height="68" opacity="0.7"/><rect x="144" y="72" width="6" height="58" opacity="0.55"/>
+                <rect x="152" y="84" width="6" height="46" opacity="0.4"/><rect x="160" y="92" width="6" height="38" opacity="0.35"/>
+                <rect x="168" y="98" width="6" height="32" opacity="0.3"/><rect x="176" y="104" width="6" height="26" opacity="0.25"/>
+                <rect x="184" y="108" width="6" height="22" opacity="0.22"/><rect x="192" y="102" width="6" height="28" opacity="0.28"/>
+              </g>
+              <line x1="210" y1="20" x2="210" y2="140" stroke="var(--border-default)"/>
+              <text x="222" y="14" fill="var(--fg-faint)" font-family="var(--bp-font-display)" font-size="9">DOW</text>
+              <g fill="#0d8a78">
+                <rect x="222" y="70" width="16" height="60"/><rect x="242" y="50" width="16" height="80"/>
+                <rect x="262" y="40" width="16" height="90"/><rect x="282" y="55" width="16" height="75"/>
+                <rect x="302" y="65" width="16" height="65"/><rect x="322" y="85" width="16" height="45"/>
+                <rect x="342" y="95" width="10" height="35"/>
+              </g>
+              <line x1="8" y1="130" x2="200" y2="130" stroke="var(--border-subtle)"/>
+              <line x1="222" y1="130" x2="352" y2="130" stroke="var(--border-subtle)"/>
+            </svg>
+          </div>
+          <div class="chart-tile-foot">VolumeByTimeChart · dual visx bar panels</div>
+        </article>
+
+        <!-- 8 Spread dual line -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>Price vs oracle spread</h4>
+              <p class="why">Pool price and oracle on one axis — spread as the monitoring signal.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>Overview</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="Pool vs oracle price lines">
+              <line x1="30" y1="20" x2="30" y2="130" stroke="var(--border-subtle)"/>
+              <line x1="30" y1="130" x2="340" y2="130" stroke="var(--border-subtle)"/>
+              <path d="M30,90 C70,86 110,70 150,74 C190,78 230,58 270,62 C300,65 320,50 340,46" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+              <path d="M30,94 C70,92 110,80 150,82 C190,84 230,70 270,72 C300,74 320,64 340,60" fill="none" stroke="var(--fg-muted)" stroke-width="2" stroke-dasharray="5 4"/>
+              <path d="M30,118 C80,112 140,122 200,108 C260,96 300,102 340,98" fill="none" stroke="var(--status-warn)" stroke-width="1.5" opacity="0.85"/>
+              <text x="36" y="18" fill="var(--fg-faint)" font-family="var(--bp-font-num)" font-size="9">price</text>
+            </svg>
+            <div class="chart-legend">
+              <span><i style="background:var(--accent)"></i>Pool</span>
+              <span><i style="background:var(--fg-muted)"></i>Oracle</span>
+              <span><i style="background:var(--status-warn)"></i>Spread (secondary)</span>
+            </div>
+          </div>
+          <div class="chart-tile-foot">PriceSpreadChart · dual series + deviation</div>
+        </article>
+
+        <!-- 9 Entry exit -->
+        <article class="chart-tile">
+          <div class="chart-tile-head">
+            <div>
+              <h4>LP entry / exit activity</h4>
+              <p class="why">Mints up, burns down, plus active-addresses line — mixed geometry.</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>LP Analysis</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 360 160" role="img" aria-label="LP entry exit chart">
+              <line x1="24" y1="80" x2="340" y2="80" stroke="var(--border-strong)"/>
+              <g fill="var(--status-ok)">
+                <rect x="40" y="48" width="12" height="32"/><rect x="70" y="30" width="12" height="50"/>
+                <rect x="100" y="55" width="12" height="25"/><rect x="130" y="38" width="12" height="42"/>
+                <rect x="160" y="50" width="12" height="30"/><rect x="190" y="28" width="12" height="52"/>
+                <rect x="220" y="45" width="12" height="35"/><rect x="250" y="58" width="12" height="22"/>
+                <rect x="280" y="40" width="12" height="40"/><rect x="310" y="52" width="12" height="28"/>
+              </g>
+              <g fill="var(--status-bad)">
+                <rect x="40" y="80" width="12" height="18"/><rect x="70" y="80" width="12" height="28"/>
+                <rect x="100" y="80" width="12" height="36"/><rect x="130" y="80" width="12" height="14"/>
+                <rect x="160" y="80" width="12" height="24"/><rect x="190" y="80" width="12" height="16"/>
+                <rect x="220" y="80" width="12" height="30"/><rect x="250" y="80" width="12" height="40"/>
+                <rect x="280" y="80" width="12" height="20"/><rect x="310" y="80" width="12" height="26"/>
+              </g>
+              <path d="M46,70 C76,62 106,58 136,54 C166,50 196,46 226,44 C256,42 286,40 316,38" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            </svg>
+            <div class="chart-legend">
+              <span><i style="background:var(--status-ok)"></i>New / mint</span>
+              <span><i style="background:var(--status-bad)"></i>Exit / burn</span>
+              <span><i style="background:var(--accent)"></i>Active addresses</span>
+            </div>
+          </div>
+          <div class="chart-tile-foot">LPEntryExitChart · bars + overlay line</div>
+        </article>
+
+        <!-- 10 RFQ depth wide -->
+        <article class="chart-tile chart-tile--wide">
+          <div class="chart-tile-head">
+            <div>
+              <h4>RFQ orderbook depth</h4>
+              <p class="why">Bid / ask depth ladders with cumulative liquidity — RFQ venue dashboards (CowSwap, 0x, Bebop…).</p>
+            </div>
+            <span class="bp-pill bp-pill--info"><span class="dot"></span>RFQ</span>
+          </div>
+          <div class="chart-tile-body">
+            <svg viewBox="0 0 720 150" role="img" aria-label="RFQ bid ask depth">
+              <line x1="360" y1="10" x2="360" y2="130" stroke="var(--border-strong)"/>
+              <!-- bids left -->
+              <g fill="var(--status-ok)" opacity="0.85">
+                <rect x="300" y="20" width="60" height="14"/><rect x="260" y="38" width="100" height="14"/>
+                <rect x="220" y="56" width="140" height="14"/><rect x="180" y="74" width="180" height="14"/>
+                <rect x="140" y="92" width="220" height="14"/><rect x="100" y="110" width="260" height="14"/>
+              </g>
+              <!-- asks right -->
+              <g fill="var(--status-bad)" opacity="0.85">
+                <rect x="360" y="20" width="60" height="14"/><rect x="360" y="38" width="100" height="14"/>
+                <rect x="360" y="56" width="140" height="14"/><rect x="360" y="74" width="180" height="14"/>
+                <rect x="360" y="92" width="220" height="14"/><rect x="360" y="110" width="260" height="14"/>
+              </g>
+              <text x="200" y="145" fill="var(--status-ok)" font-family="var(--bp-font-display)" font-size="10">BIDS</text>
+              <text x="500" y="145" fill="var(--status-bad)" font-family="var(--bp-font-display)" font-size="10">ASKS</text>
+              <text x="348" y="8" fill="var(--accent)" font-family="var(--bp-font-num)" font-size="9">mid</text>
+            </svg>
+            <div class="chart-legend">
+              <span><i style="background:var(--status-ok)"></i>Bid depth</span>
+              <span><i style="background:var(--status-bad)"></i>Ask depth</span>
+              <span>Center · mid / spot</span>
+            </div>
+          </div>
+          <div class="chart-tile-foot">RfqOrderbookDepthChart / RfqDepthCurveChart · ladder + cumulative</div>
+        </article>
+
+      </div>
+
+      <div class="note">
+        <strong>Design takeaway:</strong> chart variety is a <em>job</em> choice (geometry vs time vs share vs depth),
+        not a palette free-for-all. Status green/red only when the series <em>means</em> good/bad;
+        categorical <span class="mono">cat-*</span> for unrelated series; sequential blues for heatmaps.
+      </div>
+    </section>
+
+    <!-- Scale -->
+    <section class="slide" id="scale">
+      <div class="slide-kicker">14 · Scalability</div>
+      <h2>How the system grows without breaking</h2>
+      <p class="lede">
+        Blueprint scales by layers. New features compose existing tokens and primitives —
+        they don’t invent a fifth blue or a one-off table skin.
+      </p>
+
+      <div class="scale-layers">
+        <div class="scale-layer">
+          <div class="n">01 · Tokens</div>
+          <h4>Private + semantic</h4>
+          <p>Color, type, space, radius, motion, status. Change once → whole product rebinds.</p>
+        </div>
+        <div class="scale-layer">
+          <div class="n">02 · Primitives</div>
+          <h4>Button · Input · Pill · Card</h4>
+          <p>Smallest shippable classes with forced states (hover / focus / disabled).</p>
+        </div>
+        <div class="scale-layer">
+          <div class="n">03 · Patterns</div>
+          <h4>Panel · Table · KPI strip</h4>
+          <p>Composed primitives: head/body/foot, sortable rows, metric cards.</p>
+        </div>
+        <div class="scale-layer">
+          <div class="n">04 · Products</div>
+          <h4>Demo · Kraken · Birds-eye</h4>
+          <p>Spaces reuse patterns. Theme scopes (e.g. Demo Blueprint) rebind tokens only.</p>
+        </div>
+      </div>
+      <div class="scale-arrow" aria-hidden="true">→ → → →</div>
+
+      <h3>What “increase” means here</h3>
+      <div class="growth-grid">
+        <div class="growth-card">
+          <h4>Add without forking</h4>
+          <ul>
+            <li>New button? Use an existing variant or add one modifier.</li>
+            <li>New table? Same <span class="mono">.bp-table</span> + density + row states.</li>
+            <li>New space theme? Rebind semantics under a scope — don’t rewrite components.</li>
+            <li>New chart? Same panel shell + formatter contract.</li>
+          </ul>
+        </div>
+        <div class="growth-card">
+          <h4>Scale levers</h4>
+          <ul>
+            <li><strong>Density:</strong> default → compact → dense</li>
+            <li><strong>Emphasis:</strong> flat card → shadow card → bracketed panel</li>
+            <li><strong>Meaning:</strong> neutral → ok / warn / bad / info</li>
+            <li><strong>Theme:</strong> light canonical · dark after-hours · Demo showcase scope</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Same primitives → larger surfaces</h3>
+      <div class="stack-demo">
+        <div class="kpi-strip" style="padding:14px;gap:10px;">
+          <div class="bp-card bp-card--flat" style="padding:12px;">
+            <div class="bp-metric"><div class="label">TVL</div><div class="value" style="font-size:20px;">$12.4M</div></div>
+          </div>
+          <div class="bp-card bp-card--flat" style="padding:12px;">
+            <div class="bp-metric"><div class="label">Volume</div><div class="value" style="font-size:20px;">$3.8M</div></div>
+          </div>
+          <div class="bp-card bp-card--flat" style="padding:12px;">
+            <div class="bp-metric"><div class="label">LPs</div><div class="value" style="font-size:20px;">147</div></div>
+          </div>
+          <div class="bp-card bp-card--flat" style="padding:12px;">
+            <div class="bp-metric"><div class="label">Spread</div><div class="value" style="font-size:20px;">+0.09%</div></div>
+          </div>
+        </div>
+        <div class="ts-panel" style="border:0;border-radius:0;">
+          <div class="ts-panel-head">
+            <h3 class="ts-panel-title">Composed dashboard strip</h3>
+            <span class="ts-panel-meta">KPI + panel + table</span>
+          </div>
+          <div class="ts-panel-body" style="min-height:0;padding:0;">
+            <table class="bp-table bp-table--compact">
+              <thead><tr><th>Pool</th><th class="num">TVL</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="mono-cell">HEL / USDT</td><td class="num mono-cell">$4.82M</td><td><span class="bp-pill bp-pill--ok"><span class="dot"></span>OK</span></td></tr>
+                <tr><td class="mono-cell">AZR / USDC</td><td class="num mono-cell">$3.10M</td><td><span class="bp-pill bp-pill--warn"><span class="dot"></span>Watch</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Pitch line:</strong> tokens stabilize identity · primitives stabilize interaction ·
+        patterns stabilize layout · products only choose which patterns to assemble.
+        That’s how Blueprint stays coherent as the product surface grows.
+      </div>
+    </section>
+
+    <!-- Rules -->
+    <section class="slide" id="rules">
+      <div class="slide-kicker">15 · Usage rules</div>
+      <h2>Do / don’t</h2>
+      <div class="rules">
+        <div class="rule do">
+          <h4>Do — one primary</h4>
+          <p>Each view gets at most one primary button. Everything else is secondary or ghost.</p>
+        </div>
+        <div class="rule dont">
+          <h4>Don’t — twin primaries</h4>
+          <p>Two blue buttons side by side fight for attention and slow decisions.</p>
+        </div>
+        <div class="rule do">
+          <h4>Do — reuse table states</h4>
+          <p>Hover / selected / disabled / density modifiers before inventing a new table component.</p>
+        </div>
+        <div class="rule dont">
+          <h4>Don’t — one-off card skins</h4>
+          <p>Status meaning goes through ok/warn/bad tokens — not a new hex per dashboard.</p>
+        </div>
+        <div class="rule do">
+          <h4>Do — compose panels</h4>
+          <p>Head / body / foot + brackets. Charts plug into the shell; they don’t redefine chrome.</p>
+        </div>
+        <div class="rule dont">
+          <h4>Don’t — status color for chrome</h4>
+          <p>Green/red are for meaning. Decorative buttons stay accent / ink / ghost.</p>
+        </div>
+      </div>
+
+      <div class="nav-footer">
+        <span>Full token reference: <a href="./design-system.html">docs/design-system.html</a></span>
+        <span>Research notes: <a href="./design-research.html">docs/design-research.html</a></span>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const lightBtn = document.getElementById("t-light");
+    const darkBtn = document.getElementById("t-dark");
+
+    function setTheme(theme) {
+      root.setAttribute("data-theme", theme);
+      const isLight = theme === "light";
+      lightBtn.classList.toggle("active", isLight);
+      darkBtn.classList.toggle("active", !isLight);
+      lightBtn.setAttribute("aria-pressed", String(isLight));
+      darkBtn.setAttribute("aria-pressed", String(!isLight));
+    }
+
+    lightBtn.addEventListener("click", () => setTheme("light"));
+    darkBtn.addEventListener("click", () => setTheme("dark"));
+  </script>
+</body>
+</html>

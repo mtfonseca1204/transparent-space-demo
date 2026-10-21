@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "poolKey": "FkkbETZWmBFXqVHLxZHJAyML2YeEuAjfm2U7yywckQiQ",
+    "baseUrl": "https://app.transparent.space",
+    "windowDays": 7,
+    "now": 1775235600,
+    "kind": "solana"
+  },
+  "frontend": {
+    "pool": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "protocol": "meteora-dlmm",
+        "analyticsModel": "meteora-dlmm",
+        "capabilities": {
+          "hasCandleHistory": true,
+          "hasSwapHistory": true,
+          "hasWalletFeeSummary": true,
+          "hasOwnerPositionSummary": true,
+          "hasRangeLiquidityShape": true,
+          "hasHistoricalDepthBands": true,
+          "hasCurrentImpactCurve": true,
+          "hasHistoricalSlippage": true,
+          "hasOwnerCompositionHistory": true
+        },
+        "token0Address": "DN4L5JE9VuGpMt1SsEWqyybUqyrYuWuywmTq7Q5GVDFK",
+        "token1Address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "token0Symbol": "WLD",
+        "token1Symbol": "USDC",
+        "token0Decimals": 8,
+        "token1Decimals": 6,
+        "currentPrice": 0.27188774,
+        "tick": 0,
+        "liquidity": "1000000",
+        "lastTradeAt": 1775232000
+      }
+    },
+    "poolData": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "positionCount": 0,
+        "lpEventCount": 12,
+        "poolHourCount": 168,
+        "tickLiquidityCount": 180,
+        "lpActivitySeriesCount": 0,
+        "ownerCount": 0,
+        "selectedOwner": null,
+        "positionCoverageRatio": null,
+        "latest": {
+          "positionUpdatedAt": null,
+          "lpEventTimestamp": 1775230200,
+          "poolHourTimestamp": 1775232000,
+          "tickUpdatedAt": 1775232300
+        }
+      }
+    },
+    "candlesPrimary": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 3600,
+        "count": 168,
+        "firstTimestamp": 1774630800,
+        "latestTimestamp": 1775230800
+      }
+    },
+    "candlesDaily": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 86400,
+        "count": 365,
+        "firstTimestamp": 1743705600,
+        "latestTimestamp": 1775174400
+      }
+    },
+    "tokenPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "token0Usd": 0.27188774,
+        "token1Usd": 1,
+        "hasCompleteUsdContext": true
+      }
+    },
+    "historicalPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "count": 720,
+        "firstTimestamp": 1743705600,
+        "latestTimestamp": 1775232000
+      }
+    },
+    "tradingVolumeBySize": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "dayCount": 7,
+        "firstDateKey": "2026-03-28",
+        "latestDateKey": "2026-04-03"
+      }
+    },
+    "lpSwaps": {
+      "ok": false,
+      "skipped": true,
+      "status": null,
+      "reason": "Swap history is only required for the v3 overlay."
+    }
+  },
+  "upstream": {
+    "kind": "solana",
+    "probes": {
+      "price": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "latestTimestamp": 1775232000
+        }
+      },
+      "candles": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 168,
+          "latestTimestamp": 1775230800
+        }
+      },
+      "positions": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 0,
+          "latestTimestamp": null
+        }
+      },
+      "positionEvents": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 1,
+          "latestTimestamp": 1775230200
+        }
+      },
+      "volumeBySize": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 7,
+          "latestTimestamp": 1775174400
+        }
+      }
+    }
+  }
+}

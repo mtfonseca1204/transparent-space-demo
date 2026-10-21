@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>transparent.space · design system</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #F2F1EC;
+    --surface: #FAFAF7;
+    --surface2: #F5F4EF;
+    --surface3: #ECEBE4;
+    --surface4: #E3E1D8;
+    --ink0: #0A0906;
+    --ink1: #2B2921;
+    --ink2: #5E5B50;
+    --ink3: #86836F;
+    --ink4: #ADAA95;
+    --inkInv: #F2F1EC;
+    --line: #C8C6BB;
+    --lineSoft: #DAD8CF;
+    --lineHard: #9E9B8E;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #d9d6cd; font-family: var(--sans); color: var(--ink0); }
+
+  /* ── PAGE: A4-ish portrait, 816 × 1056 (8.5×11 at 96dpi) ────────── */
+  .doc {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  .page {
+    width: 816px;
+    min-height: 1056px;
+    margin: 0 auto 24px;
+    background: var(--page);
+    color: var(--ink0);
+    padding: 64px 72px 72px;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+    page-break-after: always;
+    break-after: page;
+  }
+  .page.dark {
+    background: var(--ink0);
+    color: var(--inkInv);
+  }
+  .page.dark .ink { color: var(--inkInv); }
+  .page.dark .meta { color: var(--ink4); }
+  .page.dark .body { color: var(--ink4); }
+  .page.dark .line { background: rgba(242,241,236,0.18); }
+  .page.dark .lineSoft { background: rgba(242,241,236,0.12); }
+  .page.dark .surface { background: rgba(242,241,236,0.04); border-color: rgba(242,241,236,0.18); }
+
+  /* registration brackets */
+  .page::before, .page::after,
+  .page > .brk-tr, .page > .brk-bl {
+    content:''; position:absolute; width: 14px; height: 14px;
+  }
+  .page::before { top: 24px; left: 24px; border-top: 1.2px solid var(--ink0); border-left: 1.2px solid var(--ink0); }
+  .page::after  { bottom: 24px; right: 24px; border-bottom: 1.2px solid var(--ink0); border-right: 1.2px solid var(--ink0); }
+  .page > .brk-tr { top: 24px; right: 24px; border-top: 1.2px solid var(--ink0); border-right: 1.2px solid var(--ink0); }
+  .page > .brk-bl { bottom: 24px; left: 24px; border-bottom: 1.2px solid var(--ink0); border-left: 1.2px solid var(--ink0); }
+  .page.dark::before { border-top-color: var(--inkInv); border-left-color: var(--inkInv); }
+  .page.dark::after  { border-bottom-color: var(--inkInv); border-right-color: var(--inkInv); }
+  .page.dark > .brk-tr { border-top-color: var(--inkInv); border-right-color: var(--inkInv); }
+  .page.dark > .brk-bl { border-bottom-color: var(--inkInv); border-left-color: var(--inkInv); }
+
+  /* page chrome */
+  .page-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    margin-bottom: 36px;
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 500; color: var(--ink3);
+  }
+  .page.dark .page-head { border-bottom-color: rgba(242,241,236,0.18); color: var(--ink4); }
+  .page-foot {
+    position: absolute; left: 72px; right: 72px; bottom: 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 16px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 500; color: var(--ink3);
+    font-feature-settings: 'tnum' 1, 'zero' 1;
+  }
+  .page.dark .page-foot { border-top-color: rgba(242,241,236,0.18); color: var(--ink4); }
+
+  /* type */
+  .kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 500; color: var(--ink3); margin-bottom: 12px; }
+  .page.dark .kicker { color: var(--ink4); }
+  .h1 { font-family: var(--sans); font-size: 56px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.02; margin: 0 0 16px; }
+  .h2 { font-family: var(--sans); font-size: 28px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.1; margin: 0 0 8px; }
+  .h3 { font-family: var(--sans); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .body { font-family: var(--sans); font-size: 12.5px; line-height: 1.55; color: var(--ink2); text-wrap: pretty; }
+  .small { font-family: var(--sans); font-size: 11px; line-height: 1.5; color: var(--ink2); }
+  .mono { font-family: var(--mono); }
+  .meta { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; color: var(--ink3); }
+  .meta-lg { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500; color: var(--ink3); }
+
+  /* layout helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .row { display: flex; align-items: center; gap: 16px; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+  .stack-tight { display: flex; flex-direction: column; gap: 6px; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .stack-lg { display: flex; flex-direction: column; gap: 24px; }
+  .divider { height: 1px; background: var(--line); margin: 28px 0; }
+  .page.dark .divider { background: rgba(242,241,236,0.18); }
+  .label-row { display: flex; align-items: center; justify-content: space-between; }
+
+  /* tile primitives */
+  .tile {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 18px;
+    position: relative;
+    border-radius: 2px;
+  }
+  .tile.dark { background: rgba(242,241,236,0.04); border-color: rgba(242,241,236,0.18); }
+  .tile .tick-tl, .tile .tick-br {
+    position: absolute; width: 5px; height: 5px;
+  }
+  .tile .tick-tl { top: 6px; left: 6px; border-top: 1px solid var(--ink3); border-left: 1px solid var(--ink3); opacity: 0.6; }
+  .tile .tick-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--ink3); border-right: 1px solid var(--ink3); opacity: 0.6; }
+
+  /* color swatches */
+  .swatch {
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .swatch .chip { height: 80px; }
+  .swatch .info { padding: 10px 12px 12px; }
+  .swatch .info .name { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink0); }
+  .swatch .info .hex { font-family: var(--mono); font-size: 10px; color: var(--ink3); margin-top: 2px; letter-spacing: 0.05em; }
+  .page.dark .swatch { background: rgba(242,241,236,0.04); border-color: rgba(242,241,236,0.18); }
+  .page.dark .swatch .info .name { color: var(--inkInv); }
+  .page.dark .swatch .info .hex { color: var(--ink4); }
+
+  /* Wordmark */
+  .wm { font-family: var(--mono); font-weight: 600; letter-spacing: -0.04em; line-height: 1; white-space: nowrap; }
+  .wm .accent { color: var(--ink3); }
+  .page.dark .wm { color: var(--inkInv); }
+  .page.dark .wm .accent { color: var(--ink4); }
+
+  /* spacing scale viz */
+  .sp-bar { background: var(--ink0); height: 14px; }
+  .page.dark .sp-bar { background: var(--inkInv); }
+
+  /* dot for do/dont */
+  .ok::before, .no::before {
+    content: ''; display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 8px; vertical-align: middle;
+  }
+  .ok::before { background: #2E6B2E; }
+  .no::before { background: #8B2828; }
+
+  /* print rules */
+  @media print {
+    html, body { background: white; }
+    .doc { padding: 0; max-width: none; }
+    .page { box-shadow: none; margin: 0; }
+    .toolbar { display: none !important; }
+  }
+
+  /* preview-only toolbar */
+  .toolbar {
+    position: fixed; top: 16px; right: 16px; z-index: 50;
+    display: flex; gap: 8px; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); padding: 8px 10px;
+    border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink2); font-weight: 500;
+  }
+  .toolbar button {
+    font: inherit; color: inherit; background: var(--ink0); color: var(--inkInv);
+    border: 0; padding: 7px 12px; cursor: pointer; letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>transparent.space · ds</span>
+  <button onclick="window.print()">Print / PDF</button>
+</div>
+
+<div class="doc">
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 01 · COVER (DARK)                                       -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page dark" data-screen-label="01 Cover">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space</span>
+    <span>Design System · Vol.1 · 2026</span>
+  </div>
+
+  <div style="height: 220px;"></div>
+
+  <div style="display:flex; align-items:flex-start; gap: 36px;">
+    <!-- BIG OUTLINE MARK -->
+    <svg width="220" height="220" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5" shape-rendering="geometricPrecision" style="flex-shrink:0;">
+      <rect x="18.75" y="2.75" width="42.5" height="42.5"/>
+      <rect x="10.75" y="10.75" width="42.5" height="42.5"/>
+      <rect x="2.75" y="18.75" width="42.5" height="42.5"/>
+    </svg>
+    <div style="padding-top: 28px;">
+      <div class="kicker" style="color: #ADAA95;">Vol.1 · Brand foundation</div>
+      <h1 class="h1" style="color: #F2F1EC; font-size: 72px; max-width: 460px;">Design system.</h1>
+      <p class="body" style="color: #ADAA95; font-size: 14px; max-width: 440px; margin-top: 16px;">
+        The complete system for transparent.space — outline mark, paper-and-ink palette,
+        monospace voice. Light and dark, end to end.
+      </p>
+    </div>
+  </div>
+
+  <div style="position:absolute; left: 72px; bottom: 140px; right: 72px; display:grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+    <div>
+      <div class="meta" style="color: #86836F;">Issued</div>
+      <div class="mono" style="color:#F2F1EC; font-size:13px; font-weight:500; letter-spacing:0.04em; margin-top:4px;">2026 · Q2</div>
+    </div>
+    <div>
+      <div class="meta" style="color: #86836F;">Mark</div>
+      <div class="mono" style="color:#F2F1EC; font-size:13px; font-weight:500; letter-spacing:0.04em; margin-top:4px;">Outline · 1.5px</div>
+    </div>
+    <div>
+      <div class="meta" style="color: #86836F;">Type</div>
+      <div class="mono" style="color:#F2F1EC; font-size:13px; font-weight:500; letter-spacing:0.04em; margin-top:4px;">JetBrains Mono / Inter</div>
+    </div>
+    <div>
+      <div class="meta" style="color: #86836F;">Pages</div>
+      <div class="mono" style="color:#F2F1EC; font-size:13px; font-weight:500; letter-spacing:0.04em; margin-top:4px;">12</div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>01 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 02 · CONTENTS                                           -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="02 Contents">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Contents · CH·02</span>
+  </div>
+
+  <div class="kicker">Contents</div>
+  <h1 class="h1" style="font-size: 44px;">What's inside.</h1>
+
+  <div style="margin-top: 40px; display:grid; grid-template-columns: 80px 1fr 80px; row-gap: 18px; column-gap: 24px; align-items:baseline;">
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·01</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Cover</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 01</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·02</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Contents <span style="font-weight:400; color: var(--ink3); font-size: 13px; margin-left: 8px;">— this page</span></span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 02</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·03</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Principles</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 03</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·04</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Logo · construction</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 04</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·05</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Logo · sizes &amp; spacing</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 05</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·06</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Lockups · light</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 06</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·07</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Lockups · dark</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 07</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·08</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Color</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 08</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·09</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Typography</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 09</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·10</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Grid &amp; spacing</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 10</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·11</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Components</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 11</span>
+
+    <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">CH·12</span>
+    <span style="font-family: var(--sans); font-size: 18px; font-weight: 600; border-bottom: 1px dotted var(--line); padding-bottom: 8px;">Do &amp; don't · Misuse</span>
+    <span class="mono" style="font-size: 11px; color: var(--ink3); text-align:right; font-feature-settings: 'tnum' 1;">P. 12</span>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>02 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 03 · PRINCIPLES                                         -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="03 Principles">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Principles · CH·03</span>
+  </div>
+
+  <div class="kicker">Principles</div>
+  <h1 class="h1" style="font-size: 44px;">Paper, not screen.</h1>
+  <p class="body" style="font-size: 14px; max-width: 600px;">
+    Four principles guide every decision — from the mark on the cover to the smallest tooltip
+    in product. When in doubt, fall back to these.
+  </p>
+
+  <div class="divider"></div>
+
+  <div class="grid-2" style="row-gap: 28px;">
+    <div>
+      <div class="row" style="align-items: baseline; gap: 12px;">
+        <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">P·01</span>
+        <h2 class="h2" style="font-size: 20px;">Measure twice.</h2>
+      </div>
+      <p class="body" style="margin-top: 8px;">
+        The product measures things. So does the brand. Every spacing value, every
+        stroke weight, every type size sits on the same numerical grid. Nothing is
+        eyeballed.
+      </p>
+    </div>
+
+    <div>
+      <div class="row" style="align-items: baseline; gap: 12px;">
+        <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">P·02</span>
+        <h2 class="h2" style="font-size: 20px;">Ink on paper.</h2>
+      </div>
+      <p class="body" style="margin-top: 8px;">
+        Warm carbon (#0A0906) on warm paper (#F2F1EC). Or its inverse. No blue, no
+        gradient, no drop shadow. The ramp between is for hierarchy, not decoration.
+      </p>
+    </div>
+
+    <div>
+      <div class="row" style="align-items: baseline; gap: 12px;">
+        <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">P·03</span>
+        <h2 class="h2" style="font-size: 20px;">Mono speaks.</h2>
+      </div>
+      <p class="body" style="margin-top: 8px;">
+        JetBrains Mono carries the brand voice — labels, numbers, captions, the
+        wordmark itself. Inter handles long-form reading. Switch with intent.
+      </p>
+    </div>
+
+    <div>
+      <div class="row" style="align-items: baseline; gap: 12px;">
+        <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.18em;">P·04</span>
+        <h2 class="h2" style="font-size: 20px;">Hard edges.</h2>
+      </div>
+      <p class="body" style="margin-top: 8px;">
+        2px corner radius maximum. Hairlines are 1px. Strokes are 1.5px. Registration
+        brackets reappear everywhere as a quiet motif — the system stamping itself.
+      </p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="display:flex; align-items:flex-start; gap: 24px;">
+    <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5" shape-rendering="geometricPrecision" style="flex-shrink:0; margin-top:4px;">
+      <rect x="18.75" y="2.75" width="42.5" height="42.5"/>
+      <rect x="10.75" y="10.75" width="42.5" height="42.5"/>
+      <rect x="2.75" y="18.75" width="42.5" height="42.5"/>
+    </svg>
+    <div>
+      <div class="meta">The mark is the manifesto</div>
+      <p class="body" style="margin-top: 6px; font-size: 13px; max-width: 560px;">
+        Three squares, hair-thin outlines, perfectly stacked. You can see through
+        them — that's the entire pitch. Hold the mark to that standard and the rest
+        of the system follows.
+      </p>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>03 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 04 · LOGO · CONSTRUCTION                                -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="04 Logo construction">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Logo · construction · CH·04</span>
+  </div>
+
+  <div class="kicker">Logo · construction</div>
+  <h1 class="h1" style="font-size: 44px;">Three squares.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px;">
+    The mark is built parametrically: three identical squares, offset along the
+    diagonal, drawn as outlines only. The geometry never changes — only the size.
+  </p>
+
+  <div class="divider"></div>
+
+  <div class="grid-2" style="gap: 32px; align-items:flex-start;">
+    <!-- LEFT: blueprint -->
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">Blueprint · 64u grid</div>
+      <div class="tile" style="padding: 24px; aspect-ratio: 1/1; display:grid; place-items:center; background: var(--surface);">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <svg width="320" height="320" viewBox="0 0 64 64" style="overflow: visible;">
+          <!-- background grid -->
+          <g stroke="#C8C6BB" stroke-width="0.15" opacity="0.7">
+            <line x1="0" y1="0" x2="0" y2="64"/>
+            <line x1="8" y1="0" x2="8" y2="64"/>
+            <line x1="16" y1="0" x2="16" y2="64"/>
+            <line x1="24" y1="0" x2="24" y2="64"/>
+            <line x1="32" y1="0" x2="32" y2="64"/>
+            <line x1="40" y1="0" x2="40" y2="64"/>
+            <line x1="48" y1="0" x2="48" y2="64"/>
+            <line x1="56" y1="0" x2="56" y2="64"/>
+            <line x1="64" y1="0" x2="64" y2="64"/>
+            <line x1="0" y1="0" x2="64" y2="0"/>
+            <line x1="0" y1="8" x2="64" y2="8"/>
+            <line x1="0" y1="16" x2="64" y2="16"/>
+            <line x1="0" y1="24" x2="64" y2="24"/>
+            <line x1="0" y1="32" x2="64" y2="32"/>
+            <line x1="0" y1="40" x2="64" y2="40"/>
+            <line x1="0" y1="48" x2="64" y2="48"/>
+            <line x1="0" y1="56" x2="64" y2="56"/>
+            <line x1="0" y1="64" x2="64" y2="64"/>
+          </g>
+          <!-- offset annotations -->
+          <g stroke="#86836F" stroke-width="0.18" stroke-dasharray="0.6 0.4" fill="none">
+            <line x1="2" y1="18" x2="18" y2="18"/>
+            <line x1="10" y1="46" x2="10" y2="62"/>
+          </g>
+          <text x="9" y="17" font-family="JetBrains Mono" font-size="2.2" fill="#86836F" text-anchor="middle">8u</text>
+          <text x="11.5" y="55" font-family="JetBrains Mono" font-size="2.2" fill="#86836F">8u</text>
+
+          <!-- mark -->
+          <g fill="none" stroke="#0A0906" stroke-width="0.4" shape-rendering="geometricPrecision">
+            <rect x="18.2" y="2.2" width="43.6" height="43.6"/>
+            <rect x="10.2" y="10.2" width="43.6" height="43.6"/>
+            <rect x="2.2" y="18.2" width="43.6" height="43.6"/>
+          </g>
+          <!-- corner markers -->
+          <g fill="#0A0906">
+            <circle cx="18" cy="2" r="0.45"/>
+            <circle cx="62" cy="46" r="0.45"/>
+            <circle cx="2" cy="18" r="0.45"/>
+            <circle cx="46" cy="62" r="0.45"/>
+          </g>
+        </svg>
+      </div>
+      <div class="row" style="margin-top: 12px; justify-content: space-between;">
+        <span class="meta">Square · 44u × 44u</span>
+        <span class="meta">Offset · 8u diagonal</span>
+        <span class="meta">Stroke · 1.5px @ 64u</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: specs -->
+    <div class="stack-lg">
+      <div>
+        <div class="meta-lg" style="margin-bottom: 10px;">Geometry</div>
+        <div class="tile">
+          <span class="tick-tl"></span><span class="tick-br"></span>
+          <table style="width:100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; color: var(--ink1);">
+            <tbody>
+              <tr><td style="padding: 6px 0; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; font-size: 10px;">Canvas</td><td style="text-align:right; font-feature-settings: 'tnum' 1;">64 × 64 units</td></tr>
+              <tr><td style="padding: 6px 0; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; font-size: 10px;">Square size</td><td style="text-align:right; font-feature-settings: 'tnum' 1;">44 × 44 units</td></tr>
+              <tr><td style="padding: 6px 0; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; font-size: 10px;">Offset</td><td style="text-align:right; font-feature-settings: 'tnum' 1;">8 units, ↘ diagonal</td></tr>
+              <tr><td style="padding: 6px 0; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; font-size: 10px;">Stroke</td><td style="text-align:right; font-feature-settings: 'tnum' 1;">1.5px @ 64 unit canvas</td></tr>
+              <tr><td style="padding: 6px 0; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; font-size: 10px;">Corner radius</td><td style="text-align:right; font-feature-settings: 'tnum' 1;">0 (hard edge)</td></tr>
+              <tr><td style="padding: 6px 0; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; font-size: 10px;">Color</td><td style="text-align:right; font-feature-settings: 'tnum' 1;">#0A0906 / #F2F1EC</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="meta-lg" style="margin-bottom: 10px;">Stroke scaling</div>
+        <p class="small">Stroke weight stays at <span class="mono" style="color: var(--ink0); font-weight: 600;">1.5px</span> across all rendered sizes from 16px upward. Below 16px, switch to the favicon variant (separate file).</p>
+        <div class="row" style="margin-top: 14px; gap: 24px; align-items: flex-end;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+          <svg width="48" height="48" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="2"><rect x="19" y="3" width="42" height="42"/><rect x="11" y="11" width="42" height="42"/><rect x="3" y="19" width="42" height="42"/></svg>
+          <svg width="32" height="32" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="3"><rect x="19.5" y="3.5" width="41" height="41"/><rect x="11.5" y="11.5" width="41" height="41"/><rect x="3.5" y="19.5" width="41" height="41"/></svg>
+          <svg width="24" height="24" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="4"><rect x="20" y="4" width="40" height="40"/><rect x="12" y="12" width="40" height="40"/><rect x="4" y="20" width="40" height="40"/></svg>
+        </div>
+        <div class="row" style="margin-top: 6px; gap: 24px;">
+          <span class="meta" style="width:64px; text-align:center;">64</span>
+          <span class="meta" style="width:48px; text-align:center;">48</span>
+          <span class="meta" style="width:32px; text-align:center;">32</span>
+          <span class="meta" style="width:24px; text-align:center;">24</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>04 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 05 · LOGO · SIZES & CLEARSPACE                          -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="05 Logo sizes">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Logo · sizes &amp; spacing · CH·05</span>
+  </div>
+
+  <div class="kicker">Logo · scale &amp; clearspace</div>
+  <h1 class="h1" style="font-size: 44px;">From favicon to billboard.</h1>
+
+  <div class="divider"></div>
+
+  <!-- scale ladder -->
+  <div class="meta-lg" style="margin-bottom: 16px;">Scale ladder</div>
+  <div class="tile" style="padding: 28px 24px 20px;">
+    <span class="tick-tl"></span><span class="tick-br"></span>
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap: 16px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="16" height="16" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="6"><rect x="21" y="5" width="38" height="38"/><rect x="13" y="13" width="38" height="38"/><rect x="5" y="21" width="38" height="38"/></svg>
+        <span class="meta">16</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="24" height="24" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="4"><rect x="20" y="4" width="40" height="40"/><rect x="12" y="12" width="40" height="40"/><rect x="4" y="20" width="40" height="40"/></svg>
+        <span class="meta">24</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="3"><rect x="19.5" y="3.5" width="41" height="41"/><rect x="11.5" y="11.5" width="41" height="41"/><rect x="3.5" y="19.5" width="41" height="41"/></svg>
+        <span class="meta">32</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="48" height="48" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="2"><rect x="19" y="3" width="42" height="42"/><rect x="11" y="11" width="42" height="42"/><rect x="3" y="19" width="42" height="42"/></svg>
+        <span class="meta">48</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+        <span class="meta">64 · ★</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1"><rect x="18.5" y="2.5" width="43" height="43"/><rect x="10.5" y="10.5" width="43" height="43"/><rect x="2.5" y="18.5" width="43" height="43"/></svg>
+        <span class="meta">96</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap: 8px;">
+        <svg width="128" height="128" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="0.75"><rect x="18.4" y="2.4" width="43.2" height="43.2"/><rect x="10.4" y="10.4" width="43.2" height="43.2"/><rect x="2.4" y="18.4" width="43.2" height="43.2"/></svg>
+        <span class="meta">128</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap: 32px; margin-top: 32px;">
+    <!-- LEFT: clearspace -->
+    <div style="flex: 1;">
+      <div class="meta-lg" style="margin-bottom: 12px;">Clearspace</div>
+      <p class="small" style="margin-bottom: 14px;">Reserve a margin equal to <span class="mono" style="color: var(--ink0); font-weight: 600;">¼ of the mark's height</span> on every side. Nothing — type, edges, art — enters that zone.</p>
+      <div class="tile" style="padding: 30px; display:grid; place-items:center; background: var(--surface);">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <div style="position:relative; width: 240px; height: 240px;">
+          <!-- clearspace box -->
+          <div style="position:absolute; inset: 0; border: 1px dashed #86836F; opacity: 0.7;"></div>
+          <!-- mark -->
+          <div style="position:absolute; left: 30px; top: 30px;">
+            <svg width="180" height="180" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+          </div>
+          <!-- x-marker labels -->
+          <span class="mono" style="position:absolute; top: 6px; left: 50%; transform:translateX(-50%); font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">¼ X</span>
+          <span class="mono" style="position:absolute; bottom: 6px; left: 50%; transform:translateX(-50%); font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">¼ X</span>
+          <span class="mono" style="position:absolute; left: 4px; top: 50%; transform:translateY(-50%) rotate(-90deg); font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">¼ X</span>
+          <span class="mono" style="position:absolute; right: 4px; top: 50%; transform:translateY(-50%) rotate(90deg); font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">¼ X</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: minimum sizes -->
+    <div style="flex: 1;">
+      <div class="meta-lg" style="margin-bottom: 12px;">Minimum sizes</div>
+      <div class="stack" style="gap: 0;">
+        <div class="row" style="justify-content:space-between; padding: 14px 0; border-bottom: 1px solid var(--lineSoft);">
+          <div class="row" style="gap: 14px;">
+            <svg width="16" height="16" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="6"><rect x="21" y="5" width="38" height="38"/><rect x="13" y="13" width="38" height="38"/><rect x="5" y="21" width="38" height="38"/></svg>
+            <div class="stack-tight">
+              <span class="h3" style="font-size: 13px;">Favicon · 16px</span>
+              <span class="small" style="font-size: 10.5px;">Stroke increases to 6 at 64u canvas. Use favicon SVG.</span>
+            </div>
+          </div>
+          <span class="meta">MIN</span>
+        </div>
+        <div class="row" style="justify-content:space-between; padding: 14px 0; border-bottom: 1px solid var(--lineSoft);">
+          <div class="row" style="gap: 14px;">
+            <svg width="24" height="24" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="4"><rect x="20" y="4" width="40" height="40"/><rect x="12" y="12" width="40" height="40"/><rect x="4" y="20" width="40" height="40"/></svg>
+            <div class="stack-tight">
+              <span class="h3" style="font-size: 13px;">UI nav · 24px</span>
+              <span class="small" style="font-size: 10.5px;">Toolbars, app headers. Most common in-product size.</span>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="justify-content:space-between; padding: 14px 0; border-bottom: 1px solid var(--lineSoft);">
+          <div class="row" style="gap: 14px;">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="2"><rect x="19" y="3" width="42" height="42"/><rect x="11" y="11" width="42" height="42"/><rect x="3" y="19" width="42" height="42"/></svg>
+            <div class="stack-tight">
+              <span class="h3" style="font-size: 13px;">Marketing · 48px</span>
+              <span class="small" style="font-size: 10.5px;">Hero lockup, landing nav, deck title slides.</span>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="justify-content:space-between; padding: 14px 0;">
+          <div class="row" style="gap: 14px;">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+            <div class="stack-tight">
+              <span class="h3" style="font-size: 13px;">Master · 64px+</span>
+              <span class="small" style="font-size: 10.5px;">Reference scale. Stroke = 1.5px exactly.</span>
+            </div>
+          </div>
+          <span class="meta">★</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>05 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 06 · LOCKUPS · LIGHT                                    -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="06 Lockups light">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Lockups · light · CH·06</span>
+  </div>
+
+  <div class="kicker">Lockups · light surface</div>
+  <h1 class="h1" style="font-size: 44px;">Mark + wordmark.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px;">
+    Three approved lockups on paper. Gap between mark and wordmark is always
+    <span class="mono" style="color: var(--ink0); font-weight: 600;">¼ of mark height</span>.
+    Wordmark uses JetBrains Mono SemiBold with the .space suffix in ink-3.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- 1. Horizontal -->
+  <div class="meta-lg" style="margin-bottom: 12px;">01 · Horizontal · primary</div>
+  <div class="tile" style="padding: 40px; display:grid; place-items:center;">
+    <span class="tick-tl"></span><span class="tick-br"></span>
+    <div style="display:inline-flex; align-items:center; gap: 22px;">
+      <svg width="88" height="88" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+      <span class="wm" style="font-size: 44px; color: #0A0906;">transparent<span class="accent">.space</span></span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top: 24px; gap: 20px;">
+    <!-- 2. Stacked -->
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">02 · Stacked</div>
+      <div class="tile" style="padding: 36px 24px; display:grid; place-items:center; height: 240px;">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <div style="display:flex; flex-direction:column; align-items:center; gap: 18px;">
+          <svg width="72" height="72" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+          <span class="wm" style="font-size: 22px; color: #0A0906;">transparent<span class="accent">.space</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Compact / inline -->
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">03 · Compact · UI nav</div>
+      <div class="tile" style="padding: 36px 24px; display:grid; place-items:center; height: 240px;">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <div style="display:inline-flex; align-items:center; gap: 12px;">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" stroke="#0A0906" stroke-width="3"><rect x="19.5" y="3.5" width="41" height="41"/><rect x="11.5" y="11.5" width="41" height="41"/><rect x="3.5" y="19.5" width="41" height="41"/></svg>
+          <span class="wm" style="font-size: 16px; color: #0A0906;">transparent<span class="accent">.space</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px;">
+    <div class="meta-lg" style="margin-bottom: 12px;">04 · Wordmark only</div>
+    <div class="tile" style="padding: 32px; display:grid; place-items:center;">
+      <span class="tick-tl"></span><span class="tick-br"></span>
+      <span class="wm" style="font-size: 36px; color: #0A0906;">transparent<span class="accent">.space</span></span>
+    </div>
+    <p class="small" style="margin-top: 10px;">Use when the mark cannot come along — e.g. footers below 24px logo size, single-line mentions in body copy.</p>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>06 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 07 · LOCKUPS · DARK                                     -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page dark" data-screen-label="07 Lockups dark">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Lockups · dark · CH·07</span>
+  </div>
+
+  <div class="kicker">Lockups · dark surface</div>
+  <h1 class="h1" style="font-size: 44px; color: #F2F1EC;">On ink.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px;">
+    The same three lockups, mirrored on <span class="mono" style="color: #F2F1EC; font-weight: 600;">#0A0906</span>.
+    Stroke and wordmark flip to <span class="mono" style="color: #F2F1EC; font-weight: 600;">#F2F1EC</span>;
+    the .space suffix uses ink-4 (<span class="mono" style="color: #F2F1EC; font-weight: 600;">#ADAA95</span>).
+    Use for dark-mode product chrome, terminal headers, evening event collateral.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- 1. Horizontal -->
+  <div class="meta-lg" style="margin-bottom: 12px; color: #ADAA95;">01 · Horizontal · primary · dark</div>
+  <div class="tile dark" style="padding: 40px; display:grid; place-items:center;">
+    <span class="tick-tl" style="border-color: #86836F !important;"></span>
+    <span class="tick-br" style="border-color: #86836F !important;"></span>
+    <div style="display:inline-flex; align-items:center; gap: 22px;">
+      <svg width="88" height="88" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+      <span style="font-family: var(--mono); font-weight: 600; font-size: 44px; letter-spacing: -0.04em; color: #F2F1EC; line-height: 1;">transparent<span style="color: #ADAA95;">.space</span></span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top: 24px; gap: 20px;">
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px; color: #ADAA95;">02 · Stacked · dark</div>
+      <div class="tile dark" style="padding: 36px 24px; display:grid; place-items:center; height: 240px;">
+        <span class="tick-tl" style="border-color: #86836F !important;"></span>
+        <span class="tick-br" style="border-color: #86836F !important;"></span>
+        <div style="display:flex; flex-direction:column; align-items:center; gap: 18px;">
+          <svg width="72" height="72" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+          <span style="font-family: var(--mono); font-weight: 600; font-size: 22px; letter-spacing: -0.04em; color: #F2F1EC; line-height: 1;">transparent<span style="color: #ADAA95;">.space</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px; color: #ADAA95;">03 · Compact · dark UI nav</div>
+      <div class="tile dark" style="padding: 36px 24px; display:grid; place-items:center; height: 240px;">
+        <span class="tick-tl" style="border-color: #86836F !important;"></span>
+        <span class="tick-br" style="border-color: #86836F !important;"></span>
+        <div style="display:inline-flex; align-items:center; gap: 12px;">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="3"><rect x="19.5" y="3.5" width="41" height="41"/><rect x="11.5" y="11.5" width="41" height="41"/><rect x="3.5" y="19.5" width="41" height="41"/></svg>
+          <span style="font-family: var(--mono); font-weight: 600; font-size: 16px; letter-spacing: -0.04em; color: #F2F1EC; line-height: 1;">transparent<span style="color: #ADAA95;">.space</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px;">
+    <div class="meta-lg" style="margin-bottom: 12px; color: #ADAA95;">04 · Wordmark only · dark</div>
+    <div class="tile dark" style="padding: 32px; display:grid; place-items:center;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <span style="font-family: var(--mono); font-weight: 600; font-size: 36px; letter-spacing: -0.04em; color: #F2F1EC; line-height: 1;">transparent<span style="color: #ADAA95;">.space</span></span>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>07 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 08 · COLOR                                              -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="08 Color">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Color · CH·08</span>
+  </div>
+
+  <div class="kicker">Color · ink &amp; paper ramp</div>
+  <h1 class="h1" style="font-size: 44px;">Two surfaces. One ramp.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px;">
+    A nine-step warm grayscale, anchored at carbon ink (<span class="mono" style="color: var(--ink0); font-weight: 600;">#0A0906</span>)
+    and paper (<span class="mono" style="color: var(--ink0); font-weight: 600;">#F2F1EC</span>). Every UI color comes
+    from this list. Status colors are reserved for state — never decoration.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- INK RAMP -->
+  <div class="meta-lg" style="margin-bottom: 12px;">Ink ramp · text &amp; strokes</div>
+  <div class="grid-6" style="gap: 8px;">
+    <div class="swatch"><div class="chip" style="background:#0A0906;"></div><div class="info"><div class="name">Ink-0</div><div class="hex">#0A0906</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#2B2921;"></div><div class="info"><div class="name">Ink-1</div><div class="hex">#2B2921</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#5E5B50;"></div><div class="info"><div class="name">Ink-2</div><div class="hex">#5E5B50</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#86836F;"></div><div class="info"><div class="name">Ink-3</div><div class="hex">#86836F</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#ADAA95;"></div><div class="info"><div class="name">Ink-4</div><div class="hex">#ADAA95</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#C8C6BB;"></div><div class="info"><div class="name">Line</div><div class="hex">#C8C6BB</div></div></div>
+  </div>
+
+  <!-- PAPER RAMP -->
+  <div class="meta-lg" style="margin: 24px 0 12px;">Paper ramp · surfaces</div>
+  <div class="grid-6" style="gap: 8px;">
+    <div class="swatch"><div class="chip" style="background:#FAFAF7;"></div><div class="info"><div class="name">Surface</div><div class="hex">#FAFAF7</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F5F4EF;"></div><div class="info"><div class="name">Surface-2</div><div class="hex">#F5F4EF</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F2F1EC;"></div><div class="info"><div class="name">Page</div><div class="hex">#F2F1EC</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#ECEBE4;"></div><div class="info"><div class="name">Surface-3</div><div class="hex">#ECEBE4</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#E3E1D8;"></div><div class="info"><div class="name">Surface-4</div><div class="hex">#E3E1D8</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#0A0906;"></div><div class="info"><div class="name">Inv. surface</div><div class="hex">#0A0906</div></div></div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="meta-lg" style="margin: 24px 0 12px;">Status · sparingly</div>
+  <div class="grid-3" style="gap: 12px;">
+    <div class="swatch"><div class="chip" style="background:#2E6B2E;"></div><div class="info"><div class="name">Good</div><div class="hex">#2E6B2E</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#8B5A00;"></div><div class="info"><div class="name">Warn</div><div class="hex">#8B5A00</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#8B2828;"></div><div class="info"><div class="name">Bad</div><div class="hex">#8B2828</div></div></div>
+  </div>
+
+  <!-- contrast checks -->
+  <div class="meta-lg" style="margin: 28px 0 12px;">Contrast · WCAG AA</div>
+  <div class="grid-4" style="gap: 8px;">
+    <div class="tile" style="padding: 14px;">
+      <div class="meta" style="margin-bottom: 6px;">Ink-0 / Page</div>
+      <div class="row" style="justify-content:space-between;"><span class="mono" style="font-size: 11px; font-weight: 600;">17.4 : 1</span><span class="mono" style="font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">AAA</span></div>
+    </div>
+    <div class="tile" style="padding: 14px;">
+      <div class="meta" style="margin-bottom: 6px;">Ink-2 / Page</div>
+      <div class="row" style="justify-content:space-between;"><span class="mono" style="font-size: 11px; font-weight: 600;">6.4 : 1</span><span class="mono" style="font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">AA</span></div>
+    </div>
+    <div class="tile" style="padding: 14px;">
+      <div class="meta" style="margin-bottom: 6px;">Ink-3 / Page</div>
+      <div class="row" style="justify-content:space-between;"><span class="mono" style="font-size: 11px; font-weight: 600;">3.8 : 1</span><span class="mono" style="font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">AA-LG</span></div>
+    </div>
+    <div class="tile" style="padding: 14px;">
+      <div class="meta" style="margin-bottom: 6px;">Page / Ink-0</div>
+      <div class="row" style="justify-content:space-between;"><span class="mono" style="font-size: 11px; font-weight: 600;">17.4 : 1</span><span class="mono" style="font-size: 9px; color: var(--ink3); letter-spacing: 0.16em;">AAA</span></div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>08 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 09 · TYPOGRAPHY                                         -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="09 Typography">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Typography · CH·09</span>
+  </div>
+
+  <div class="kicker">Typography</div>
+  <h1 class="h1" style="font-size: 44px;">Two faces, eight roles.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px;">
+    Inter for reading. JetBrains Mono for the system's voice — labels, numbers, the
+    wordmark itself. Everything else is the spacing and weight of these two.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- families -->
+  <div class="grid-2" style="gap: 24px;">
+    <div class="tile" style="padding: 24px;">
+      <span class="tick-tl"></span><span class="tick-br"></span>
+      <div class="row" style="justify-content:space-between; margin-bottom: 14px;">
+        <span class="meta">Sans · reading</span>
+        <span class="meta">Inter · 400 / 500 / 600</span>
+      </div>
+      <div style="font-family: var(--sans); font-weight: 600; font-size: 56px; letter-spacing: -0.035em; line-height: 1; color: var(--ink0);">Aa</div>
+      <div style="font-family: var(--sans); font-size: 12px; color: var(--ink3); margin-top: 14px; letter-spacing: 0.04em;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+      <div style="font-family: var(--sans); font-size: 12px; color: var(--ink3); margin-top: 4px; letter-spacing: 0.04em;">abcdefghijklmnopqrstuvwxyz · 0123456789</div>
+    </div>
+    <div class="tile" style="padding: 24px;">
+      <span class="tick-tl"></span><span class="tick-br"></span>
+      <div class="row" style="justify-content:space-between; margin-bottom: 14px;">
+        <span class="meta">Mono · voice</span>
+        <span class="meta">JetBrains Mono · 500 / 600</span>
+      </div>
+      <div style="font-family: var(--mono); font-weight: 600; font-size: 56px; letter-spacing: -0.04em; line-height: 1; color: var(--ink0);">Aa</div>
+      <div style="font-family: var(--mono); font-size: 12px; color: var(--ink3); margin-top: 14px; letter-spacing: 0.02em;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+      <div style="font-family: var(--mono); font-size: 12px; color: var(--ink3); margin-top: 4px; letter-spacing: 0.02em;">abcdefghijklmnopqrstuvwxyz · 0123456789</div>
+    </div>
+  </div>
+
+  <!-- type scale -->
+  <div class="meta-lg" style="margin: 28px 0 14px;">Scale</div>
+  <div class="stack" style="gap: 0;">
+    <div class="row" style="justify-content:space-between; padding: 12px 0; border-bottom: 1px solid var(--lineSoft); align-items:baseline;">
+      <span style="font-family: var(--sans); font-size: 56px; font-weight: 600; letter-spacing: -0.035em; line-height: 1;">Display</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Inter · 600 · 56 / 60 · -3.5%</span>
+    </div>
+    <div class="row" style="justify-content:space-between; padding: 12px 0; border-bottom: 1px solid var(--lineSoft); align-items:baseline;">
+      <span style="font-family: var(--sans); font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05;">H1 · Title</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Inter · 600 · 36 / 38 · -3.0%</span>
+    </div>
+    <div class="row" style="justify-content:space-between; padding: 12px 0; border-bottom: 1px solid var(--lineSoft); align-items:baseline;">
+      <span style="font-family: var(--sans); font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15;">H2 · Section</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Inter · 600 · 22 / 25 · -2.0%</span>
+    </div>
+    <div class="row" style="justify-content:space-between; padding: 12px 0; border-bottom: 1px solid var(--lineSoft); align-items:baseline;">
+      <span style="font-family: var(--sans); font-size: 14px; font-weight: 400; line-height: 1.55;">Body — quiet, paper-like, designed for sustained reading.</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Inter · 400 · 14 / 22</span>
+    </div>
+    <div class="row" style="justify-content:space-between; padding: 12px 0; border-bottom: 1px solid var(--lineSoft); align-items:baseline;">
+      <span style="font-family: var(--sans); font-size: 11.5px; font-weight: 400; line-height: 1.5; color: var(--ink2);">Caption · supportive metadata, footnotes, fine print.</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Inter · 400 · 11.5 / 17</span>
+    </div>
+    <div class="row" style="justify-content:space-between; padding: 12px 0; border-bottom: 1px solid var(--lineSoft); align-items:baseline;">
+      <span style="font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: -0.04em;">Code · 13px / mono / 600</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Mono · 600 · 13 / 18 · -4.0%</span>
+    </div>
+    <div class="row" style="justify-content:space-between; padding: 12px 0; align-items:baseline;">
+      <span class="mono" style="font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink3);">META · LABELS · KICKERS · ALL UPPER</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink3); letter-spacing: 0.14em;">Mono · 500 · 11 · +22% · upper</span>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>09 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 10 · GRID & SPACING                                     -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="10 Grid spacing">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Grid &amp; spacing · CH·10</span>
+  </div>
+
+  <div class="kicker">Grid &amp; spacing</div>
+  <h1 class="h1" style="font-size: 44px;">Everything on 4.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px;">
+    The base unit is <span class="mono" style="color: var(--ink0); font-weight: 600;">4px</span>. Every spacing, every
+    radius, every stroke offset is a multiple. The grid for layout is 12 columns
+    on screens, 8 columns on print. Gutter = 24px.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- spacing scale -->
+  <div class="meta-lg" style="margin-bottom: 14px;">Spacing scale</div>
+  <div class="stack" style="gap: 10px;">
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·01</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">4 px</span>
+      <div class="sp-bar" style="width: 4px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·02</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">8 px</span>
+      <div class="sp-bar" style="width: 8px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·03</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">12 px</span>
+      <div class="sp-bar" style="width: 12px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·04</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">16 px</span>
+      <div class="sp-bar" style="width: 16px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·05</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">24 px</span>
+      <div class="sp-bar" style="width: 24px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·06</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">32 px</span>
+      <div class="sp-bar" style="width: 32px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·07</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">48 px</span>
+      <div class="sp-bar" style="width: 48px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·08</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">64 px</span>
+      <div class="sp-bar" style="width: 64px;"></div>
+    </div>
+    <div class="row" style="gap: 16px;">
+      <span class="mono" style="font-size: 11px; color: var(--ink3); width: 60px; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1;">SP·09</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink0); width: 50px; font-weight: 600; font-feature-settings: 'tnum' 1;">96 px</span>
+      <div class="sp-bar" style="width: 96px;"></div>
+    </div>
+  </div>
+
+  <!-- radius + stroke -->
+  <div class="grid-2" style="margin-top: 28px; gap: 24px;">
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">Radius</div>
+      <div class="tile" style="padding: 18px;">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <div class="row" style="gap: 22px;">
+          <div class="stack-tight" style="align-items:center;"><div style="width: 48px; height: 48px; background: var(--ink0); border-radius: 0;"></div><span class="meta">0</span></div>
+          <div class="stack-tight" style="align-items:center;"><div style="width: 48px; height: 48px; background: var(--ink0); border-radius: 2px;"></div><span class="meta">2 ★</span></div>
+          <div class="stack-tight" style="align-items:center;"><div style="width: 48px; height: 48px; background: var(--ink0); border-radius: 4px;"></div><span class="meta">4</span></div>
+          <div class="stack-tight" style="align-items:center;"><div style="width: 48px; height: 48px; background: var(--ink0); border-radius: 999px;"></div><span class="meta">FULL</span></div>
+        </div>
+        <p class="small" style="margin-top: 14px;">Default is <span class="mono" style="color: var(--ink0); font-weight: 600;">2px</span>. Full-round only on dots, status pips, and active-state indicators.</p>
+      </div>
+    </div>
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">Stroke weights</div>
+      <div class="tile" style="padding: 18px;">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <div class="stack" style="gap: 14px;">
+          <div class="row" style="gap: 14px;"><span class="mono" style="font-size: 11px; color: var(--ink0); width: 60px; font-weight: 600;">0.5 px</span><div style="height: 0.5px; background: var(--ink0); flex: 1;"></div><span class="meta">Hairline</span></div>
+          <div class="row" style="gap: 14px;"><span class="mono" style="font-size: 11px; color: var(--ink0); width: 60px; font-weight: 600;">1 px</span><div style="height: 1px; background: var(--ink0); flex: 1;"></div><span class="meta">Divider</span></div>
+          <div class="row" style="gap: 14px;"><span class="mono" style="font-size: 11px; color: var(--ink0); width: 60px; font-weight: 600;">1.5 px ★</span><div style="height: 1.5px; background: var(--ink0); flex: 1;"></div><span class="meta">Mark · borders</span></div>
+          <div class="row" style="gap: 14px;"><span class="mono" style="font-size: 11px; color: var(--ink0); width: 60px; font-weight: 600;">2 px</span><div style="height: 2px; background: var(--ink0); flex: 1;"></div><span class="meta">Emphasis</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>10 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 11 · COMPONENTS                                         -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page" data-screen-label="11 Components">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Components · CH·11</span>
+  </div>
+
+  <div class="kicker">Components · core set</div>
+  <h1 class="h1" style="font-size: 44px;">Pieces in the kit.</h1>
+
+  <div class="divider"></div>
+
+  <!-- buttons -->
+  <div class="meta-lg" style="margin-bottom: 12px;">Buttons</div>
+  <div class="tile" style="padding: 24px;">
+    <span class="tick-tl"></span><span class="tick-br"></span>
+    <div class="row" style="gap: 14px; flex-wrap: wrap;">
+      <button style="font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; background: #0A0906; color: #F2F1EC; border: 1px solid #0A0906; border-radius: 2px; cursor: pointer;">Primary action</button>
+      <button style="font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; background: transparent; color: #0A0906; border: 1px solid #0A0906; border-radius: 2px; cursor: pointer;">Secondary</button>
+      <button style="font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 14px; background: transparent; color: #5E5B50; border: 1px solid transparent; border-radius: 2px; cursor: pointer;">Tertiary</button>
+      <button style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px; background: var(--surface3); color: #5E5B50; border: 1px solid var(--line); border-radius: 2px; cursor: not-allowed;" disabled>Disabled</button>
+    </div>
+    <p class="small" style="margin-top: 14px;">Mono, uppercase, +10% tracking. Padding always 10×18 (primary/secondary). Radius 2px.</p>
+  </div>
+
+  <!-- chips -->
+  <div class="meta-lg" style="margin: 22px 0 12px;">Chips · status</div>
+  <div class="tile" style="padding: 24px;">
+    <span class="tick-tl"></span><span class="tick-br"></span>
+    <div class="row" style="gap: 10px; flex-wrap: wrap;">
+      <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px 6px; border-radius: 2px; background: var(--surface); border: 1px solid var(--line); color: var(--ink1);">Default</span>
+      <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px 6px; border-radius: 2px; background: #0A0906; border: 1px solid #0A0906; color: #F2F1EC;">Dark</span>
+      <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px 6px; border-radius: 2px; background: #DEE6DB; border: 1px solid #8BA389; color: #2E6B2E;">Good</span>
+      <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px 6px; border-radius: 2px; background: #F0E3CD; border: 1px solid #BFA172; color: #8B5A00;">Warn</span>
+      <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px 6px; border-radius: 2px; background: #EEDCDC; border: 1px solid #B88787; color: #8B2828;">Bad</span>
+    </div>
+  </div>
+
+  <!-- KPI tile -->
+  <div class="meta-lg" style="margin: 22px 0 12px;">KPI tile</div>
+  <div class="grid-3" style="gap: 12px;">
+    <div class="tile" style="padding: 18px 20px;">
+      <span class="tick-tl"></span><span class="tick-br"></span>
+      <span class="mono" style="position:absolute; top: 8px; right: 12px; font-size: 9px; letter-spacing: 0.16em; color: var(--ink3); font-weight: 500;">CH·01</span>
+      <div class="meta" style="margin-bottom: 12px;">Total measurements</div>
+      <div style="font-family: var(--mono); font-weight: 600; font-size: 36px; line-height: 1; color: var(--ink0); letter-spacing: -0.03em; display: flex; align-items: baseline; gap: 2px; font-feature-settings: 'tnum' 1, 'zero' 1;">
+        <span style="font-size: 24px; color: var(--ink3); font-weight: 400;">$</span>
+        <span>2.4</span>
+        <span style="font-size: 24px; color: var(--ink3); font-weight: 400;">M</span>
+      </div>
+      <div class="row" style="justify-content:space-between; margin-top: 10px;">
+        <span class="meta">Annual</span>
+        <span class="mono" style="font-size: 10px; color: #2E6B2E; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;">+12.4%</span>
+      </div>
+    </div>
+    <div class="tile" style="padding: 18px 20px;">
+      <span class="tick-tl"></span><span class="tick-br"></span>
+      <span class="mono" style="position:absolute; top: 8px; right: 12px; font-size: 9px; letter-spacing: 0.16em; color: var(--ink3); font-weight: 500;">CH·02</span>
+      <div class="meta" style="margin-bottom: 12px;">Active pools</div>
+      <div style="font-family: var(--mono); font-weight: 600; font-size: 36px; line-height: 1; color: var(--ink0); letter-spacing: -0.03em; font-feature-settings: 'tnum' 1, 'zero' 1;">
+        <span>248</span>
+      </div>
+      <div class="row" style="justify-content:space-between; margin-top: 10px;">
+        <span class="meta">This week</span>
+        <span class="mono" style="font-size: 10px; color: var(--ink3); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;">±0</span>
+      </div>
+    </div>
+    <div class="tile" style="padding: 18px 20px;">
+      <span class="tick-tl"></span><span class="tick-br"></span>
+      <span class="mono" style="position:absolute; top: 8px; right: 12px; font-size: 9px; letter-spacing: 0.16em; color: var(--ink3); font-weight: 500;">CH·03</span>
+      <div class="meta" style="margin-bottom: 12px;">Drift</div>
+      <div style="font-family: var(--mono); font-weight: 600; font-size: 36px; line-height: 1; color: var(--ink0); letter-spacing: -0.03em; display: flex; align-items: baseline; gap: 2px; font-feature-settings: 'tnum' 1, 'zero' 1;">
+        <span>0.04</span>
+        <span style="font-size: 24px; color: var(--ink3); font-weight: 400;">%</span>
+      </div>
+      <div class="row" style="justify-content:space-between; margin-top: 10px;">
+        <span class="meta">vs target</span>
+        <span class="mono" style="font-size: 10px; color: #2E6B2E; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;">−0.2 bps</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- input + nav strip -->
+  <div class="grid-2" style="margin-top: 22px; gap: 20px;">
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">Input</div>
+      <div class="tile" style="padding: 18px;">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <label class="meta" style="display:block; margin-bottom: 8px;">Pool ID</label>
+        <div style="display:flex; align-items:stretch; border: 1px solid var(--ink0); border-radius: 2px; overflow:hidden;">
+          <span style="font-family: var(--mono); font-size: 11px; padding: 0 10px; display:flex; align-items:center; background: var(--surface3); color: var(--ink2); letter-spacing: 0.1em; text-transform: uppercase; border-right: 1px solid var(--line);">CRCLx</span>
+          <input value="USDC-USDT-0.05%" style="flex:1; border: 0; padding: 10px 12px; font-family: var(--mono); font-size: 13px; color: var(--ink0); background: var(--page); outline:none; letter-spacing: 0.02em;" />
+        </div>
+        <p class="small" style="margin-top: 8px; font-size: 10.5px;">Mono input · 13px · prefix slot for namespace.</p>
+      </div>
+    </div>
+    <div>
+      <div class="meta-lg" style="margin-bottom: 12px;">Tab strip</div>
+      <div class="tile" style="padding: 0;">
+        <span class="tick-tl"></span><span class="tick-br"></span>
+        <div style="display:flex; align-items:stretch; border-bottom: 1px solid var(--line);">
+          <span style="font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink0); padding: 14px 18px; border-bottom: 2px solid var(--ink0); margin-bottom: -1px;">Pools</span>
+          <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink3); padding: 14px 18px;">Drift</span>
+          <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink3); padding: 14px 18px;">Audit</span>
+          <span style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink3); padding: 14px 18px;">Settings</span>
+        </div>
+        <div style="padding: 16px 18px; font-family: var(--sans); font-size: 12px; color: var(--ink2);">Active tab uses 2px ink underline; inactive sits at ink-3.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>11 / 12</span>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────── -->
+<!-- PAGE 12 · DO / DON'T (DARK)                                  -->
+<!-- ──────────────────────────────────────────────────────────── -->
+<section class="page dark" data-screen-label="12 Misuse">
+  <span class="brk-tr"></span><span class="brk-bl"></span>
+  <div class="page-head">
+    <span>transparent.space · design system</span>
+    <span>Misuse · CH·12</span>
+  </div>
+
+  <div class="kicker">Logo · misuse</div>
+  <h1 class="h1" style="font-size: 44px; color: #F2F1EC;">Don't.</h1>
+  <p class="body" style="font-size: 14px; max-width: 580px; color: #ADAA95;">
+    The mark holds up because the geometry never moves. Six things that break it.
+  </p>
+
+  <div class="divider"></div>
+
+  <div class="grid-3" style="gap: 14px;">
+    <!-- DO -->
+    <div class="tile dark" style="padding: 0; overflow: hidden;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <div style="height: 140px; display:grid; place-items:center; background: rgba(242,241,236,0.04);">
+        <svg width="80" height="80" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+      </div>
+      <div style="padding: 12px 14px; border-top: 1px solid rgba(242,241,236,0.18);">
+        <div class="ok" style="color: #C8E6BB; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">DO · master form</div>
+        <p style="margin: 6px 0 0; font-family: var(--sans); font-size: 11px; line-height: 1.5; color: #ADAA95;">Outline at 1.5px on ink. The reference.</p>
+      </div>
+    </div>
+
+    <!-- DON'T fill -->
+    <div class="tile dark" style="padding: 0; overflow: hidden;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <div style="height: 140px; display:grid; place-items:center; background: rgba(242,241,236,0.04); position:relative;">
+        <svg width="80" height="80" viewBox="0 0 64 64" shape-rendering="crispEdges">
+          <rect x="18" y="2" width="44" height="44" fill="#F2F1EC"/>
+          <rect x="10" y="10" width="44" height="44" fill="#ADAA95"/>
+          <rect x="2" y="18" width="44" height="44" fill="#5E5B50"/>
+        </svg>
+        <span style="position:absolute; inset: 0; display:grid; place-items:center; pointer-events:none;">
+          <svg width="120" height="120" viewBox="0 0 100 100"><line x1="10" y1="90" x2="90" y2="10" stroke="#8B2828" stroke-width="2"/></svg>
+        </span>
+      </div>
+      <div style="padding: 12px 14px; border-top: 1px solid rgba(242,241,236,0.18);">
+        <div class="no" style="color: #E8B5B5; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">DON'T · fill in</div>
+        <p style="margin: 6px 0 0; font-family: var(--sans); font-size: 11px; line-height: 1.5; color: #ADAA95;">No filled ramp. Outline only.</p>
+      </div>
+    </div>
+
+    <!-- DON'T rotate -->
+    <div class="tile dark" style="padding: 0; overflow: hidden;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <div style="height: 140px; display:grid; place-items:center; background: rgba(242,241,236,0.04); position:relative;">
+        <svg width="80" height="80" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5" style="transform: rotate(15deg);"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+        <span style="position:absolute; inset: 0; display:grid; place-items:center; pointer-events:none;">
+          <svg width="120" height="120" viewBox="0 0 100 100"><line x1="10" y1="90" x2="90" y2="10" stroke="#8B2828" stroke-width="2"/></svg>
+        </span>
+      </div>
+      <div style="padding: 12px 14px; border-top: 1px solid rgba(242,241,236,0.18);">
+        <div class="no" style="color: #E8B5B5; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">DON'T · rotate</div>
+        <p style="margin: 6px 0 0; font-family: var(--sans); font-size: 11px; line-height: 1.5; color: #ADAA95;">The diagonal is the diagonal. Don't tilt it.</p>
+      </div>
+    </div>
+
+    <!-- DON'T color -->
+    <div class="tile dark" style="padding: 0; overflow: hidden;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <div style="height: 140px; display:grid; place-items:center; background: rgba(242,241,236,0.04); position:relative;">
+        <svg width="80" height="80" viewBox="0 0 64 64" fill="none" stroke-width="1.5">
+          <rect x="18.75" y="2.75" width="42.5" height="42.5" stroke="#3B82F6"/>
+          <rect x="10.75" y="10.75" width="42.5" height="42.5" stroke="#10B981"/>
+          <rect x="2.75" y="18.75" width="42.5" height="42.5" stroke="#F59E0B"/>
+        </svg>
+        <span style="position:absolute; inset: 0; display:grid; place-items:center; pointer-events:none;">
+          <svg width="120" height="120" viewBox="0 0 100 100"><line x1="10" y1="90" x2="90" y2="10" stroke="#8B2828" stroke-width="2"/></svg>
+        </span>
+      </div>
+      <div style="padding: 12px 14px; border-top: 1px solid rgba(242,241,236,0.18);">
+        <div class="no" style="color: #E8B5B5; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">DON'T · recolor</div>
+        <p style="margin: 6px 0 0; font-family: var(--sans); font-size: 11px; line-height: 1.5; color: #ADAA95;">Ink or paper. Never brand colors.</p>
+      </div>
+    </div>
+
+    <!-- DON'T stretch -->
+    <div class="tile dark" style="padding: 0; overflow: hidden;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <div style="height: 140px; display:grid; place-items:center; background: rgba(242,241,236,0.04); position:relative;">
+        <svg width="120" height="64" viewBox="0 0 64 64" preserveAspectRatio="none" fill="none" stroke="#F2F1EC" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+        <span style="position:absolute; inset: 0; display:grid; place-items:center; pointer-events:none;">
+          <svg width="120" height="120" viewBox="0 0 100 100"><line x1="10" y1="90" x2="90" y2="10" stroke="#8B2828" stroke-width="2"/></svg>
+        </span>
+      </div>
+      <div style="padding: 12px 14px; border-top: 1px solid rgba(242,241,236,0.18);">
+        <div class="no" style="color: #E8B5B5; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">DON'T · stretch</div>
+        <p style="margin: 6px 0 0; font-family: var(--sans); font-size: 11px; line-height: 1.5; color: #ADAA95;">Squares are squares. Lock the ratio.</p>
+      </div>
+    </div>
+
+    <!-- DON'T shadow -->
+    <div class="tile dark" style="padding: 0; overflow: hidden;">
+      <span class="tick-tl" style="border-color: #86836F !important;"></span>
+      <span class="tick-br" style="border-color: #86836F !important;"></span>
+      <div style="height: 140px; display:grid; place-items:center; background: rgba(242,241,236,0.04); position:relative;">
+        <svg width="80" height="80" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5" style="filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.6));"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+        <span style="position:absolute; inset: 0; display:grid; place-items:center; pointer-events:none;">
+          <svg width="120" height="120" viewBox="0 0 100 100"><line x1="10" y1="90" x2="90" y2="10" stroke="#8B2828" stroke-width="2"/></svg>
+        </span>
+      </div>
+      <div style="padding: 12px 14px; border-top: 1px solid rgba(242,241,236,0.18);">
+        <div class="no" style="color: #E8B5B5; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">DON'T · shadow</div>
+        <p style="margin: 6px 0 0; font-family: var(--sans); font-size: 11px; line-height: 1.5; color: #ADAA95;">No depth. The mark sits flat on the surface.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- closing line -->
+  <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(242,241,236,0.18); display:flex; justify-content:space-between; align-items:flex-end;">
+    <div>
+      <div class="meta" style="color: #86836F; margin-bottom: 8px;">End of system · vol.1</div>
+      <p style="font-family: var(--sans); font-size: 13px; color: #ADAA95; max-width: 460px; margin: 0; line-height: 1.5;">
+        Questions, edge cases, or a request for a new lockup? File a brand request — keep
+        the system honest. We update the volume number, never the rules.
+      </p>
+    </div>
+    <svg width="52" height="52" viewBox="0 0 64 64" fill="none" stroke="#F2F1EC" stroke-width="1.5"><rect x="18.75" y="2.75" width="42.5" height="42.5"/><rect x="10.75" y="10.75" width="42.5" height="42.5"/><rect x="2.75" y="18.75" width="42.5" height="42.5"/></svg>
+  </div>
+
+  <div class="page-foot">
+    <span>transparent.space · design system</span>
+    <span>12 / 12</span>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>

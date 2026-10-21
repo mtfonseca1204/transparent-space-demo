@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "poolKey": "6FQQyf7UcyU86TZC1cmAcfC4a18SJyDggEKtQfTJWmfs",
+    "baseUrl": "https://app.transparent.space",
+    "windowDays": 7,
+    "now": 1775595600,
+    "kind": "solana"
+  },
+  "frontend": {
+    "pool": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "protocol": "meteora-clmm",
+        "analyticsModel": "meteora-clmm",
+        "capabilities": {
+          "hasCandleHistory": true,
+          "hasSwapHistory": true,
+          "hasWalletFeeSummary": true,
+          "hasOwnerPositionSummary": true,
+          "hasRangeLiquidityShape": true,
+          "hasHistoricalDepthBands": true,
+          "hasCurrentImpactCurve": true,
+          "hasHistoricalSlippage": true,
+          "hasOwnerCompositionHistory": true
+        },
+        "token0Address": "8XSsNvaJ8MZ2ZQhCeNqNokQ6vFkJ5W1Rk1kA7C3jVt6H",
+        "token1Address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "token0Symbol": "TSLAx",
+        "token1Symbol": "USDC",
+        "token0Decimals": 8,
+        "token1Decimals": 6,
+        "currentPrice": 348.185678,
+        "tick": 12476,
+        "liquidity": "1089744621158",
+        "lastTradeAt": 1775595600
+      }
+    },
+    "poolData": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "positionCount": 593,
+        "lpEventCount": 4364,
+        "poolHourCount": 154,
+        "tickLiquidityCount": 0,
+        "lpActivitySeriesCount": 168,
+        "ownerCount": 340,
+        "ownerAggregateCount": 0,
+        "ownerAggregatesMissingPositions": 0,
+        "selectedOwner": {
+          "owner": "bcaekx1qv7swas5fz1vmitmgquqfxj7pcdhebc9ay3ul",
+          "positionCount": 2,
+          "liquidity": "2899474417364"
+        },
+        "positionCoverageRatio": 0.5597,
+        "positionValueCoverageRatio": 0.5597,
+        "positionRawLiquidityCoverageRatio": 0.7513,
+        "authoritativeEmptyWindow": false,
+        "currentStateStatus": "renderable",
+        "decisions": null,
+        "freshness": null,
+        "latest": {
+          "positionUpdatedAt": 1775596469,
+          "ownerAggregateUpdatedAt": null,
+          "lpEventTimestamp": 1775595456,
+          "poolHourTimestamp": 1775592000,
+          "tickUpdatedAt": null,
+          "latestTradingSignal": 1775592000
+        }
+      }
+    },
+    "candlesPrimary": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 3600,
+        "count": 154,
+        "firstTimestamp": 1774990800,
+        "latestTimestamp": 1775592000
+      }
+    },
+    "candlesDaily": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 86400,
+        "count": 365,
+        "firstTimestamp": 1744041600,
+        "latestTimestamp": 1775510400
+      }
+    },
+    "tokenPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "token0Usd": 347.37,
+        "token1Usd": 0.999981,
+        "hasCompleteUsdContext": true
+      }
+    },
+    "historicalPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "count": 720,
+        "firstTimestamp": 1744041600,
+        "latestTimestamp": 1775510400
+      }
+    },
+    "tradingVolumeBySize": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "dayCount": 8,
+        "firstDateKey": "2026-03-31",
+        "latestDateKey": "2026-04-07"
+      }
+    },
+    "lpSwaps": {
+      "ok": false,
+      "skipped": true,
+      "status": null,
+      "reason": "Swap history is only required for the v3 overlay."
+    }
+  },
+  "upstream": {
+    "kind": "solana",
+    "probes": {
+      "price": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "latestTimestamp": 1775596413
+        }
+      },
+      "candles": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 154,
+          "latestTimestamp": 1775592000
+        }
+      },
+      "positions": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 593,
+          "latestTimestamp": 1775596469
+        }
+      },
+      "positionEvents": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 100,
+          "latestTimestamp": 1775595456
+        }
+      },
+      "volumeBySize": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "rowCount": 8,
+          "latestTimestamp": 1775520000
+        }
+      }
+    }
+  }
+}

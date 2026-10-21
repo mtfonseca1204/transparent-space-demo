@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Transparent Space — UI Design Research</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-right { content: counter(page) " / " counter(pages); }
+  }
+  :root {
+    --ink: #0f172a;
+    --ink-soft: #334155;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --line-strong: #cbd5e1;
+    --accent: #1e40af;
+    --accent-soft: #3b82f6;
+    --bg-soft: #f8fafc;
+    --bg-card: #ffffff;
+    --good: #166534;
+    --good-bg: #dcfce7;
+    --good-line: #86efac;
+    --warn: #92400e;
+    --warn-bg: #fef3c7;
+    --warn-line: #fcd34d;
+    --bad: #991b1b;
+    --bad-bg: #fee2e2;
+    --bad-line: #fecaca;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    color: var(--ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    background: #fff;
+  }
+  h1, h2, h3, h4 {
+    font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 9.2pt; }
+  a { color: var(--accent); text-decoration: none; }
+  /* ----- Cover ----- */
+  .cover {
+    page-break-after: always;
+    height: calc(297mm - 38mm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6mm 0;
+  }
+  .cover-top { color: var(--muted); font-size: 9pt; letter-spacing: 0.18em; text-transform: uppercase; }
+  .cover-mid h1 {
+    font-size: 36pt;
+    margin: 0 0 6mm 0;
+    letter-spacing: -0.01em;
+  }
+  .cover-mid .sub {
+    font-size: 13pt;
+    color: var(--ink-soft);
+    max-width: 150mm;
+    line-height: 1.4;
+  }
+  .cover-mid .tagline {
+    margin-top: 8mm;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5pt;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .cover-meta {
+    border-top: 1px solid var(--line);
+    padding-top: 6mm;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8mm;
+    color: var(--muted);
+    font-size: 9pt;
+  }
+  .cover-meta strong { display: block; color: var(--ink); font-size: 9.5pt; margin-bottom: 1mm; font-family: "JetBrains Mono", monospace; }
+  .blueprint-marks {
+    display: flex; gap: 3mm; align-items: center;
+    margin-top: 8mm;
+  }
+  .blueprint-marks .mark {
+    width: 12mm; height: 12mm;
+    border: 1.5px solid var(--accent-soft);
+    position: relative;
+  }
+  .blueprint-marks .mark::before, .blueprint-marks .mark::after {
+    content: ""; position: absolute; width: 3mm; height: 3mm;
+    border: 1.5px solid var(--accent);
+  }
+  .blueprint-marks .mark::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .blueprint-marks .mark::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+  .blueprint-marks .mark.b { border-color: #94a3b8; }
+  .blueprint-marks .mark.c { border-color: #cbd5e1; }
+  /* ----- Section + headings ----- */
+  section { page-break-inside: auto; }
+  h2 {
+    font-size: 18pt;
+    margin: 14mm 0 4mm 0;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: -0.005em;
+  }
+  h2 .num {
+    color: var(--accent-soft);
+    font-size: 12pt;
+    margin-right: 4mm;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  h3 {
+    font-size: 12.5pt;
+    margin: 7mm 0 2mm 0;
+    color: var(--accent);
+  }
+  h4 {
+    font-size: 10.5pt;
+    margin: 4mm 0 1mm 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  p { margin: 0 0 2.5mm 0; }
+  ul, ol { margin: 0 0 3mm 0; padding-left: 5mm; }
+  li { margin: 0 0 1.2mm 0; }
+  strong { color: var(--ink); }
+  .muted { color: var(--muted); }
+  /* ----- Callouts ----- */
+  .callout {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent-soft);
+    background: var(--bg-soft);
+    padding: 4mm 5mm;
+    margin: 3mm 0;
+    border-radius: 1mm;
+  }
+  .callout h4 { margin-top: 0; color: var(--accent); }
+  /* ----- Findings (good/bad) ----- */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+    margin: 3mm 0;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 1.5mm;
+    padding: 4mm 5mm;
+    background: var(--bg-card);
+    page-break-inside: avoid;
+  }
+  .card.good { border-color: var(--good-line); background: #f0fdf4; }
+  .card.bad  { border-color: var(--bad-line);  background: #fef2f2; }
+  .card.warn { border-color: var(--warn-line); background: #fffbeb; }
+  .card h4 { margin: 0 0 2mm 0; }
+  .card.good h4 { color: var(--good); }
+  .card.bad h4  { color: var(--bad); }
+  .card.warn h4 { color: var(--warn); }
+  .card ul { padding-left: 4mm; margin-bottom: 0; }
+  .card li { font-size: 9.8pt; }
+  .pill {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8pt;
+    padding: 0.4mm 1.6mm;
+    border-radius: 0.8mm;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 1mm;
+  }
+  .pill.good { background: var(--good-bg); border-color: var(--good-line); color: var(--good); }
+  .pill.warn { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn); }
+  .pill.bad  { background: var(--bad-bg);  border-color: var(--bad-line);  color: var(--bad); }
+  /* ----- Tables ----- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3mm 0 5mm 0;
+    font-size: 9.4pt;
+    page-break-inside: auto;
+  }
+  th, td {
+    text-align: left;
+    padding: 2mm 3mm;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--bg-soft);
+    color: var(--ink);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  td.cite { font-family: "JetBrains Mono", monospace; font-size: 8.6pt; color: var(--ink-soft); }
+  td.sev-high { color: var(--bad); font-weight: 600; }
+  td.sev-med  { color: var(--warn); font-weight: 600; }
+  td.sev-low  { color: var(--muted); font-weight: 600; }
+  /* ----- Score block ----- */
+  .scores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+    margin: 3mm 0 5mm 0;
+  }
+  .score {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent-soft);
+    padding: 3mm 4mm;
+    border-radius: 1mm;
+    background: var(--bg-card);
+  }
+  .score .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 1mm;
+  }
+  .score .value {
+    font-family: "IBM Plex Mono", "JetBrains Mono", monospace;
+    font-size: 22pt;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .score .value small { font-size: 11pt; color: var(--muted); font-weight: 400; }
+  .score .note { font-size: 8.6pt; color: var(--ink-soft); margin-top: 1mm; }
+  /* ----- Avoid orphan headers ----- */
+  h2, h3, h4 { page-break-after: avoid; }
+  table, .grid-2, .scores, .card, .callout { page-break-inside: avoid; }
+  /* ----- Footnote at bottom of page ----- */
+  .footer-note {
+    border-top: 1px solid var(--line);
+    margin-top: 8mm;
+    padding-top: 3mm;
+    font-size: 8.5pt;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- =================== COVER =================== -->
+<section class="cover">
+  <div class="cover-top">UX / UI Design Research &nbsp;·&nbsp; Internal Review</div>
+
+  <div class="cover-mid">
+    <div class="blueprint-marks">
+      <div class="mark"></div>
+      <div class="mark b"></div>
+      <div class="mark c"></div>
+    </div>
+    <h1>Transparent Space<br/>UI Design Audit</h1>
+    <div class="sub">
+      A structured review of the visual language, information architecture, dashboards,
+      and data-visualization layer of the Transparent Space frontend &mdash; including
+      what is working well today, what is friction or risk, and a prioritized list of
+      changes that would compound the most.
+    </div>
+    <div class="tagline">Markets made visible &nbsp;//&nbsp; Frontend &nbsp;//&nbsp; Next.js&nbsp;15 &middot; Tailwind&nbsp;v4 &middot; Visx</div>
+  </div>
+
+  <div class="cover-meta">
+    <div><strong>Repository</strong>BrunoEleodoro / transparent-space</div>
+    <div><strong>Surface reviewed</strong>app/, components/, app/globals.css</div>
+    <div><strong>Report date</strong>2026-04-07</div>
+    <div><strong>Method</strong>Static code audit of pages, components, design tokens, and chart layer</div>
+    <div><strong>Out of scope</strong>Live perf, SEO, backend data quality</div>
+    <div><strong>Audience</strong>Founders, design, frontend</div>
+  </div>
+</section>
+
+
+<!-- =================== EXECUTIVE SUMMARY =================== -->
+<section>
+  <h2><span class="num">01</span>Executive summary</h2>
+
+  <p>
+    Transparent Space already has the backbone of a <strong>premium, opinionated analytics product</strong>:
+    a coherent &ldquo;blueprint&rdquo; visual identity, a three-tier typographic system
+    (JetBrains Mono / Inter / IBM Plex Mono), a serious chart catalog, and a multi-tenant space
+    model with login, sidebar navigation, and pool-level dashboards. The product
+    <em>looks the part</em> for a market-microstructure tool aimed at LPs, market makers, and operators.
+  </p>
+
+  <p>
+    The biggest gaps are not visual taste &mdash; they are <strong>systemic consistency</strong>.
+    Design tokens exist in CSS but are bypassed by components that hardcode hex values; charts use
+    three different rendering libraries with three different color and formatting conventions; loading,
+    empty, and error states are present in some places and silently missing in others; and several
+    high-traffic surfaces (sidebar FAB, RFQ tab nesting, pool header on mobile) have UX
+    edge cases that will surface as the user base widens.
+  </p>
+
+  <p>
+    None of this is a rewrite. Most of it is a <strong>2&ndash;4 sprint hardening pass</strong>
+    around four pillars: <em>tokens</em>, <em>states</em>, <em>charts</em>, and <em>navigation</em>.
+  </p>
+
+  <h3>Scorecard</h3>
+  <div class="scores">
+    <div class="score">
+      <div class="label">Visual identity</div>
+      <div class="value">8<small>&nbsp;/ 10</small></div>
+      <div class="note">Strong, cohesive blueprint look. Premium feel.</div>
+    </div>
+    <div class="score">
+      <div class="label">Design system</div>
+      <div class="value">5<small>&nbsp;/ 10</small></div>
+      <div class="note">Tokens exist; components don&rsquo;t consistently use them.</div>
+    </div>
+    <div class="score">
+      <div class="label">Information architecture</div>
+      <div class="value">6<small>&nbsp;/ 10</small></div>
+      <div class="note">Clear at top, gets foggy in nested RFQ flows.</div>
+    </div>
+    <div class="score">
+      <div class="label">Data viz quality</div>
+      <div class="value">6<small>&nbsp;/ 10</small></div>
+      <div class="note">Best charts are excellent. Worst feel hand-rolled.</div>
+    </div>
+    <div class="score">
+      <div class="label">States &amp; resilience</div>
+      <div class="value">5<small>&nbsp;/ 10</small></div>
+      <div class="note">Skeletons exist; empty/error coverage is uneven.</div>
+    </div>
+    <div class="score">
+      <div class="label">Accessibility</div>
+      <div class="value">4<small>&nbsp;/ 10</small></div>
+      <div class="note">Some ARIA, weak focus, small touch targets.</div>
+    </div>
+    <div class="score">
+      <div class="label">Responsive</div>
+      <div class="value">5<small>&nbsp;/ 10</small></div>
+      <div class="note">Breakpoints used; key flows still desktop-first.</div>
+    </div>
+    <div class="score">
+      <div class="label">Overall</div>
+      <div class="value">6.0<small>&nbsp;/ 10</small></div>
+      <div class="note">Strong foundation, scattered execution.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h4>One-line verdict</h4>
+    <p style="margin:0;">
+      Transparent Space is a <strong>visually confident product with a half-finished design system underneath</strong>.
+      The fastest way to compound is to harden tokens, unify the chart layer, and finish the &ldquo;quiet&rdquo; states
+      (empty, error, loading) &mdash; not to redesign anything.
+    </p>
+  </div>
+</section>
+
+
+<!-- =================== METHOD =================== -->
+<section>
+  <h2><span class="num">02</span>How this review was conducted</h2>
+  <p>
+    This audit is a <strong>static code review</strong> of the live frontend in
+    <span class="mono">/transparent-space</span>. No design files, prototypes, or analytics
+    were used &mdash; only the source of truth that ships to users.
+  </p>
+  <ul>
+    <li><strong>Surface inspected:</strong> <span class="mono">app/</span> (routes, layout, providers), <span class="mono">components/</span> (sidebar, dashboard, RFQ, birds-eye, auth, ui primitives), <span class="mono">app/globals.css</span> (design tokens), <span class="mono">components.json</span>.</li>
+    <li><strong>Lenses applied:</strong> visual identity, design tokens, primitive components, page composition, information architecture, data visualization, loading / empty / error states, accessibility, responsiveness.</li>
+    <li><strong>Citations:</strong> findings reference <span class="mono">file:line</span> wherever possible so each claim can be verified and acted on.</li>
+    <li><strong>Out of scope:</strong> Lighthouse / runtime performance, SEO, backend data correctness, copywriting, brand strategy. These are worth a separate pass.</li>
+  </ul>
+</section>
+
+
+<!-- =================== VISUAL IDENTITY =================== -->
+<section>
+  <h2><span class="num">03</span>Visual identity &amp; brand language</h2>
+
+  <h3>What&rsquo;s working</h3>
+  <div class="grid-2">
+    <div class="card good">
+      <h4>Strong &ldquo;blueprint&rdquo; aesthetic</h4>
+      <ul>
+        <li>Cohesive technical look: subtle grids, corner brackets on cards, monospaced titles. Reads as serious infrastructure, not a generic SaaS template.</li>
+        <li>Three-font system (<span class="mono">JetBrains Mono</span> for titles, <span class="mono">Inter</span> for body, <span class="mono">IBM Plex Mono</span> with <span class="mono">tabular-nums</span> for numbers) is the right call for a numbers-heavy tool. <span class="mono">app/globals.css:63&ndash;66</span></li>
+        <li>OKLch color tokens for both light and dark themes are defined cleanly. <span class="mono">app/globals.css:46&ndash;171</span></li>
+      </ul>
+    </div>
+    <div class="card good">
+      <h4>Card primitive has personality</h4>
+      <ul>
+        <li><span class="mono">.bp-card</span> defines consistent 20&nbsp;px padding, soft 1&nbsp;px border, and decorative corner markers via <span class="mono">::before</span>/<span class="mono">::after</span>. <span class="mono">app/globals.css:222&ndash;290</span></li>
+        <li>Hover state is subtle (shadow only, no jump) &mdash; appropriate for a dense dashboard.</li>
+        <li>Typographic hierarchy inside cards is well-tuned: 11&nbsp;px uppercase labels, 28&nbsp;px metric values, tabular alignment.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>What&rsquo;s weak</h3>
+  <div class="grid-2">
+    <div class="card bad">
+      <h4>Tokens are bypassed by components</h4>
+      <ul>
+        <li>Several components hardcode hex values instead of consuming the <span class="mono">--bp-*</span> CSS variables, e.g. <span class="mono">sidebar.tsx:445</span> uses <span class="mono">dark:bg-[#1a1a2e]/90</span>; <span class="mono">space-loader.tsx:79</span> uses <span class="mono">bg-white&nbsp;dark:bg-[#0a0a0f]</span>.</li>
+        <li>This means a future palette change has to be done in dozens of places, not one.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h4>No Tailwind config extending the blueprint tokens</h4>
+      <ul>
+        <li>The <span class="mono">--bp-*</span> tokens are <strong>only</strong> usable as raw CSS variables. There is no <span class="mono">bg-bp-card</span>, <span class="mono">text-bp-accent</span>, etc. exposed to Tailwind utilities.</li>
+        <li>Result: new code defaults to arbitrary <span class="mono">[]</span> Tailwind values, which is exactly how drift starts.</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h4>Two parallel theme systems</h4>
+      <ul>
+        <li>shadcn&rsquo;s OKLch tokens (<span class="mono">--background</span>, <span class="mono">--card</span>, <span class="mono">--primary</span>&hellip;) live alongside the custom <span class="mono">--bp-*</span> system. They overlap in meaning but not in value.</li>
+        <li>Pick one as the source of truth and have the other one alias into it.</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h4>Help modal carries hardcoded SVG illustrations</h4>
+      <ul>
+        <li><span class="mono">components/ui/help-modal.tsx</span> inlines 200+ lines of SVG with hardcoded indigo (<span class="mono">#6366f1</span>). It will not respond to theme changes and is hard to maintain.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- =================== INFORMATION ARCHITECTURE =================== -->
+<section>
+  <h2><span class="num">04</span>Information architecture &amp; navigation</h2>
+
+  <p>
+    The product&rsquo;s top-level model is sound: <em>auth &rarr; space &rarr; pool &rarr; dashboard view</em>,
+    with sidebar collapse driven by Framer Motion and clean URL sync via <span class="mono">PoolUrlSync</span>
+    and <span class="mono">spaceSlug</span> routing (<span class="mono">app/[spaceSlug]/page.tsx</span>).
+    Things start to get foggy <em>inside</em> a dashboard, particularly RFQ.
+  </p>
+
+  <h3>What&rsquo;s working</h3>
+  <ul>
+    <li><strong>Multi-tenant routing is clean.</strong> A user with multiple spaces is redirected to <span class="mono">/{slug}</span> after login and the URL is the source of truth for which space is active. <span class="mono">app/page.tsx:33&ndash;42</span>, <span class="mono">app/[spaceSlug]/page.tsx:79&ndash;100</span></li>
+    <li><strong>Sidebar groups pools by asset</strong> with a curated <span class="mono">ASSET_ORDER</span>, which is the right grouping for a market-maker audience.</li>
+    <li><strong>Animated sidebar collapse</strong> uses a tasteful Framer easing curve and the rest of the dashboard reflows around it via <span class="mono">DashboardWrapper</span>. Feels considered, not janky. <span class="mono">components/dashboard/dashboard-wrapper.tsx:40&ndash;46</span></li>
+    <li><strong>Empty space dashboard</strong> handles the &ldquo;no pools yet&rdquo; case with a friendly avatar &amp; copy block. <span class="mono">app/[spaceSlug]/page.tsx:177&ndash;193</span></li>
+  </ul>
+
+  <h3>What&rsquo;s weak</h3>
+
+  <h4>1. The sidebar FAB is the single highest-friction element</h4>
+  <p>
+    <span class="mono">components/sidebar/floating-action-button.tsx</span> is rendered absolutely
+    with <span class="mono">z-20</span> and overlaps the dashboard canvas when the sidebar is collapsed. On
+    narrow viewports it hovers <em>on top of</em> chart content. It is also the only way to re-open
+    the sidebar, so users cannot ignore it. Either anchor it inside the sidebar rail or move it into
+    the <span class="mono">DashboardWrapper</span> layout flow with proper offset.
+  </p>
+
+  <h4>2. RFQ has tab nesting without context</h4>
+  <p>
+    The RFQ subtree contains seven dashboards (<span class="mono">rfq-depth</span>,
+    <span class="mono">rfq-cowswap</span>, <span class="mono">rfq-bebop</span>, <span class="mono">rfq-0x</span>,
+    <span class="mono">rfq-1inch</span>, <span class="mono">rfq-jupz</span>, plus the historical/overview tabs in
+    <span class="mono">rfq-control-panel.tsx:71&ndash;78</span>). Once a user is two clicks deep there is
+    no breadcrumb, no &ldquo;you are here&rdquo; affordance, and no way back to the parent pool except via the
+    sidebar. This is fixable with a small persistent breadcrumb in <span class="mono">rfq-header.tsx</span>.
+  </p>
+
+  <h4>3. Search bar disappears, not just collapses</h4>
+  <p>
+    <span class="mono">components/sidebar/search-bar.tsx:28&ndash;40</span> animates the input width to
+    <span class="mono">40&nbsp;px</span> when the sidebar collapses, leaving only an icon. The icon is the
+    same size as other icon buttons, so users can&rsquo;t tell &ldquo;this is a search field&rdquo;
+    from &ldquo;this is a button.&rdquo; A magnifying glass cursor or a ghost placeholder fixes it.
+  </p>
+
+  <h4>4. Pool name overflow on narrow widths</h4>
+  <p>
+    <span class="mono">components/dashboard/pool-header.tsx:47</span> renders the pool name with no
+    truncation. Long pairs (e.g. <span class="mono">cbBTC&nbsp;/&nbsp;USDC&nbsp;0.05% (CL)</span>) wrap awkwardly
+    on tablet. Add <span class="mono">truncate</span> + a tooltip on hover.
+  </p>
+
+  <h4>5. Loader transitions are too long for power users</h4>
+  <p>
+    <span class="mono">app/[spaceSlug]/page.tsx:32&ndash;33</span> hardcodes both
+    <span class="mono">INITIAL_TRANSITION_MS&nbsp;=&nbsp;1500</span> and
+    <span class="mono">POOL_SWITCH_TRANSITION_MS&nbsp;=&nbsp;1500</span>. A 1.5&nbsp;second forced wait on
+    every pool switch is a great first-impression demo, but a usability tax for an LP who clicks 30
+    pools an hour. Consider 1500&nbsp;ms on first load and 200&ndash;400&nbsp;ms on subsequent switches,
+    or skip entirely once data is in cache.
+  </p>
+</section>
+
+
+<!-- =================== PAGES & FLOWS =================== -->
+<section>
+  <h2><span class="num">05</span>Pages &amp; primary flows</h2>
+
+  <h3>Login &amp; auth</h3>
+  <div class="grid-2">
+    <div class="card good">
+      <h4>Strengths</h4>
+      <ul>
+        <li>Clean centered card layout with good vertical hierarchy.</li>
+        <li>Multi-step state machine handles password change and space selection in the same surface (<span class="mono">app/page.tsx</span>).</li>
+        <li>Error block is well-styled with semantic red. <span class="mono">components/auth/login.tsx:211&ndash;231</span></li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h4>Weaknesses</h4>
+      <ul>
+        <li><span class="mono">disabled</span> and <span class="mono">isLoading</span> render the same visual on the submit button (<span class="mono">login.tsx:193&ndash;197</span>) &mdash; a user can&rsquo;t tell if the form is invalid or just thinking.</li>
+        <li>No &ldquo;forgot password&rdquo; affordance even though the system supports password change.</li>
+        <li>Logo / brand mark on the login screen could lean into the blueprint look much harder than it currently does.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Pool dashboard (default view)</h3>
+  <p>
+    <span class="mono">components/dashboard/dashboard.tsx</span> is the highest-traffic surface. It uses
+    a <span class="mono">grid-cols-1&nbsp;sm:grid-cols-2&nbsp;lg:grid-cols-6</span> KPI strip on top
+    (<span class="mono">dashboard.tsx:1710</span>) and chart rows below.
+  </p>
+  <div class="grid-2">
+    <div class="card good">
+      <h4>Strengths</h4>
+      <ul>
+        <li>Density is appropriate for the audience &mdash; this is a Bloomberg-flavored tool, not a retail dashboard.</li>
+        <li>KPI strip uses tabular numerics so values align column-to-column even when widths differ.</li>
+        <li>Tabs (<span class="mono">aria-label="Dashboard tabs"</span> at <span class="mono">dashboard.tsx:1806</span>) cleanly separate <em>Pools</em> and <em>RFQ</em> at the top of the analysis surface.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h4>Weaknesses</h4>
+      <ul>
+        <li>No <span class="mono">max-w-*</span> on the dashboard canvas. On 4K and ultra-wide displays the charts stretch unbounded and become hard to read.</li>
+        <li>KPI cards are driven by child content height, which causes uneven row heights when one card has a delta and another doesn&rsquo;t. <span class="mono">components/dashboard/metric-card.tsx:14&ndash;24</span></li>
+        <li>No global error boundary &mdash; one chart that throws can take down the dashboard tree.</li>
+        <li>No global time-range picker. Each chart owns its own viewport, so &ldquo;show me everything in the last 24h&rdquo; is many clicks.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Birds-eye &amp; token birds-eye</h3>
+  <p>
+    The birds-eye family (<span class="mono">components/dashboard/birds-eye/</span> and
+    <span class="mono">components/dashboard/token-birds-eye/</span>) is the most opinionated part of the
+    product. The flip-card / table toggle pattern is a great idea.
+  </p>
+  <ul>
+    <li><strong>Tab toggle is below the touch target threshold.</strong> <span class="mono">birds-eye-dashboard.tsx:49</span> uses <span class="mono">py-1.5</span> + <span class="mono">text-[11px]</span>, ~28 px tall. WCAG recommends 44 px. Easy fix.</li>
+    <li><strong>Empty state handling is inconsistent.</strong> <span class="mono">TokenBirdsEyeDashboard</span> has a clean text fallback (lines 63&ndash;80); <span class="mono">BirdsEyeDashboard</span> renders nothing meaningful when there are no pools.</li>
+    <li><strong>Excellent layout intent</strong> with <span class="mono">grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]</span> at <span class="mono">token-birds-eye-dashboard.tsx:128</span> &mdash; this is the kind of asymmetric grid that makes a dashboard feel designed instead of generated.</li>
+  </ul>
+
+  <h3>RFQ family</h3>
+  <p>
+    Six provider dashboards (<span class="mono">cowswap</span>, <span class="mono">bebop</span>,
+    <span class="mono">0x</span>, <span class="mono">1inch</span>, <span class="mono">jupz</span>, plus the depth view)
+    plus a control panel. This is genuinely valuable IP &mdash; very few tools surface this.
+    The current organization makes it hard to find unless you know it&rsquo;s there.
+  </p>
+  <ul>
+    <li>Provider dashboards are sibling routes inside the dashboard view; consider promoting them as a first-class &ldquo;RFQ&rdquo; tab in the sidebar with provider switching <em>inside</em> the page.</li>
+    <li>Provider visual identity (logos, accent color per provider) is missing. Adding a small provider chip in <span class="mono">rfq-header.tsx</span> would orient the user instantly.</li>
+  </ul>
+</section>
+
+
+<!-- =================== DATA VIZ =================== -->
+<section>
+  <h2><span class="num">06</span>Data visualization layer</h2>
+
+  <p>
+    18 chart components were reviewed. The strongest two or three are <em>excellent</em> and could
+    headline the marketing site. The weakest feel hand-rolled and inherit none of the polish from
+    the rest of the design system.
+  </p>
+
+  <h3>The single biggest finding</h3>
+  <div class="callout">
+    <h4>Three rendering libraries, three conventions</h4>
+    <p>
+      The chart layer mixes <strong><span class="mono">lightweight-charts</span></strong> (price candlesticks),
+      <strong>Visx</strong> (price spread, LP entry/exit, liquidity history), and <strong>raw SVG + React state</strong>
+      (liquidity distribution, price impact, LP ranges, capital efficiency). Each has its own color
+      conventions, its own tooltip, its own number formatter, and its own opinion about what to do when
+      data is empty. Users feel this as &ldquo;some charts are nicer than others&rdquo; without being able to
+      explain why.
+    </p>
+  </div>
+
+  <h3>Strongest charts</h3>
+  <ol>
+    <li>
+      <strong>Price Spread Chart</strong> &mdash;
+      <span class="mono">components/dashboard/price-spread-chart.tsx</span>.
+      Semantic colors with intent (red/green only triggered above a 2% deviation threshold), smart
+      hourly/daily axis switching at a 7-day span (line 226), zoom support, crosshair, deviation
+      ranking table, and conditional tooltip styling. This is a reference chart for the rest of the system.
+    </li>
+    <li>
+      <strong>LP Entry/Exit Chart</strong> &mdash;
+      <span class="mono">components/dashboard/lp-entry-exit-chart.tsx</span>.
+      Intentionally avoids red/green (uses teal #5B9A8B for entries, bronze #C49052 for exits) so the chart
+      is colorblind-safe. Dual-scale design separates flow magnitude from active address count.
+    </li>
+    <li>
+      <strong>Lightweight Price Chart</strong> &mdash;
+      <span class="mono">components/dashboard/lightweight-price-chart.tsx</span>.
+      Production-grade candlestick with zoom controls, volume histogram, and a ResizeObserver pattern.
+      Lets down only by hardcoded green/red colors (lines 84, 141&ndash;144) instead of theme tokens.
+    </li>
+  </ol>
+
+  <h3>Weakest charts</h3>
+  <ol>
+    <li>
+      <strong>Liquidity Distribution Chart</strong> (<span class="mono">liquidity-distribution-chart.tsx</span>) &mdash;
+      complex calculation logic mixed directly into rendering, no documented scaling strategy, fragile
+      tooltip positioning, no hover highlight on bars.
+    </li>
+    <li>
+      <strong>Price Impact Chart</strong> (<span class="mono">price-impact-chart.tsx</span>) &mdash;
+      single file is 250+ lines, simulation curve logic not validated, no accessibility labels,
+      no obvious loading state when data is stale.
+    </li>
+    <li>
+      <strong>LP Comparison Table</strong> (<span class="mono">lp-comparison-table.tsx</span>) &mdash;
+      hardcoded green/red on efficiency ratio (lines 34&ndash;43), <span class="mono">onClick</span>
+      without keyboard handler so the table is unusable on keyboard, scrollbar styling not themed.
+    </li>
+  </ol>
+
+  <h3>Cross-chart problems</h3>
+  <table>
+    <thead>
+      <tr><th>Problem</th><th>Why it matters</th><th>Cite</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Six different number formatters for prices and USD values</td>
+        <td>Same value shows as <span class="mono">$1.2345</span> in one chart and <span class="mono">$1.23</span> in another. Looks careless.</td>
+        <td class="cite">multiple files</td>
+      </tr>
+      <tr>
+        <td>Hardcoded green/red candle colors</td>
+        <td>Theme switch can&rsquo;t reach them; colorblind-unsafe.</td>
+        <td class="cite">lightweight-price-chart.tsx:84,141&ndash;144</td>
+      </tr>
+      <tr>
+        <td>No shared Tooltip primitive</td>
+        <td>Each chart re-implements positioning, styling, escape behavior.</td>
+        <td class="cite">all charts</td>
+      </tr>
+      <tr>
+        <td>No global time-range selector</td>
+        <td>Users can&rsquo;t say &ldquo;show me the last hour everywhere.&rdquo;</td>
+        <td class="cite">dashboard.tsx</td>
+      </tr>
+      <tr>
+        <td>No CSV / data export</td>
+        <td>Power users <em>will</em> ask for this within their first week.</td>
+        <td class="cite">all charts</td>
+      </tr>
+      <tr>
+        <td>No annotations / event markers</td>
+        <td>Can&rsquo;t highlight an incident, an oracle update, an incentive change.</td>
+        <td class="cite">all charts</td>
+      </tr>
+      <tr>
+        <td>No print / PDF styles</td>
+        <td>Charts cannot be cleanly exported for reports or screenshots.</td>
+        <td class="cite">app/globals.css</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- =================== STATES =================== -->
+<section>
+  <h2><span class="num">07</span>Loading, empty &amp; error states</h2>
+
+  <p>
+    A surprising amount of the &ldquo;feel&rdquo; of a dashboard product comes from how it
+    behaves when it has nothing to show. Today, Transparent Space is uneven here.
+  </p>
+
+  <div class="grid-2">
+    <div class="card good">
+      <h4>What&rsquo;s good</h4>
+      <ul>
+        <li>Skeletons exist for both metric cards and chart cards, with proper shimmer/pulse, so initial loads do not jank. <span class="mono">metric-card.tsx:70&ndash;85</span>, <span class="mono">chart-card.tsx:194&ndash;212</span></li>
+        <li>Pool-switch transition uses a branded <span class="mono">SpaceLoader</span>, which is more memorable than a spinner.</li>
+        <li>Some charts (LP entry/exit, liquidity history) handle empty data gracefully. <span class="mono">lp-entry-exit-chart.tsx:117</span></li>
+        <li>The &ldquo;space has no pools&rdquo; case is explicitly designed.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h4>What&rsquo;s missing</h4>
+      <ul>
+        <li><strong>No global error boundary.</strong> A single chart throwing crashes the whole dashboard tree.</li>
+        <li><strong>Empty states are mostly text.</strong> Most empty states are a centered string. Add an illustration or a single suggested action (&ldquo;Connect a pool&rdquo;, &ldquo;Adjust filters&rdquo;).</li>
+        <li><strong>No explicit error states</strong> on data-fetch failure for individual charts &mdash; they either show empty or render <span class="mono">null</span>.</li>
+        <li><strong>Stale data is invisible.</strong> If a chart is showing data from 4 hours ago because the indexer is lagging, the user has no signal. A subtle &ldquo;last updated 4h ago&rdquo; chip per card would build trust.</li>
+        <li><strong>Inactive / unauthorized states</strong> for spaces and pools have minimal copy. <span class="mono">app/[spaceSlug]/page.tsx:108&ndash;127</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- =================== ACCESSIBILITY =================== -->
+<section>
+  <h2><span class="num">08</span>Accessibility &amp; touch</h2>
+
+  <p>
+    The product targets a desk-bound, expert audience, so accessibility is sometimes deprioritized
+    &mdash; but the same hygiene that helps a screen reader also helps a power user on a keyboard at 2 am.
+  </p>
+
+  <ul>
+    <li><strong>Focus rings are inconsistent.</strong> The <span class="mono">Button</span> primitive has good <span class="mono">focus-visible:ring-ring/50</span> behavior. Most custom interactive elements in the dashboard, sidebar, and tables don&rsquo;t.</li>
+    <li><strong>Missing <span class="mono">aria-current</span></strong> on active sidebar items (<span class="mono">sidebar-menu.tsx:37&ndash;69</span>) &mdash; a screen reader cannot announce which pool is selected.</li>
+    <li><strong>Token icons have no <span class="mono">alt</span></strong> in <span class="mono">pool-header.tsx:158&ndash;163</span>.</li>
+    <li><strong>Touch targets are too small</strong> in birds-eye and token-birds-eye toggles (~28 px tall). WCAG recommends 44 px.</li>
+    <li><strong>Custom buttons via role="button"</strong> in <span class="mono">sidebar-menu.tsx</span> have keyboard handlers but most other clickable divs across the dashboard do not.</li>
+    <li><strong>Color contrast not validated</strong>. Several charts use <span class="mono">--bp-text-muted</span> on chart-watermark backgrounds at low alpha &mdash; likely below WCAG AA.</li>
+    <li><strong>No skip-to-content</strong> link or landmark <span class="mono">&lt;main&gt;</span> in the dashboard wrapper.</li>
+  </ul>
+
+  <div class="callout">
+    <h4>Quick win</h4>
+    <p style="margin:0;">
+      A single utility class <span class="mono">.bp-focus-ring</span> applied via the
+      <span class="mono">cn()</span> helper to every interactive element in the sidebar, tables, and FABs
+      would close 60% of the keyboard accessibility gap in an afternoon.
+    </p>
+  </div>
+</section>
+
+
+<!-- =================== RESPONSIVE =================== -->
+<section>
+  <h2><span class="num">09</span>Responsive &amp; cross-device</h2>
+
+  <p>
+    The app uses Tailwind&rsquo;s standard breakpoints (<span class="mono">sm</span>,
+    <span class="mono">md</span>, <span class="mono">lg</span>) and the sidebar collapses below 768 px.
+    But the experience is still strongly desktop-first.
+  </p>
+
+  <ul>
+    <li><strong>No <span class="mono">max-width</span> on the dashboard canvas.</strong> On a 32" display, charts stretch to unreadable line lengths.</li>
+    <li><strong>Tablet is a dead zone.</strong> The sidebar collapses, but charts are not laid out for portrait widths &mdash; they reflow into a single tall column with no information density advantage.</li>
+    <li><strong>Pool name truncation</strong> on narrow widths is missing.</li>
+    <li><strong>FAB overlays content</strong> on mobile and small windows.</li>
+    <li><strong>Search bar collapses to an indistinguishable icon</strong> on narrow widths.</li>
+    <li><strong>No tested mobile path.</strong> The product is unlikely to ever be primarily mobile, but a usable read-only mobile view (KPI strip + 2&ndash;3 most-used charts) would dramatically improve trust during demos.</li>
+  </ul>
+</section>
+
+
+<!-- =================== PRIORITIZED RECS =================== -->
+<section>
+  <h2><span class="num">10</span>Prioritized recommendations</h2>
+
+  <p>
+    Effort is rough engineering effort. Impact is opinionated. Items are roughly ordered
+    by <em>impact &divide; effort</em> &mdash; the first six items are where I would actually start.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:5%;">#</th>
+        <th>Recommendation</th>
+        <th style="width:14%;">Impact</th>
+        <th style="width:14%;">Effort</th>
+        <th style="width:14%;">Pillar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Extend Tailwind config with the <span class="mono">--bp-*</span> tokens.</strong> Expose <span class="mono">bg-bp-card</span>, <span class="mono">text-bp-accent</span>, etc., and ban arbitrary <span class="mono">[]</span> values via lint. Deletes drift at the source.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-low">Low</td>
+        <td>Tokens</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Build a single <span class="mono">lib/format-utils.ts</span></strong> with <span class="mono">formatPrice</span>, <span class="mono">formatUsd</span>, <span class="mono">formatVolume</span>, <span class="mono">formatPct</span>. Replace the 6+ ad-hoc formatters across charts.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-low">Low</td>
+        <td>Charts</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Centralize chart colors</strong> in <span class="mono">lib/metric-colors.ts</span> with <span class="mono">CANDLESTICK</span>, <span class="mono">SPREAD</span>, <span class="mono">LP_FLOW</span>, etc. Remove all hex from chart files.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-low">Low</td>
+        <td>Charts</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Add a global error boundary</strong> at <span class="mono">DashboardWrapper</span> and a per-card error fallback. One chart should never take down the dashboard.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-low">Low</td>
+        <td>States</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Fix the FAB.</strong> Move it inside the sidebar rail or into <span class="mono">DashboardWrapper</span> with proper offset. Stop overlaying content.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-low">Low</td>
+        <td>Navigation</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Reduce pool-switch loader to ~250 ms</strong> after first load (or skip when cached). Keep the long version only for the first impression.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-low">Low</td>
+        <td>Navigation</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Add a global time-range picker</strong> in the dashboard header that fans out to all charts. Single source of truth for &ldquo;the period I&rsquo;m looking at.&rdquo;</td>
+        <td class="sev-high">High</td>
+        <td class="sev-med">Medium</td>
+        <td>Charts</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Build a shared <span class="mono">&lt;ChartTooltip /&gt;</span> primitive</strong> with positioning, theming, and ARIA. Migrate charts one by one.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-med">Medium</td>
+        <td>Charts</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>Add &ldquo;last updated&rdquo; chip</strong> to every chart and metric card, sourced from the data layer. Kills the &ldquo;is this stale?&rdquo; trust gap.</td>
+        <td class="sev-high">High</td>
+        <td class="sev-med">Medium</td>
+        <td>States</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>Truncate long pool names</strong> with tooltip, and constrain dashboard canvas to <span class="mono">max-w-[1680px]</span>.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-low">Low</td>
+        <td>Navigation</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td><strong>Add a breadcrumb component</strong> in <span class="mono">rfq-header.tsx</span> showing space &rarr; pool &rarr; provider &rarr; view.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-low">Low</td>
+        <td>Navigation</td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td><strong>Promote RFQ to a first-class section</strong> in the sidebar with provider switching inside the page rather than as sibling routes.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-med">Medium</td>
+        <td>Navigation</td>
+      </tr>
+      <tr>
+        <td>13</td>
+        <td><strong>Standardize empty states</strong> with a small <span class="mono">&lt;EmptyState /&gt;</span> component (icon + headline + optional CTA).</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-low">Low</td>
+        <td>States</td>
+      </tr>
+      <tr>
+        <td>14</td>
+        <td><strong>Apply <span class="mono">.bp-focus-ring</span></strong> across sidebar, tables, FABs, and tab toggles.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-low">Low</td>
+        <td>Accessibility</td>
+      </tr>
+      <tr>
+        <td>15</td>
+        <td><strong>Bump tab/toggle touch targets</strong> in birds-eye to a minimum of 36&ndash;44 px.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-low">Low</td>
+        <td>Accessibility</td>
+      </tr>
+      <tr>
+        <td>16</td>
+        <td><strong>CSV / PNG export</strong> on every chart card via the existing <span class="mono">ChartCardHeader</span>. Power-user feature, surprisingly cheap if charts share a contract.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-med">Medium</td>
+        <td>Charts</td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td><strong>Inline help illustrations</strong> in <span class="mono">help-modal.tsx</span> should move to a per-chart MDX file or be replaced by short looping screen captures.</td>
+        <td class="sev-low">Low</td>
+        <td class="sev-med">Medium</td>
+        <td>Tokens</td>
+      </tr>
+      <tr>
+        <td>18</td>
+        <td><strong>Pick one theme system</strong>: alias either shadcn tokens or <span class="mono">--bp-*</span> into the other. Stop maintaining both.</td>
+        <td class="sev-med">Medium</td>
+        <td class="sev-med">Medium</td>
+        <td>Tokens</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- =================== ROADMAP =================== -->
+<section>
+  <h2><span class="num">11</span>Suggested two-phase roadmap</h2>
+
+  <h3>Phase 1 &mdash; Hardening (1&ndash;2 sprints)</h3>
+  <p>Pure quality moves with no design risk. Done well, the product visibly &ldquo;levels up&rdquo; without anything looking different at first glance.</p>
+  <ul>
+    <li>Tailwind config extends <span class="mono">--bp-*</span> tokens and lint forbids arbitrary hex.</li>
+    <li>Single <span class="mono">format-utils</span> + single <span class="mono">metric-colors</span> module.</li>
+    <li>Global error boundary + per-card fallback.</li>
+    <li>FAB repositioned, pool name truncation, dashboard <span class="mono">max-width</span>.</li>
+    <li>Pool-switch loader shortened.</li>
+    <li>Focus ring + ARIA pass on sidebar / tables / FABs.</li>
+  </ul>
+
+  <h3>Phase 2 &mdash; Compounding (2&ndash;4 sprints)</h3>
+  <p>Higher-leverage improvements that unlock new product capabilities once the foundation is clean.</p>
+  <ul>
+    <li>Shared <span class="mono">&lt;ChartTooltip /&gt;</span> primitive and migration of all charts to it.</li>
+    <li>Global time-range picker fanning out to all charts via a Zustand slice.</li>
+    <li>&ldquo;Last updated&rdquo; freshness chip across cards.</li>
+    <li>RFQ becomes a first-class section with in-page provider switcher and breadcrumb.</li>
+    <li>Standardized <span class="mono">&lt;EmptyState /&gt;</span> + illustrations.</li>
+    <li>CSV / PNG export from chart card header.</li>
+    <li>Tablet layout pass and a minimal read-only mobile view for demos.</li>
+  </ul>
+
+  <h3>Phase 3 (later) &mdash; Differentiators</h3>
+  <p>What turns a hardened tool into a product nobody else has.</p>
+  <ul>
+    <li>Annotations on time-series charts (oracle updates, incentive changes, incidents).</li>
+    <li>Per-user dashboard layouts via <span class="mono">react-grid-layout</span> (already a dep).</li>
+    <li>Saved comparisons across pools / spaces.</li>
+    <li>Export to PDF report (this same toolchain), branded.</li>
+    <li>A storybook or a public component gallery so design and engineering share a vocabulary.</li>
+  </ul>
+
+  <div class="callout">
+    <h4>If you only do one thing</h4>
+    <p style="margin:0;">
+      Spend a single sprint on items 1&ndash;6 in the priority table. They are all small,
+      they are all independent, and together they remove the three categories of paper cuts a new
+      user notices in their first session: visual drift across components, the FAB overlap, and
+      the &ldquo;why is this still loading?&rdquo; feeling. The product will feel <em>noticeably</em>
+      more solid without anyone being able to point at exactly what changed &mdash; which is the
+      best kind of design work.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    Generated from a static audit of the <span class="mono">transparent-space</span> repository on
+    <strong>2026-04-07</strong>. All citations reference files in the repository at the time of
+    review. This document is intended as an internal working brief; share with care.
+  </div>
+</section>
+
+</body>
+</html>

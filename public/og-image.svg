@@ -1,0 +1,40 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#080b12"/>
+  <path d="M0 0H1200V630H0V0Z" fill="url(#grid)"/>
+  <rect x="74" y="70" width="1052" height="490" rx="0" fill="#0d1320" stroke="#2b405d" stroke-width="2"/>
+  <rect x="103" y="100" width="222" height="430" fill="#0a0f19" stroke="#203148"/>
+  <rect x="352" y="100" width="744" height="430" fill="#101827" stroke="#203148"/>
+  <g opacity="0.72">
+    <rect x="128" y="132" width="80" height="12" fill="#d8e2f2"/>
+    <rect x="128" y="162" width="145" height="10" fill="#62728a"/>
+    <rect x="128" y="212" width="152" height="22" fill="#111827" stroke="#4a9eff"/>
+    <rect x="128" y="258" width="128" height="10" fill="#62728a"/>
+    <rect x="128" y="286" width="118" height="10" fill="#62728a"/>
+    <rect x="128" y="314" width="142" height="10" fill="#62728a"/>
+  </g>
+  <text x="386" y="150" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700">Transparent Space</text>
+  <text x="388" y="200" fill="#a9b6ca" font-family="Arial, Helvetica, sans-serif" font-size="30">Liquidity performance intelligence for DeFi teams</text>
+  <g transform="translate(386 250)">
+    <rect width="312" height="110" fill="#0d1320" stroke="#2b405d"/>
+    <text x="24" y="38" fill="#91a0b8" font-family="Arial, Helvetica, sans-serif" font-size="18">POOL HEALTH</text>
+    <text x="24" y="82" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700">98.4%</text>
+    <path d="M190 78C210 42 232 102 252 56C268 20 286 50 304 34" stroke="#4a9eff" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(736 250)">
+    <rect width="312" height="110" fill="#0d1320" stroke="#2b405d"/>
+    <text x="24" y="38" fill="#91a0b8" font-family="Arial, Helvetica, sans-serif" font-size="18">DEPTH QUALITY</text>
+    <text x="24" y="82" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700">$42M</text>
+    <path d="M196 88L216 64L236 72L256 42L276 54L296 30" stroke="#75d0a4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(386 390)">
+    <rect width="662" height="92" fill="#0d1320" stroke="#2b405d"/>
+    <path d="M34 62C88 34 129 72 184 48C244 21 300 73 356 42C416 10 480 52 548 30C590 16 626 28 640 22" stroke="#4a9eff" stroke-width="4" stroke-linecap="round"/>
+    <path d="M34 70H640" stroke="#2b405d"/>
+    <text x="24" y="30" fill="#91a0b8" font-family="Arial, Helvetica, sans-serif" font-size="18">REAL-TIME PEGS, DEPTH, RFQ, INCENTIVES</text>
+  </g>
+  <defs>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" stroke="#233149" stroke-width="1" opacity="0.42"/>
+    </pattern>
+  </defs>
+</svg>

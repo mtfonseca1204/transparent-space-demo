@@ -1,0 +1,34 @@
+.nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 10px;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5c6463;
+  text-decoration: none;
+  border: 1px solid #dfe4e1;
+  background: #ffffff;
+}
+
+.link:hover {
+  color: #181d1c;
+  border-color: #181d1c;
+}
+
+.link[data-active="1"] {
+  color: #ffffff;
+  background: #181d1c;
+  border-color: #181d1c;
+}

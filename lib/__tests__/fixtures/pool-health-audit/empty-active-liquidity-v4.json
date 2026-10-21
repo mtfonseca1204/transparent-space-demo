@@ -1,0 +1,145 @@
+{
+  "meta": {
+    "poolKey": "1-v4-0x88ff197d8fe8a68722f59c93eef447a4b54ebe8543bf0392246448a04956915a",
+    "baseUrl": "https://app.transparent.space",
+    "windowDays": 1,
+    "now": 1777798800,
+    "kind": "worldchain-v4"
+  },
+  "frontend": {
+    "pool": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "protocol": "v4",
+        "analyticsModel": "evm-v4",
+        "capabilities": {
+          "hasCandleHistory": true,
+          "hasSwapHistory": true,
+          "hasWalletFeeSummary": true,
+          "hasOwnerPositionSummary": true,
+          "hasRangeLiquidityShape": true,
+          "hasHistoricalDepthBands": true,
+          "hasCurrentImpactCurve": true,
+          "hasHistoricalSlippage": true,
+          "hasOwnerCompositionHistory": true
+        },
+        "token0Symbol": "AI",
+        "token1Symbol": "USDT",
+        "token0Decimals": 18,
+        "token1Decimals": 6,
+        "currentPrice": 0.0357418099,
+        "sqrtPriceX96": "14978483804813794285454",
+        "tick": -309641,
+        "liquidity": "0",
+        "token0Balance": "0",
+        "token1Balance": "0"
+      }
+    },
+    "poolData": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "positionCount": 0,
+        "lpEventCount": 0,
+        "poolHourCount": 24,
+        "tickLiquidityCount": 36,
+        "lpActivitySeriesCount": 0,
+        "ownerCount": 0,
+        "ownerAggregateCount": 0,
+        "selectedOwner": null,
+        "positionCoverageRatio": null,
+        "tvlParity": {
+          "poolLiquidityRaw": "0",
+          "tickNetLiquidityAtCurrentTickRaw": "0",
+          "inRangePositionLiquidityRaw": null,
+          "poolLiquidityMatchesTickNet": true,
+          "poolLiquidityMatchesInRangePositions": null,
+          "positionToken0Balance": 0,
+          "positionToken1Balance": 0,
+          "poolToken0Balance": 0,
+          "poolToken1Balance": 0,
+          "displayedSource": "positions"
+        },
+        "authoritativeEmptyWindow": true,
+        "currentStateStatus": "empty",
+        "decisions": {
+          "distributionSource": "empty",
+          "ownerSummarySource": "none",
+          "eventTimeSeriesSource": "zero-fill",
+          "selectedOwnerSource": "none"
+        },
+        "freshness": {
+          "positionUpdatedWithinWindow": false,
+          "ownerAggregateUpdatedWithinWindow": false,
+          "lpEventsPresentInWindow": false
+        },
+        "latest": {
+          "positionUpdatedAt": null,
+          "ownerAggregateUpdatedAt": null,
+          "lpEventTimestamp": null,
+          "poolHourTimestamp": 1777795200,
+          "tickUpdatedAt": 1777795200,
+          "latestTradingSignal": 1777795200
+        }
+      }
+    },
+    "candlesPrimary": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 3600,
+        "count": 24,
+        "firstTimestamp": 1777712400,
+        "latestTimestamp": 1777795200
+      }
+    },
+    "candlesDaily": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "intervalSeconds": 86400,
+        "count": 365,
+        "firstTimestamp": 1746220800,
+        "latestTimestamp": 1777766400
+      }
+    },
+    "tokenPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "token0Usd": 0.0357418099,
+        "token1Usd": 1,
+        "hasCompleteUsdContext": true
+      }
+    },
+    "historicalPrices": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "count": 365,
+        "firstTimestamp": 1746220800,
+        "latestTimestamp": 1777766400
+      }
+    },
+    "tradingVolumeBySize": {
+      "ok": true,
+      "status": 200,
+      "data": {
+        "dayCount": 1,
+        "firstDateKey": "2026-05-03",
+        "latestDateKey": "2026-05-03"
+      }
+    },
+    "lpSwaps": {
+      "ok": false,
+      "skipped": true,
+      "status": null,
+      "reason": "Swap history is only required for the v3 overlay."
+    }
+  },
+  "upstream": {
+    "kind": "skipped",
+    "probes": {}
+  }
+}

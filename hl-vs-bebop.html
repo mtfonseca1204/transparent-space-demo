@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HL vs Bebop — Price Comparison</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+:root{--bg:#0a0a0f;--s:#12121a;--s2:#1a1a26;--bd:#2a2a3a;--t:#e4e4ef;--t2:#8888a0;--g:#22c55e;--r:#ef4444;--o:#f59e0b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t);font-family:'SF Mono','Fira Code','JetBrains Mono',monospace;font-size:13px;padding:16px;}
+.hdr{text-align:center;padding:16px 0 12px;border-bottom:1px solid var(--bd);margin-bottom:16px;}
+.hdr h1{font-size:18px;font-weight:600;letter-spacing:1px;}
+.hdr .sub{color:var(--t2);font-size:11px;margin-top:4px;}
+.controls{display:flex;justify-content:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.ctrl-btn{padding:6px 18px;border-radius:6px;border:1px solid var(--bd);background:var(--s2);color:var(--t2);cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;transition:all .15s;}
+.ctrl-btn.active{border-color:var(--g);color:var(--t);background:rgba(34,197,94,.1);}
+.ctrl-btn:hover{border-color:var(--t2);}
+.range-btns{display:flex;justify-content:center;gap:6px;margin-bottom:16px;}
+.range-btn{padding:4px 12px;border-radius:4px;border:1px solid var(--bd);background:var(--s2);color:var(--t2);cursor:pointer;font-family:inherit;font-size:10px;transition:all .15s;}
+.range-btn.active{border-color:var(--o);color:var(--t);background:rgba(245,158,11,.1);}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:16px;}
+.card h3{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t2);margin-bottom:10px;}
+.cw{position:relative;height:380px;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
+.stat{background:var(--s);border:1px solid var(--bd);border-radius:8px;padding:12px;text-align:center;}
+.stat .lab{color:var(--t2);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;}
+.stat .val{font-size:22px;font-weight:700;margin-top:2px;}
+.stat .val.g{color:var(--g);}.stat .val.r{color:var(--r);}
+.stat .det{color:var(--t2);font-size:10px;margin-top:1px;}
+.status{text-align:center;color:var(--t2);font-size:11px;padding:8px 0;margin-bottom:12px;}
+.status .dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;}
+.status .dot.loading{background:var(--o);animation:pulse 1s infinite;}
+.status .dot.done{background:var(--g);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.footer{text-align:center;color:var(--t2);font-size:10px;padding:16px 0;}
+
+.legend-row{display:flex;justify-content:center;gap:20px;margin-bottom:8px;font-size:11px;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-swatch{width:24px;height:3px;border-radius:2px;display:inline-block;}
+.legend-swatch.band{height:12px;opacity:.3;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>HYPERLIQUID vs BEBOP — PRICE COMPARISON</h1>
+  <div class="sub">HL 1-min candle close vs Bebop bid/ask range (forward/reverse quotes)</div>
+</div>
+
+<div class="controls" id="assetBtns"></div>
+<div class="range-btns" id="rangeBtns"></div>
+<div class="status" id="status"><span class="dot loading"></span> Loading...</div>
+
+<div class="stats" id="statsGrid"></div>
+
+<div class="legend-row">
+  <div class="legend-item"><span class="legend-swatch" style="background:#f59e0b"></span> HL Price</div>
+  <div class="legend-item"><span class="legend-swatch" style="background:#8b5cf6"></span> Bebop Mid</div>
+  <div class="legend-item"><span class="legend-swatch band" style="background:#8b5cf6"></span> Bebop Bid/Ask Range</div>
+  <div class="legend-item"><span class="legend-swatch" style="background:#ef4444;height:1px;border-top:1px dashed #ef4444"></span> Spread (right axis)</div>
+</div>
+
+<div class="card">
+  <h3 id="chartTitle">Price Overlay</h3>
+  <div class="cw"><canvas id="mainChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Spread / Delta (bps) — HL minus Bebop Mid</h3>
+  <div class="cw" style="height:200px"><canvas id="deltaChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Bebop Bid-Ask Spread (bps)</h3>
+  <div class="cw" style="height:180px"><canvas id="spreadChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Bebop Mid-Price Volatility (rolling 30-min stdev of capture-to-capture returns, bps) — shaded by session</h3>
+  <div class="cw" style="height:220px"><canvas id="volChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Weekday vs Weekend — Volatility &amp; Spread Comparison</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="cw" style="height:260px"><canvas id="sessionVolChart"></canvas></div>
+    <div class="cw" style="height:260px"><canvas id="sessionSpreadChart"></canvas></div>
+  </div>
+</div>
+
+<div class="stats" id="volStats"></div>
+
+<div class="card">
+  <h3>Volatility by Hour of Day (ET) — Weekday vs Weekend</h3>
+  <div class="cw" style="height:240px"><canvas id="hourlyChart"></canvas></div>
+</div>
+
+<!-- ═══ SIGNAL ANALYSIS ═══ -->
+<div style="text-align:center;padding:20px 0 12px;border-top:1px solid var(--bd);margin-top:8px">
+  <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--t)">SIGNAL ANALYSIS — FIND THE GOLDEN WINDOW</h2>
+  <div style="color:var(--t2);font-size:11px;margin-top:4px">Backtest on loaded data: when does HL lead Bebop the most?</div>
+</div>
+
+<div class="stats" id="sigKpis"></div>
+
+<div class="card">
+  <h3>Win Rate &amp; Avg P&L by Hour of Day (ET) — When is the signal strongest?</h3>
+  <div class="cw" style="height:280px"><canvas id="hourWrChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Win Rate Heatmap — Day of Week x Hour (ET)</h3>
+  <div id="heatmap" style="overflow-x:auto"></div>
+</div>
+
+<div class="card">
+  <h3>Threshold Sweep — What cutoff maximizes P&L?</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="cw" style="height:260px"><canvas id="threshWrChart"></canvas></div>
+    <div class="cw" style="height:260px"><canvas id="threshPnlChart"></canvas></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Convergence Curve — P&L by Exit Timing (captures after signal)</h3>
+  <div class="cw" style="height:260px"><canvas id="convChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Entry Spread vs Outcome — Does tighter spread = better trade?</h3>
+  <div class="cw" style="height:260px"><canvas id="spreadVsPnlChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Signal Strength (|delta|) vs Win Rate — Sweet spot?</h3>
+  <div class="cw" style="height:260px"><canvas id="deltaVsWrChart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Best Trading Windows — Top conditions ranked</h3>
+  <div id="goldenTable" style="overflow-x:auto"></div>
+</div>
+
+<div class="footer">Transparent Space — HL vs Bebop Signal Analysis</div>
+
+<script>
+const HL_API="https://api.hyperliquid.xyz/info";
+const BEB_API="https://indexer-solana-production.up.railway.app/api/rfq/bebop/latest";
+const TK=18,UD=6;
+const ASSETS=[
+  {hl:"xyz:GOOGL",beb:"GOOGLx",n:"GOOGL",c:"#3b82f6"},
+  {hl:"xyz:NVDA",beb:"NVDAx",n:"NVDA",c:"#22c55e"},
+  {hl:"xyz:CRCL",beb:"CRCLx",n:"CRCL",c:"#a855f7"},
+  {hl:"xyz:TSLA",beb:"TSLAx",n:"TSLA",c:"#ef4444"},
+  {hl:"xyz:META",beb:"METAx",n:"META",c:"#06b6d4"},
+];
+const RANGES=[
+  {label:'3H',ms:3*3600e3},
+  {label:'6H',ms:6*3600e3},
+  {label:'12H',ms:12*3600e3},
+  {label:'24H',ms:24*3600e3},
+  {label:'48H',ms:48*3600e3},
+  {label:'7D',ms:7*864e5},
+];
+
+// Convert UTC date to US Eastern Time components
+function toET(d){
+  if(!(d instanceof Date))d=new Date(d);
+  const s=d.toLocaleString('en-US',{timeZone:'America/New_York',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short'});
+  // parse "Mon, 03/25/2026, 14:30:00"
+  const parts=s.match(/(\w+),\s*(\d+)\/(\d+)\/(\d+),\s*(\d+):(\d+):(\d+)/);
+  const dayMap={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  const h=+parts[5]===24?0:+parts[5];
+  return{dow:dayMap[parts[1]],hour:h,min:+parts[6]};
+}
+function etHour(ts){return toET(ts).hour;}
+function etDow(ts){return toET(ts).dow;}
+function isMarketHoursET(ts){const e=toET(ts);const afterOpen=e.hour>9||(e.hour===9&&e.min>=30);return afterOpen&&e.hour<16&&e.dow>=1&&e.dow<=5;}
+
+function r2n(raw,dec){if(!raw||raw==="0")return 0;const b=BigInt(raw),d=BigInt(10**dec);return Number(b/d)+Number(b%d)/10**dec;}
+function bprc(q){
+  const sd=q.direction==="forward"?UD:TK,bd=q.direction==="forward"?TK:UD;
+  const s=r2n(q.requested_sell_amount_raw,sd),b=r2n(q.quote_buy_amount_raw,bd);
+  return q.direction==="forward"?(b>0?s/b:0):(s>0?b/s:0);
+}
+
+// State
+let currentAsset=0, currentRange=5, cache={}; // default 7D for weekday/weekend comparison
+let mainChart,deltaChart,spreadChart,volChart,sessionVolChart,sessionSpreadChart,hourlyChart;
+let hourWrChart,threshWrChart,threshPnlChart,convChart,spreadVsPnlChart,deltaVsWrChart;
+
+// Fetch
+async function fetchHL(coin,start,end){
+  let cursor=start;const out=[];
+  while(cursor<end){
+    const r=await fetch(HL_API,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({type:"candleSnapshot",req:{coin,interval:"1m",startTime:cursor,endTime:end}})});
+    if(!r.ok)break;const d=await r.json();if(!d.length)break;
+    out.push(...d);const last=d[d.length-1].t;if(last<=cursor)break;cursor=last+1;
+    await new Promise(r=>setTimeout(r,80));
+  }
+  return out;
+}
+
+async function fetchBeb(asset){
+  const all=[];let cursor=null;
+  const cutoff=Date.now()-RANGES[RANGES.length-1].ms-864e5; // fetch enough
+  for(let p=0;p<20;p++){
+    const u=new URL(BEB_API);u.searchParams.set("asset",asset);u.searchParams.set("include_routes","false");u.searchParams.set("limit","10000");
+    if(cursor)u.searchParams.set("cursor",cursor);
+    const r=await fetch(u);if(!r.ok)break;const j=await r.json();
+    if(!j.data?.length)break;
+    all.push(...j.data.filter(q=>q.is_success));
+    const oldest=j.data[j.data.length-1];
+    if(oldest&&new Date(oldest.quote_at).getTime()<cutoff)break;
+    if(!j.pagination?.has_more||!j.pagination.next_cursor)break;
+    cursor=j.pagination.next_cursor;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  return all;
+}
+
+function buildBebopSeries(quotes){
+  // Group by capture, compute bid (forward price), ask (reverse price), mid
+  const caps=new Map();
+  for(const q of quotes){
+    if(!caps.has(q.capture_id))caps.set(q.capture_id,{at:q.quote_at,fwd:[],rev:[]});
+    const c=caps.get(q.capture_id);
+    // Use $1K notional for tightest spread
+    if(parseFloat(q.notional_usd)>1100)continue;
+    if(q.direction==="forward")c.fwd.push(q);else c.rev.push(q);
+  }
+  const pts=[];
+  for(const cap of caps.values()){
+    if(!cap.fwd.length)continue;
+    const bid=bprc(cap.fwd[0]); // price to buy token (forward = you pay USDC)
+    const ask=cap.rev.length?bprc(cap.rev[0]):bid; // price to sell token (reverse = you get USDC)
+    // For xStocks: forward price is what you pay (higher = worse for buyer = ask side)
+    // reverse price is what you get (lower = worse for seller = bid side)
+    // So: bid = reverse price (sell), ask = forward price (buy)
+    const bidPrice=cap.rev.length?Math.min(bid,ask):bid;
+    const askPrice=Math.max(bid,ask);
+    const mid=(bidPrice+askPrice)/2;
+    if(mid<=0)continue;
+    pts.push({t:new Date(cap.at).getTime(),bid:bidPrice,ask:askPrice,mid});
+  }
+  pts.sort((a,b)=>a.t-b.t);
+  // Outlier filter
+  if(pts.length>=5){
+    const mids=pts.map(p=>p.mid).sort((a,b)=>a-b);
+    const med=mids[Math.floor(mids.length/2)];
+    const lo=med*.85,hi=med*1.15;
+    return pts.filter(p=>p.mid>=lo&&p.mid<=hi);
+  }
+  return pts;
+}
+
+// Charts
+function initCharts(){
+  Chart.defaults.color='#8888a0';Chart.defaults.borderColor='rgba(255,255,255,.05)';
+  Chart.defaults.font.family="'SF Mono','Fira Code',monospace";Chart.defaults.font.size=10;
+
+  mainChart=new Chart(document.getElementById('mainChart'),{
+    type:'line',data:{datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      scales:{
+        x:{type:'time',time:{tooltipFormat:'MMM dd HH:mm'},ticks:{maxTicksLimit:12}},
+        y:{title:{display:true,text:'Price ($)'},position:'left'},
+      },
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{
+          label:ctx=>{
+            const v=ctx.parsed.y;
+            if(ctx.dataset.label?.includes('Range'))return null;
+            return `${ctx.dataset.label}: $${v.toFixed(2)}`;
+          }
+        }}
+      }
+    }
+  });
+
+  deltaChart=new Chart(document.getElementById('deltaChart'),{
+    type:'line',data:{datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      scales:{
+        x:{type:'time',ticks:{maxTicksLimit:12}},
+        y:{title:{display:true,text:'bps'}},
+      },
+      plugins:{legend:{display:false},
+        annotation:{}
+      }
+    }
+  });
+
+  spreadChart=new Chart(document.getElementById('spreadChart'),{
+    type:'line',data:{datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      scales:{
+        x:{type:'time',ticks:{maxTicksLimit:12}},
+        y:{title:{display:true,text:'bps'},min:0},
+      },
+      plugins:{legend:{display:false}}
+    }
+  });
+
+  volChart=new Chart(document.getElementById('volChart'),{
+    type:'line',data:{datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      scales:{
+        x:{type:'time',ticks:{maxTicksLimit:12}},
+        y:{title:{display:true,text:'vol (bps)'},min:0},
+      },
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:5,font:{size:9}}}}
+    }
+  });
+
+  sessionVolChart=new Chart(document.getElementById('sessionVolChart'),{
+    type:'bar',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Avg Volatility (bps)'},min:0}},
+      plugins:{legend:{display:false},title:{display:true,text:'Avg Mid-Price Volatility',color:'#8888a0',font:{size:10}}}
+    }
+  });
+
+  sessionSpreadChart=new Chart(document.getElementById('sessionSpreadChart'),{
+    type:'bar',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Avg Spread (bps)'},min:0}},
+      plugins:{legend:{display:false},title:{display:true,text:'Avg Bid-Ask Spread',color:'#8888a0',font:{size:10}}}
+    }
+  });
+
+  hourlyChart=new Chart(document.getElementById('hourlyChart'),{
+    type:'bar',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Avg Vol (bps)'},min:0},x:{title:{display:true,text:'Hour (ET)'}}},
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:5,font:{size:9}}}}
+    }
+  });
+
+  // Signal analysis charts
+  hourWrChart=new Chart(document.getElementById('hourWrChart'),{
+    type:'bar',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Win Rate %'},min:0,max:100,position:'left'},
+        y2:{title:{display:true,text:'Avg P&L (bps)'},position:'right',grid:{drawOnChartArea:false}},
+        x:{title:{display:true,text:'Hour (ET)'}}},
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:5,font:{size:9}}}}
+    }
+  });
+  threshWrChart=new Chart(document.getElementById('threshWrChart'),{
+    type:'line',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Win Rate %'},min:30,max:100},x:{title:{display:true,text:'Threshold (bps)'}}},
+      plugins:{legend:{display:false},title:{display:true,text:'Win Rate by Threshold',color:'#8888a0',font:{size:10}}}
+    }
+  });
+  threshPnlChart=new Chart(document.getElementById('threshPnlChart'),{
+    type:'line',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Est. $/day @ $1K'},position:'left'},
+        y2:{title:{display:true,text:'Trades/week'},position:'right',grid:{drawOnChartArea:false}},
+        x:{title:{display:true,text:'Threshold (bps)'}}},
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:5,font:{size:9}}},
+        title:{display:true,text:'P&L & Trade Count by Threshold',color:'#8888a0',font:{size:10}}}
+    }
+  });
+  convChart=new Chart(document.getElementById('convChart'),{
+    type:'line',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Avg P&L (bps)'}},
+        y2:{title:{display:true,text:'Win Rate %'},position:'right',min:40,max:100,grid:{drawOnChartArea:false}},
+        x:{title:{display:true,text:'Exit after N captures'}}},
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:5,font:{size:9}}}}
+    }
+  });
+  spreadVsPnlChart=new Chart(document.getElementById('spreadVsPnlChart'),{
+    type:'scatter',data:{datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'P&L (bps)'}},x:{title:{display:true,text:'Entry Spread (bps)'}}},
+      plugins:{legend:{display:false}}
+    }
+  });
+  deltaVsWrChart=new Chart(document.getElementById('deltaVsWrChart'),{
+    type:'bar',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{title:{display:true,text:'Win Rate %'},min:0,max:100},
+        y2:{title:{display:true,text:'Trade Count'},position:'right',grid:{drawOnChartArea:false}},
+        x:{title:{display:true,text:'|Delta| bucket (bps)'}}},
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:5,font:{size:9}}}}
+    }
+  });
+}
+
+function updateCharts(hlCandles,bebPts,asset){
+  const a=ASSETS[asset];
+  const range=RANGES[currentRange].ms;
+  const cutoff=Date.now()-range;
+
+  const hl=hlCandles.filter(c=>c.t>=cutoff).map(c=>({t:c.t,p:+c.c}));
+  const beb=bebPts.filter(p=>p.t>=cutoff);
+
+  document.getElementById('chartTitle').textContent=`${a.n} — HL vs Bebop Price (${RANGES[currentRange].label})`;
+
+  // Main chart: HL line + Bebop band + Bebop mid
+  mainChart.data.datasets=[
+    // Bebop band (upper = ask)
+    {label:'Bebop Ask',data:beb.map(p=>({x:new Date(p.t),y:p.ask})),
+      borderColor:'transparent',backgroundColor:'rgba(139,92,246,.15)',
+      fill:'+1',pointRadius:0,tension:.2,order:3},
+    // Bebop band (lower = bid) — fill between ask and bid
+    {label:'Bebop Bid',data:beb.map(p=>({x:new Date(p.t),y:p.bid})),
+      borderColor:'transparent',backgroundColor:'rgba(139,92,246,.15)',
+      fill:false,pointRadius:0,tension:.2,order:3},
+    // Bebop mid
+    {label:'Bebop Mid',data:beb.map(p=>({x:new Date(p.t),y:p.mid})),
+      borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false,order:2},
+    // HL
+    {label:'HL Price',data:hl.map(p=>({x:new Date(p.t),y:p.p})),
+      borderColor:'#f59e0b',borderWidth:1.5,pointRadius:0,tension:.1,fill:false,order:1},
+  ];
+  // Fix fill: ask fills down to bid
+  mainChart.data.datasets[0].fill={target:1,above:'rgba(139,92,246,.12)',below:'rgba(139,92,246,.12)'};
+  mainChart.update();
+
+  // Delta chart: HL - Bebop mid (interpolated)
+  const deltaPoints=[];
+  for(const bp of beb){
+    // Find nearest HL candle
+    let nearest=null,minD=Infinity;
+    for(const h of hl){const d=Math.abs(h.t-bp.t);if(d<minD){minD=d;nearest=h;}}
+    if(nearest&&minD<120000){
+      const delta=((nearest.p-bp.mid)/bp.mid)*1e4;
+      deltaPoints.push({x:new Date(bp.t),y:+delta.toFixed(1)});
+    }
+  }
+  deltaChart.data.datasets=[
+    {label:'HL − Bebop (bps)',data:deltaPoints,
+      borderColor:deltaPoints.map(p=>p.y>=0?'rgba(34,197,94,.8)':'rgba(239,68,68,.8)'),
+      segment:{borderColor:ctx=>{const v=ctx.p0.parsed.y;return v>=0?'rgba(34,197,94,.8)':'rgba(239,68,68,.8)';},
+        backgroundColor:ctx=>{const v=ctx.p0.parsed.y;return v>=0?'rgba(34,197,94,.08)':'rgba(239,68,68,.08)';}},
+      borderWidth:1.5,pointRadius:0,tension:.2,fill:true},
+    // Zero line
+    {label:'Zero',data:[{x:deltaPoints[0]?.x,y:0},{x:deltaPoints[deltaPoints.length-1]?.x,y:0}],
+      borderColor:'rgba(255,255,255,.15)',borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false},
+    // +30 threshold
+    {label:'+30bps',data:[{x:deltaPoints[0]?.x,y:30},{x:deltaPoints[deltaPoints.length-1]?.x,y:30}],
+      borderColor:'rgba(34,197,94,.25)',borderWidth:1,borderDash:[3,6],pointRadius:0,fill:false},
+    // -30 threshold
+    {label:'-30bps',data:[{x:deltaPoints[0]?.x,y:-30},{x:deltaPoints[deltaPoints.length-1]?.x,y:-30}],
+      borderColor:'rgba(239,68,68,.25)',borderWidth:1,borderDash:[3,6],pointRadius:0,fill:false},
+  ];
+  deltaChart.update();
+
+  // Spread chart: bid-ask spread in bps
+  const spreadPoints=beb.map(p=>({x:new Date(p.t),y:+((p.ask-p.bid)/p.mid*1e4).toFixed(1)}));
+  spreadChart.data.datasets=[
+    {label:'Bid-Ask Spread',data:spreadPoints,
+      borderColor:'#8b5cf688',borderWidth:1.5,pointRadius:0,tension:.2,
+      backgroundColor:'rgba(139,92,246,.08)',fill:true},
+  ];
+  spreadChart.update();
+
+  // Volatility chart — rolling 30-min stdev of capture-to-capture returns
+  const VOL_WINDOW=8; // ~8 captures = ~28 min at 3.5min interval
+  const returns=[];
+  for(let i=1;i<beb.length;i++){
+    const ret=((beb[i].mid-beb[i-1].mid)/beb[i-1].mid)*1e4;
+    returns.push({t:beb[i].t,ret,spread:(beb[i].ask-beb[i].bid)/beb[i].mid*1e4});
+  }
+  const volPoints=[];
+  for(let i=VOL_WINDOW;i<returns.length;i++){
+    const window=returns.slice(i-VOL_WINDOW,i);
+    const mean=window.reduce((s,r)=>s+r.ret,0)/window.length;
+    const variance=window.reduce((s,r)=>s+(r.ret-mean)**2,0)/window.length;
+    const stdev=Math.sqrt(variance);
+    volPoints.push({t:returns[i].t,vol:stdev,spread:returns[i].spread});
+  }
+
+  // Color by session: green=weekday market hours, blue=weekday after hours, red=weekend
+  function sessionColor(ts){
+    const d=new Date(ts);
+    const day=etDow(ts);
+    const h=etHour(ts);
+    if(day===0||day===6) return {bg:'rgba(239,68,68,.15)',border:'rgba(239,68,68,.6)',label:'Weekend'};
+    if(isMarketHoursET(ts)) return {bg:'rgba(34,197,94,.12)',border:'rgba(34,197,94,.6)',label:'Weekday MH'};
+    return {bg:'rgba(59,130,246,.1)',border:'rgba(59,130,246,.5)',label:'Weekday AH'};
+  }
+
+  volChart.data.datasets=[
+    {label:'Volatility',data:volPoints.map(p=>({x:new Date(p.t),y:+p.vol.toFixed(1)})),
+      segment:{
+        borderColor:ctx=>{const t=volPoints[ctx.p0DataIndex]?.t;return t?sessionColor(t).border:'#8888a0';},
+        backgroundColor:ctx=>{const t=volPoints[ctx.p0DataIndex]?.t;return t?sessionColor(t).bg:'transparent';}
+      },
+      borderWidth:1.5,pointRadius:0,tension:.2,fill:true},
+    // Dummy datasets for legend
+    {label:'Weekday Market Hours',data:[],borderColor:'rgba(34,197,94,.6)',backgroundColor:'rgba(34,197,94,.15)',borderWidth:2,pointRadius:0},
+    {label:'Weekday After Hours',data:[],borderColor:'rgba(59,130,246,.5)',backgroundColor:'rgba(59,130,246,.1)',borderWidth:2,pointRadius:0},
+    {label:'Weekend',data:[],borderColor:'rgba(239,68,68,.6)',backgroundColor:'rgba(239,68,68,.15)',borderWidth:2,pointRadius:0},
+  ];
+  volChart.update();
+
+  // Session comparison — weekday MH vs weekday AH vs weekend
+  const sessions={wdMH:{vols:[],spreads:[]},wdAH:{vols:[],spreads:[]},we:{vols:[],spreads:[]}};
+  for(const p of volPoints){
+    const day=etDow(p.t);const h=etHour(p.t);
+    const bucket=(day===0||day===6)?'we':isMarketHoursET(p.t)?'wdMH':'wdAH';
+    sessions[bucket].vols.push(p.vol);
+    sessions[bucket].spreads.push(p.spread);
+  }
+  const avgArr=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:0;
+  const medArr=arr=>{if(!arr.length)return 0;const s=[...arr].sort((a,b)=>a-b);return s[Math.floor(s.length/2)];};
+
+  const sLabels=['Weekday\nMarket Hours','Weekday\nAfter Hours','Weekend'];
+  const sKeys=['wdMH','wdAH','we'];
+  const sColors=['rgba(34,197,94,.6)','rgba(59,130,246,.5)','rgba(239,68,68,.6)'];
+  const sBgs=['rgba(34,197,94,.25)','rgba(59,130,246,.2)','rgba(239,68,68,.2)'];
+
+  sessionVolChart.data.labels=sLabels;
+  sessionVolChart.data.datasets=[{
+    data:sKeys.map(k=>+avgArr(sessions[k].vols).toFixed(1)),
+    backgroundColor:sBgs,borderColor:sColors,borderWidth:1,borderRadius:6,
+  }];
+  sessionVolChart.update();
+
+  sessionSpreadChart.data.labels=sLabels;
+  sessionSpreadChart.data.datasets=[{
+    data:sKeys.map(k=>+avgArr(sessions[k].spreads).toFixed(1)),
+    backgroundColor:sBgs,borderColor:sColors,borderWidth:1,borderRadius:6,
+  }];
+  sessionSpreadChart.update();
+
+  // Hourly heatmap — vol by hour, weekday vs weekend
+  const hourlyWD=Array.from({length:24},()=>[]);
+  const hourlyWE=Array.from({length:24},()=>[]);
+  for(const p of volPoints){
+    const day=etDow(p.t);const h=etHour(p.t);
+    if(day===0||day===6) hourlyWE[h].push(p.vol);
+    else hourlyWD[h].push(p.vol);
+  }
+  hourlyChart.data.labels=Array.from({length:24},(_,i)=>String(i).padStart(2,'0'));
+  hourlyChart.data.datasets=[
+    {label:'Weekday',data:hourlyWD.map(a=>a.length?+avgArr(a).toFixed(1):0),
+      backgroundColor:'rgba(34,197,94,.4)',borderColor:'rgba(34,197,94,.7)',borderWidth:1,borderRadius:3},
+    {label:'Weekend',data:hourlyWE.map(a=>a.length?+avgArr(a).toFixed(1):0),
+      backgroundColor:'rgba(239,68,68,.35)',borderColor:'rgba(239,68,68,.7)',borderWidth:1,borderRadius:3},
+  ];
+  hourlyChart.update();
+
+  // Vol stats
+  const volEl=document.getElementById('volStats');
+  const wdVol=avgArr(sessions.wdMH.vols.concat(sessions.wdAH.vols));
+  const weVol=avgArr(sessions.we.vols);
+  const ratio=weVol>0?(wdVol/weVol):0;
+  const wdMHVol=avgArr(sessions.wdMH.vols);
+  const wdAHVol=avgArr(sessions.wdAH.vols);
+  const wdSpread=avgArr(sessions.wdMH.spreads.concat(sessions.wdAH.spreads));
+  const weSpread=avgArr(sessions.we.spreads);
+  const mhSpread=avgArr(sessions.wdMH.spreads);
+  const ahSpread=avgArr(sessions.wdAH.spreads);
+  volEl.innerHTML=`
+    <div class="stat"><div class="lab">Weekday Avg Vol</div><div class="val g">${wdVol.toFixed(1)}</div><div class="det">bps (MH+AH)</div></div>
+    <div class="stat"><div class="lab">Weekend Avg Vol</div><div class="val r">${weVol.toFixed(1)}</div><div class="det">bps</div></div>
+    <div class="stat"><div class="lab">WD/WE Vol Ratio</div><div class="val">${ratio.toFixed(1)}x</div><div class="det">${ratio>1?'weekday more volatile':'weekend more volatile'}</div></div>
+    <div class="stat"><div class="lab">Market Hours Vol</div><div class="val g">${wdMHVol.toFixed(1)}</div><div class="det">bps (9:30-16 ET)</div></div>
+    <div class="stat"><div class="lab">After Hours Vol</div><div class="val" style="color:#60a5fa">${wdAHVol.toFixed(1)}</div><div class="det">bps</div></div>
+    <div class="stat"><div class="lab">WD Avg Spread</div><div class="val g">${wdSpread.toFixed(1)}</div><div class="det">bps bid-ask</div></div>
+    <div class="stat"><div class="lab">WE Avg Spread</div><div class="val r">${weSpread.toFixed(1)}</div><div class="det">bps bid-ask</div></div>
+    <div class="stat"><div class="lab">Spread Ratio</div><div class="val">${wdSpread>0?(weSpread/wdSpread).toFixed(1):'-'}x</div><div class="det">${weSpread>wdSpread?'weekend wider':'weekday wider'}</div></div>
+  `;
+
+  // Stats
+  updateStats(hl,beb,deltaPoints,spreadPoints,a);
+
+  // ═══ SIGNAL ANALYSIS ═══
+  // Run full backtest on the loaded data (use ALL data, not just filtered range)
+  const allBeb=bebPts; // full 7d
+  const allHL=hlCandles.map(c=>({t:c.t,p:+c.c}));
+  runSignalAnalysis(allBeb,allHL,a);
+}
+
+function updateStats(hl,beb,deltas,spreads,asset){
+  const hlNow=hl.length?hl[hl.length-1].p:null;
+  const bebNow=beb.length?beb[beb.length-1]:null;
+  const deltaNow=deltas.length?deltas[deltas.length-1].y:null;
+  const spreadNow=spreads.length?spreads[spreads.length-1].y:null;
+
+  const deltaVals=deltas.map(d=>d.y);
+  const spreadVals=spreads.map(s=>s.y);
+  const absDelta=deltaVals.map(Math.abs);
+
+  const avg=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:0;
+  const pct=arr=>n=>arr.length?arr.sort((a,b)=>a-b)[Math.floor(arr.length*n)]:0;
+
+  const sigCount=deltaVals.filter(d=>Math.abs(d)>=30).length;
+  const sigPct=deltas.length?(sigCount/deltas.length*100):0;
+
+  const hlAge=hl.length?Math.floor((Date.now()-hl[hl.length-1].t)/1000):null;
+  const bebAge=beb.length?Math.floor((Date.now()-beb[beb.length-1].t)/1000):null;
+
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat"><div class="lab">HL Price Now</div><div class="val">$${hlNow?hlNow.toFixed(2):'—'}</div><div class="det">${hlAge!==null?hlAge+'s ago':'—'}</div></div>
+    <div class="stat"><div class="lab">Bebop Mid Now</div><div class="val">$${bebNow?bebNow.mid.toFixed(2):'—'}</div><div class="det">${bebAge!==null?bebAge+'s ago':'—'}</div></div>
+    <div class="stat"><div class="lab">Current Delta</div><div class="val ${deltaNow!==null?(deltaNow>=0?'g':'r'):''}">${deltaNow!==null?(deltaNow>=0?'+':'')+deltaNow.toFixed(0)+'bp':'—'}</div><div class="det">HL − Bebop</div></div>
+    <div class="stat"><div class="lab">Current Spread</div><div class="val">${spreadNow!==null?spreadNow.toFixed(1)+'bp':'—'}</div><div class="det">bid-ask</div></div>
+    <div class="stat"><div class="lab">Avg |Delta|</div><div class="val">${absDelta.length?avg(absDelta).toFixed(1)+'bp':'—'}</div><div class="det">mean abs deviation</div></div>
+    <div class="stat"><div class="lab">Avg Spread</div><div class="val">${spreadVals.length?avg(spreadVals).toFixed(1)+'bp':'—'}</div><div class="det">mean bid-ask</div></div>
+    <div class="stat"><div class="lab">Signals (>30bp)</div><div class="val">${sigCount}</div><div class="det">${sigPct.toFixed(0)}% of captures</div></div>
+    <div class="stat"><div class="lab">Data Points</div><div class="val">${beb.length}</div><div class="det">HL: ${hl.length} candles</div></div>
+  `;
+}
+
+// ═══ SIGNAL ANALYSIS ENGINE ═══
+function runSignalAnalysis(beb,hl,asset){
+  // Build HL lookup
+  const hlMap=new Map();for(const h of hl)hlMap.set(h.t,h.p);
+  function hlAt(t,tol=90000){let bk=null,bd=Infinity;for(const[k]of hlMap){const d=Math.abs(k-t);if(d<bd){bd=d;bk=k;}}return bk!==null&&bd<=tol?hlMap.get(bk):null;}
+
+  // Generate ALL signals (no cooldown, no threshold — we filter later)
+  const rawSignals=[];
+  for(let i=1;i<beb.length;i++){
+    const c=beb[i],pc=beb[i-1];
+    const bebRet=((c.mid-pc.mid)/pc.mid)*1e4;
+    const hlN=hlAt(c.t);const hl5=hlAt(c.t-3e5);
+    if(hlN==null||hl5==null)continue;
+    const hlRet=((hlN-hl5)/hl5)*1e4;
+    const delta=hlRet-bebRet;
+    if(Math.abs(delta)>200)continue; // outlier filter always on
+    const dir=delta>0?'LONG':'SHORT';
+    const entry=c.mid;
+    const spread=(c.ask-c.bid)/c.mid*1e4;
+    // P&L at various exit captures
+    const pnls={};
+    for(const n of[1,2,3,5,7,10]){
+      const ex=beb[i+n];
+      if(!ex)continue;
+      pnls[n]=dir==='LONG'?((ex.mid-entry)/entry)*1e4:((entry-ex.mid)/entry)*1e4;
+    }
+    const et=toET(c.t);
+    rawSignals.push({t:c.t,delta,absD:Math.abs(delta),dir,entry,spread,pnls,
+      hour:et.hour,dow:et.dow,dayName:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][et.dow],
+      isWeekend:et.dow===0||et.dow===6,
+      isMH:isMarketHoursET(c.t)
+    });
+  }
+
+  // Apply cooldown for "real" signal set
+  function applyFilter(sigs,thresh,cooldownMs=6e5){
+    const out=[];let lastT=-Infinity;
+    for(const s of sigs){
+      if(s.absD<thresh)continue;
+      if(s.t-lastT<cooldownMs)continue;
+      out.push(s);lastT=s.t;
+    }
+    return out;
+  }
+
+  const signals=applyFilter(rawSignals,30);
+  const COST=5;
+  const avg=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:0;
+
+  // ── KPIs ──
+  const v2=signals.filter(s=>s.pnls[2]!==undefined);
+  const wr2=v2.length?v2.filter(s=>s.pnls[2]>0).length/v2.length*100:0;
+  const avgPnl2=avg(v2.map(s=>s.pnls[2]));
+  const netPnl=avgPnl2-COST;
+  const days=(beb[beb.length-1].t-beb[0].t)/864e5;
+  const dailyDollars=v2.length?(netPnl/1e4*1000*v2.length/days):0;
+  const bestHour=findBestHour(signals);
+  const bestSession=signals.filter(s=>s.isMH).length?
+    (avg(signals.filter(s=>s.isMH&&s.pnls[2]!==undefined).map(s=>s.pnls[2]))>avg(signals.filter(s=>!s.isMH&&s.pnls[2]!==undefined).map(s=>s.pnls[2]))?'Market Hours':'After Hours'):'—';
+
+  document.getElementById('sigKpis').innerHTML=`
+    <div class="stat"><div class="lab">Signals Found</div><div class="val">${signals.length}</div><div class="det">${days.toFixed(1)} days of data</div></div>
+    <div class="stat"><div class="lab">Win Rate (2-cap)</div><div class="val ${wr2>=60?'g':'r'}">${wr2.toFixed(0)}%</div><div class="det">${v2.filter(s=>s.pnls[2]>0).length}W / ${v2.filter(s=>s.pnls[2]<=0).length}L</div></div>
+    <div class="stat"><div class="lab">Avg P&L</div><div class="val ${avgPnl2>=0?'g':'r'}">${avgPnl2>=0?'+':''}${avgPnl2.toFixed(1)}bp</div><div class="det">gross, 2-cap exit</div></div>
+    <div class="stat"><div class="lab">Est. $/day</div><div class="val ${dailyDollars>=0?'g':'r'}">$${dailyDollars>=0?'+':''}${dailyDollars.toFixed(2)}</div><div class="det">@ $1K, net ${COST}bp cost</div></div>
+    <div class="stat"><div class="lab">Best Hour (ET)</div><div class="val" style="color:var(--o)">${bestHour.hour}:00</div><div class="det">${bestHour.wr.toFixed(0)}% WR, ${bestHour.count} trades</div></div>
+    <div class="stat"><div class="lab">Best Session</div><div class="val" style="color:var(--o)">${bestSession}</div><div class="det">higher avg P&L</div></div>
+    <div class="stat"><div class="lab">Avg |Delta|</div><div class="val">${avg(signals.map(s=>s.absD)).toFixed(0)}bp</div><div class="det">signal strength</div></div>
+    <div class="stat"><div class="lab">Avg Entry Spread</div><div class="val">${avg(signals.map(s=>s.spread)).toFixed(1)}bp</div><div class="det">bid-ask at signal</div></div>
+  `;
+
+  function findBestHour(sigs){
+    let best={hour:0,wr:0,count:0};
+    for(let h=0;h<24;h++){
+      const hs=sigs.filter(s=>s.hour===h&&s.pnls[2]!==undefined);
+      if(hs.length<2)continue;
+      const w=hs.filter(s=>s.pnls[2]>0).length/hs.length*100;
+      if(w>best.wr||(w===best.wr&&hs.length>best.count))best={hour:h,wr:w,count:hs.length};
+    }
+    return best;
+  }
+
+  // ── Win Rate + Avg P&L by Hour ──
+  const hours=Array.from({length:24},(_,i)=>i);
+  const hourData=hours.map(h=>{
+    const hs=signals.filter(s=>s.hour===h&&s.pnls[2]!==undefined);
+    return{h,count:hs.length,wr:hs.length>=2?hs.filter(s=>s.pnls[2]>0).length/hs.length*100:null,
+      avgPnl:hs.length?avg(hs.map(s=>s.pnls[2])):0};
+  });
+  hourWrChart.data.labels=hours.map(h=>String(h).padStart(2,'0'));
+  hourWrChart.data.datasets=[
+    {label:'Win Rate %',type:'bar',data:hourData.map(h=>h.wr),yAxisID:'y',
+      backgroundColor:hourData.map(h=>h.wr!==null?(h.wr>=60?'rgba(34,197,94,.5)':'rgba(239,68,68,.4)'):'rgba(255,255,255,.05)'),
+      borderColor:hourData.map(h=>h.wr!==null?(h.wr>=60?'#22c55e':'#ef4444'):'transparent'),borderWidth:1,borderRadius:3},
+    {label:'Avg P&L (bps)',type:'line',data:hourData.map(h=>h.count>=2?+h.avgPnl.toFixed(1):null),yAxisID:'y2',
+      borderColor:'#f59e0b',borderWidth:2,pointRadius:3,pointBackgroundColor:hourData.map(h=>h.avgPnl>=0?'#22c55e':'#ef4444'),tension:.3,spanGaps:true},
+    {label:'Trade Count',type:'bar',data:hourData.map(h=>h.count),yAxisID:'y2',
+      backgroundColor:'rgba(255,255,255,.08)',borderColor:'rgba(255,255,255,.15)',borderWidth:1,borderRadius:2},
+  ];
+  hourWrChart.update();
+
+  // ── Heatmap: Day x Hour ──
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const heatData=[];
+  for(let dow=0;dow<7;dow++){
+    for(let h=0;h<24;h++){
+      const hs=signals.filter(s=>s.dow===dow&&s.hour===h&&s.pnls[2]!==undefined);
+      const wr=hs.length>=2?hs.filter(s=>s.pnls[2]>0).length/hs.length*100:null;
+      const ap=hs.length>=1?avg(hs.map(s=>s.pnls[2])):null;
+      heatData.push({dow,h,count:hs.length,wr,avgPnl:ap});
+    }
+  }
+  const heatEl=document.getElementById('heatmap');
+  let heatHtml=`<table style="width:100%;border-collapse:collapse;font-size:10px"><tr><th style="padding:4px 8px;color:var(--t2)"></th>`;
+  for(let h=0;h<24;h++)heatHtml+=`<th style="padding:4px 3px;color:var(--t2);font-weight:400">${String(h).padStart(2,'0')}</th>`;
+  heatHtml+=`</tr>`;
+  for(let dow=0;dow<7;dow++){
+    const isWe=dow===0||dow===6;
+    heatHtml+=`<tr><td style="padding:4px 8px;color:${isWe?'var(--r)':'var(--t2)'};font-weight:600">${dayNames[dow]}</td>`;
+    for(let h=0;h<24;h++){
+      const cell=heatData.find(c=>c.dow===dow&&c.h===h);
+      let bg='transparent',txt='',title='';
+      if(cell&&cell.count>0){
+        if(cell.wr!==null){
+          const intensity=Math.min(1,cell.count/8);
+          if(cell.wr>=70) bg=`rgba(34,197,94,${.15+intensity*.4})`;
+          else if(cell.wr>=50) bg=`rgba(245,158,11,${.1+intensity*.3})`;
+          else bg=`rgba(239,68,68,${.1+intensity*.3})`;
+          txt=`<span style="font-weight:700">${cell.wr.toFixed(0)}</span><span style="font-size:8px;opacity:.6">%</span>`;
+          title=`${cell.count} trades, WR ${cell.wr.toFixed(0)}%, avg ${cell.avgPnl?.toFixed(1)} bps`;
+        } else {
+          bg='rgba(255,255,255,.03)';
+          txt=`<span style="opacity:.3">${cell.count}</span>`;
+          title=`${cell.count} trade(s), insufficient data`;
+        }
+      }
+      heatHtml+=`<td style="padding:4px 3px;text-align:center;background:${bg};border:1px solid rgba(255,255,255,.03);border-radius:2px" title="${title}">${txt}</td>`;
+    }
+    heatHtml+=`</tr>`;
+  }
+  heatHtml+=`</table>`;
+  heatHtml+=`<div style="display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:10px;color:var(--t2)">
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:rgba(34,197,94,.4);vertical-align:middle;margin-right:4px"></span>WR ≥ 70%</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:rgba(245,158,11,.3);vertical-align:middle;margin-right:4px"></span>WR 50-70%</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:rgba(239,68,68,.3);vertical-align:middle;margin-right:4px"></span>WR < 50%</span>
+    <span>Brightness = trade count</span></div>`;
+  heatEl.innerHTML=heatHtml;
+
+  // ── Threshold Sweep ──
+  const thresholds=[10,15,20,25,30,35,40,50,60,80,100];
+  const threshData=thresholds.map(th=>{
+    const sigs=applyFilter(rawSignals,th);
+    const v=sigs.filter(s=>s.pnls[2]!==undefined);
+    const wr=v.length?v.filter(s=>s.pnls[2]>0).length/v.length*100:0;
+    const ap=avg(v.map(s=>s.pnls[2]));
+    const net=ap-COST;
+    const daily=v.length?(net/1e4*1000*v.length/days):0;
+    return{th,count:sigs.length,wr,avgPnl:ap,daily};
+  });
+  threshWrChart.data.labels=thresholds.map(String);
+  threshWrChart.data.datasets=[{
+    data:threshData.map(d=>+d.wr.toFixed(1)),
+    borderColor:'#22c55e',borderWidth:2,pointRadius:4,
+    pointBackgroundColor:threshData.map(d=>d.wr>=60?'#22c55e':'#ef4444'),
+    tension:.3,fill:false
+  }];
+  threshWrChart.update();
+
+  threshPnlChart.data.labels=thresholds.map(String);
+  threshPnlChart.data.datasets=[
+    {label:'$/day @ $1K',data:threshData.map(d=>+d.daily.toFixed(2)),yAxisID:'y',
+      borderColor:'#f59e0b',borderWidth:2,pointRadius:4,
+      pointBackgroundColor:threshData.map(d=>d.daily>=0?'#22c55e':'#ef4444'),tension:.3,fill:false,type:'line'},
+    {label:'Trades/week',data:threshData.map(d=>d.count),yAxisID:'y2',
+      backgroundColor:'rgba(255,255,255,.08)',borderColor:'rgba(255,255,255,.15)',borderWidth:1,borderRadius:3,type:'bar'},
+  ];
+  threshPnlChart.update();
+
+  // ── Convergence Curve ──
+  const exitNs=[1,2,3,5,7,10];
+  const convData=exitNs.map(n=>{
+    const v=signals.filter(s=>s.pnls[n]!==undefined);
+    const wr=v.length?v.filter(s=>s.pnls[n]>0).length/v.length*100:0;
+    return{n,wr,avgPnl:avg(v.map(s=>s.pnls[n])),count:v.length};
+  });
+  convChart.data.labels=exitNs.map(n=>`${n} cap (~${(n*3.5).toFixed(0)}m)`);
+  convChart.data.datasets=[
+    {label:'Avg P&L (bps)',data:convData.map(d=>+d.avgPnl.toFixed(1)),yAxisID:'y',
+      borderColor:'#f59e0b',borderWidth:2,pointRadius:5,pointBackgroundColor:'#f59e0b',tension:.3,fill:false,type:'line'},
+    {label:'Win Rate %',data:convData.map(d=>+d.wr.toFixed(1)),yAxisID:'y2',
+      borderColor:'#22c55e',borderWidth:2,pointRadius:5,pointBackgroundColor:'#22c55e',tension:.3,fill:false,type:'line',borderDash:[4,3]},
+  ];
+  convChart.update();
+
+  // ── Spread vs P&L Scatter ──
+  const scatterData=signals.filter(s=>s.pnls[2]!==undefined).map(s=>({x:+s.spread.toFixed(1),y:+s.pnls[2].toFixed(1)}));
+  spreadVsPnlChart.data.datasets=[{
+    data:scatterData,
+    pointRadius:3,
+    pointBackgroundColor:scatterData.map(d=>d.y>=0?'rgba(34,197,94,.5)':'rgba(239,68,68,.5)'),
+    pointBorderColor:scatterData.map(d=>d.y>=0?'#22c55e':'#ef4444'),
+    pointBorderWidth:1
+  }];
+  spreadVsPnlChart.update();
+
+  // ── Delta Magnitude vs Win Rate ──
+  const deltaBuckets=[[30,40],[40,50],[50,60],[60,80],[80,120]];
+  const dbData=deltaBuckets.map(([lo,hi])=>{
+    const v=signals.filter(s=>s.absD>=lo&&s.absD<hi&&s.pnls[2]!==undefined);
+    return{label:`${lo}-${hi}`,count:v.length,wr:v.length>=2?v.filter(s=>s.pnls[2]>0).length/v.length*100:null,
+      avgPnl:avg(v.map(s=>s.pnls[2]))};
+  });
+  deltaVsWrChart.data.labels=dbData.map(d=>d.label);
+  deltaVsWrChart.data.datasets=[
+    {label:'Win Rate %',type:'bar',data:dbData.map(d=>d.wr),yAxisID:'y',
+      backgroundColor:dbData.map(d=>d.wr!==null?(d.wr>=60?'rgba(34,197,94,.5)':'rgba(239,68,68,.4)'):'rgba(255,255,255,.05)'),
+      borderColor:dbData.map(d=>d.wr!==null?(d.wr>=60?'#22c55e':'#ef4444'):'transparent'),borderWidth:1,borderRadius:4},
+    {label:'Trade Count',type:'line',data:dbData.map(d=>d.count),yAxisID:'y2',
+      borderColor:'#f59e0b',borderWidth:2,pointRadius:4,pointBackgroundColor:'#f59e0b',tension:.3},
+  ];
+  deltaVsWrChart.update();
+
+  // ── Golden Table — rank all hour+session combos ──
+  const golden=[];
+  for(let h=0;h<24;h++){
+    for(const we of [false,true]){
+      const label=we?`Weekend ${String(h).padStart(2,'0')}:00 ET`:`Weekday ${String(h).padStart(2,'0')}:00 ET`;
+      const hs=signals.filter(s=>s.hour===h&&s.isWeekend===we&&s.pnls[2]!==undefined);
+      if(hs.length<2)continue;
+      const wr=hs.filter(s=>s.pnls[2]>0).length/hs.length*100;
+      const ap=avg(hs.map(s=>s.pnls[2]));
+      const net=ap-COST;
+      const avgSpread=avg(hs.map(s=>s.spread));
+      const avgAbsD=avg(hs.map(s=>s.absD));
+      // Score = WR * net P&L (only if both positive)
+      const score=wr>=50&&net>0?wr/100*net:0;
+      golden.push({label,count:hs.length,wr,avgPnl:ap,net,avgSpread,avgAbsD,score,isWeekend:we,isMH:h>=9&&h<16});
+    }
+  }
+  golden.sort((a,b)=>b.score-a.score);
+
+  const tEl=document.getElementById('goldenTable');
+  let tHtml=`<table style="width:100%;border-collapse:collapse;font-size:11px">
+    <tr style="border-bottom:1px solid var(--bd)">
+      <th style="padding:6px 10px;text-align:left;color:var(--t2);font-size:9px;text-transform:uppercase">Rank</th>
+      <th style="padding:6px 10px;text-align:left;color:var(--t2);font-size:9px;text-transform:uppercase">Window</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Trades</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Win Rate</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Avg P&L</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Net P&L</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Avg Spread</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Avg |Delta|</th>
+      <th style="padding:6px 10px;text-align:center;color:var(--t2);font-size:9px;text-transform:uppercase">Score</th>
+    </tr>`;
+  golden.slice(0,20).forEach((g,i)=>{
+    const rowBg=i<3?'rgba(34,197,94,.06)':i<10?'rgba(255,255,255,.02)':'transparent';
+    const medal=i===0?'&#x1F947;':i===1?'&#x1F948;':i===2?'&#x1F949;':'';
+    const sessionTag=g.isWeekend?'<span style="color:var(--r);font-size:9px">WE</span>':
+      g.isMH?'<span style="color:var(--g);font-size:9px">MH</span>':'<span style="color:#60a5fa;font-size:9px">AH</span>';
+    tHtml+=`<tr style="background:${rowBg};border-bottom:1px solid rgba(255,255,255,.04)">
+      <td style="padding:6px 10px;font-weight:700">${medal} #${i+1}</td>
+      <td style="padding:6px 10px;font-weight:600">${g.label} ${sessionTag}</td>
+      <td style="padding:6px 10px;text-align:center">${g.count}</td>
+      <td style="padding:6px 10px;text-align:center;color:${g.wr>=60?'var(--g)':'var(--r)'}"><b>${g.wr.toFixed(0)}%</b></td>
+      <td style="padding:6px 10px;text-align:center;color:${g.avgPnl>=0?'var(--g)':'var(--r)'}">${g.avgPnl>=0?'+':''}${g.avgPnl.toFixed(1)}bp</td>
+      <td style="padding:6px 10px;text-align:center;color:${g.net>=0?'var(--g)':'var(--r)'}">${g.net>=0?'+':''}${g.net.toFixed(1)}bp</td>
+      <td style="padding:6px 10px;text-align:center">${g.avgSpread.toFixed(1)}bp</td>
+      <td style="padding:6px 10px;text-align:center">${g.avgAbsD.toFixed(0)}bp</td>
+      <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--o)">${g.score.toFixed(1)}</td>
+    </tr>`;
+  });
+  tHtml+=`</table>`;
+  tHtml+=`<div style="color:var(--t2);font-size:10px;margin-top:8px;text-align:center">Score = (WR/100) × (Avg P&L − ${COST}bp cost). Higher = more profitable per trade. Only windows with ≥2 trades shown.</div>`;
+  tEl.innerHTML=tHtml;
+}
+
+// UI
+function buildControls(){
+  const btns=document.getElementById('assetBtns');
+  btns.innerHTML=ASSETS.map((a,i)=>`<button class="ctrl-btn ${i===currentAsset?'active':''}" data-i="${i}" style="${i===currentAsset?'border-color:'+a.c+';color:'+a.c:'color:'+a.c+';opacity:.6'}">${a.n}</button>`).join('');
+  btns.querySelectorAll('.ctrl-btn').forEach(b=>b.onclick=()=>{currentAsset=+b.dataset.i;buildControls();loadAndRender();});
+
+  const rbtn=document.getElementById('rangeBtns');
+  rbtn.innerHTML=RANGES.map((r,i)=>`<button class="range-btn ${i===currentRange?'active':''}" data-i="${i}">${r.label}</button>`).join('');
+  rbtn.querySelectorAll('.range-btn').forEach(b=>b.onclick=()=>{currentRange=+b.dataset.i;buildControls();loadAndRender();});
+}
+
+async function loadAndRender(){
+  const a=ASSETS[currentAsset];
+  const key=a.n;
+  const statusEl=document.getElementById('status');
+  statusEl.innerHTML=`<span class="dot loading"></span> Loading ${a.n}...`;
+
+  try{
+    if(!cache[key]){
+      const end=Date.now(),start=end-RANGES[RANGES.length-1].ms-3600e3;
+      statusEl.innerHTML=`<span class="dot loading"></span> Fetching HL candles for ${a.n}...`;
+      const hlP=fetchHL(a.hl,start,end);
+      statusEl.innerHTML=`<span class="dot loading"></span> Fetching Bebop quotes for ${a.n}...`;
+      const bebP=fetchBeb(a.beb);
+      const[hlCandles,bebQuotes]=await Promise.all([hlP,bebP]);
+      const bebPts=buildBebopSeries(bebQuotes);
+      cache[key]={hl:hlCandles,beb:bebPts};
+    }
+    updateCharts(cache[key].hl,cache[key].beb,currentAsset);
+    statusEl.innerHTML=`<span class="dot done"></span> ${a.n} loaded — ${cache[key].hl.length} HL candles, ${cache[key].beb.length} Bebop captures`;
+  }catch(e){
+    statusEl.innerHTML=`<span class="dot" style="background:var(--r)"></span> Error: ${e.message}`;
+  }
+}
+
+// Auto-refresh every 2 min
+setInterval(()=>{
+  const a=ASSETS[currentAsset];
+  delete cache[a.n]; // bust cache
+  loadAndRender();
+},120000);
+
+// Boot
+initCharts();
+buildControls();
+loadAndRender();
+</script>
+</body>
+</html>

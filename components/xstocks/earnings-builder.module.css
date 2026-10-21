@@ -1,0 +1,525 @@
+/* ----------------------------------------------------------------- */
+/* Session status — the product claim, stated literally               */
+/* ----------------------------------------------------------------- */
+
+.sessionPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--track);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink0);
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.sessionPill[data-size="sm"] {
+  font-size: 11px;
+  padding: 5px 10px;
+  gap: 8px;
+}
+
+.sessionDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5c5c;
+  box-shadow: 0 0 0 4px rgba(255, 92, 92, 0.18);
+  flex: 0 0 auto;
+}
+
+.sessionLive {
+  background: linear-gradient(45deg, #1fd59a 0%, #5fcef0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.sessionSep {
+  color: var(--ink3);
+}
+
+.sessionWindow {
+  color: var(--ink2);
+}
+
+/* ----------------------------------------------------------------- */
+/* Spotlight body — hero block + arc strip + call row + meta strip   */
+/* ----------------------------------------------------------------- */
+
+.viz {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 14px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+}
+
+.heroLogo {
+  width: 128px;
+  height: 128px;
+  flex: 0 0 auto;
+  display: block;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 12px;
+  box-shadow:
+    0 0 0 0.75px var(--line),
+    0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.heroMeta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heroTicker {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 82px;
+  letter-spacing: 0;
+  line-height: 0.95;
+  color: var(--ink0);
+}
+
+.heroCompany {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink2);
+  letter-spacing: 0;
+}
+
+.heroSlot {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--ink3);
+}
+
+.heroVerdictRow {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.heroSurpriseRow {
+  margin-top: 8px;
+}
+
+.heroWhy {
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--ink1);
+  max-width: 620px;
+}
+
+/* Arc strip: PRINT → SETTLE → NYSE OPEN */
+
+.arcStrip {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr 32px 1fr;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.arcBox {
+  border: 1px solid var(--line);
+  padding: 22px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.arcBox[data-emphasize="1"] {
+  background: var(--track);
+}
+
+.arcBoxLabel {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink3);
+}
+
+.arcBoxValue {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.arcBox[data-emphasize="1"] .arcBoxValue {
+  font-size: 64px;
+}
+
+.arcBoxStamp {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--ink3);
+}
+
+.arcStripArrow {
+  align-self: center;
+  font-family: var(--display);
+  font-size: 32px;
+  color: var(--ink3);
+  text-align: center;
+}
+
+/* The Call row: overnight settle vs realized open */
+
+.callRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  background: var(--track);
+}
+
+.callRowText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.callRowLabel {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink3);
+}
+
+.callRowBody {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink0);
+}
+
+.callPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #181d1c;
+  flex: 0 0 auto;
+}
+
+.callPill[data-hit="1"] {
+  background: linear-gradient(45deg, #1fd59a 0%, #5fcef0 100%);
+}
+
+.callPill[data-hit="0"] {
+  background: #ff5c5c;
+}
+
+.callPillDelta {
+  opacity: 0.78;
+  font-weight: 600;
+}
+
+/* Meta strip under the call */
+
+.metaStrip {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--ink3);
+}
+
+/* ----------------------------------------------------------------- */
+/* Verdict + surprise badges (shared by both modes)                  */
+/* ----------------------------------------------------------------- */
+
+.verdictBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #181d1c;
+  background: #ffffff;
+  white-space: nowrap;
+}
+
+.verdictBadge[data-verdict="beat"] {
+  background: linear-gradient(45deg, #1fd59a 0%, #5fcef0 100%);
+  color: #181d1c;
+}
+
+.verdictBadge[data-verdict="miss"] {
+  background: #ff5c5c;
+  color: #181d1c;
+}
+
+.verdictBadge[data-verdict="inline"] {
+  background: var(--ink4);
+  color: #181d1c;
+}
+
+.surpriseTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #181d1c;
+  background: linear-gradient(45deg, #1fd59a 0%, #5fcef0 100%);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------- */
+/* TAPE MODE — multi-row scoreboard, divergence ranked               */
+/* ----------------------------------------------------------------- */
+
+.tape {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.tapeRow {
+  flex: 1 1 0;
+  min-height: 0;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 40px auto 1fr;
+  column-gap: 22px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.tapeRow:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.tapeRow[data-divergent="1"] {
+  background:
+    linear-gradient(90deg, rgba(31, 213, 154, 0.05) 0%, rgba(95, 206, 240, 0.05) 100%);
+}
+
+.tapeRank {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink3);
+  text-transform: uppercase;
+  align-self: flex-start;
+  padding-top: 4px;
+}
+
+.tapeLogo {
+  flex: 0 0 auto;
+  display: block;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 8px;
+  align-self: center;
+  box-shadow:
+    0 0 0 0.75px var(--line),
+    0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.tapeBody {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tapeRowTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.tapeIdentity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 240px;
+}
+
+.tapeTicker {
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--ink0);
+}
+
+.tapeCompany {
+  font-family: var(--sans);
+  font-weight: 500;
+  color: var(--ink2);
+}
+
+.tapeSlot {
+  margin-top: 2px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--ink3);
+}
+
+.tapeVerdicts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-self: center;
+}
+
+/* Arc + call line: the heart of the row */
+
+.tapeArc {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.tapeArcLabel {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink3);
+}
+
+.tapeArcValue {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tapeArcArrow {
+  color: var(--ink3);
+  font-weight: 500;
+}
+
+.tapeWhy {
+  font-family: var(--sans);
+  font-style: italic;
+  color: var(--ink2);
+  line-height: 1.3;
+}
+
+/* ----------------------------------------------------------------- */
+/* Track record line — the franchise                                 */
+/* ----------------------------------------------------------------- */
+
+.trackRecord {
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.trackRecordLabel {
+  font-size: 11px;
+  color: var(--ink3);
+  font-weight: 600;
+}
+
+.trackRecordScore {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--ink0);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.trackRecordMeta {
+  font-size: 11px;
+  color: var(--ink3);
+  margin-left: auto;
+}
+
+/* ----------------------------------------------------------------- */
+/* Sidebar note                                                       */
+/* ----------------------------------------------------------------- */
+
+.fixtureNote {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5c6463;
+}
+
+.fixtureNote code {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 1px 4px;
+  background: #f0f2f1;
+  color: #181d1c;
+}
